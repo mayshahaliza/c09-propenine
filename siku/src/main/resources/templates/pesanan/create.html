@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Pesanan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'operational'">
+            <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">Create New Pesanan</h2>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/pesanan/create}" th:object="${pesanan}" method="post">
+                            <div class="form-group">
+                                <label for="namaClient">Nama Client</label>
+                                <input type="text" class="form-control" id="namaClient" th:field="*{namaClient}" placeholder="Enter client name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="namaAgent">Nama Agent</label>
+                                <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}" placeholder="Enter agent name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="stok">Pesanan</label>
+                                <select class="form-control" id="stok" th:field="*{stok}" required>
+                                    <option value="">-- Select Stok --</option>
+                                    <option th:each="stok : ${stokList}" th:value="${stok.idKatalog}" th:text="${stok.namaKatalog}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jumlahBarangPesanan">Jumlah Barang Pesanan</label>
+                                <input type="number" class="form-control" id="jumlahBarangPesanan" th:field="*{jumlahBarangPesanan}" placeholder="Enter jumlah barang pesanan" required>
+                            </div>
+                            
+
+                            <div class="form-group">
+                                <label for="statusPesanan">Status Pesanan</label>
+                                <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
+                                    <option value="ongoing">-- Select Status --</option>
+                                    <option value="ongoing" text="ongoing">Ongoing</option>
+                                    <option value="complete" text="complete">Complete</option>
+                                </select>
+                            </div>
+
+                            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                <strong th:text="${param.error}"></strong>
+                            </div>
+                            <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
+                                <strong th:text="${warningMessage}"></strong>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:unless="${user.role == 'operational' || user.role =='admin'}">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+        </script>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

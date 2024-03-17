@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Include Bootstrap CSS and JS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"></script>
+
+    <!-- Include Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+
+    <meta charset="UTF-8">
+    <title>Product Detail</title>
+
+    <!-- Include additional styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .image-card,
+        .description-card {
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            margin-bottom: 20px;
+        }
+
+        .image-card img {
+            max-width: 40%;
+            /* Adjust the image width as needed */
+            height: auto;
+            margin-left: 250px;
+            /* Move the image to the right */
+            margin-right: 20px;
+            /* Adjust the right margin as needed */
+        }
+
+        .description-card-body {
+            padding: 1.25rem;
+            /* Adjust padding as needed */
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+        }
+
+        .card-text {
+            color: #495057;
+        }
+
+        .btn-back {
+            background-color: #0d1013;
+            color: #fff;
+        }
+
+        .btn-update {
+            background-color: #0d1013;
+            color: #fff;
+        }
+
+        .description-card {
+            background-color: #ffffff;
+            /* Set a white background for the card */
+            padding: 20px;
+            /* Add padding to the card */
+            border-radius: 10px;
+            /* Add border radius to the card */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* Add shadow to the card */
+        }
+
+        .description-card .card-body {
+            padding: 0; /* Remove padding to prevent extra space */
+        }
+
+        .stok-details {
+            margin-bottom: 10px;
+            /* Add margin to separate each stok details */
+        }
+    </style>
+</head>
+
+<body>
+    <div th:if="${user != null}">
+        <div th:switch="${user.role}">
+            <div th:case="'hr'">
+                <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
+            </div>
+            <div th:case="'executive'">
+                <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+            </div>
+            <div th:case="'admin'">
+                <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+            </div>
+            <div th:case="'operational'">
+                <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+            </div>
+        </div>
+    </div>
+    <div th:unless="${user != null}">
+        <nav th:replace="~{fragments/guest_navbar :: guest_navbar}"></nav>
+    </div>
+    <div class="container">
+        <div class="description-card">
+            <div class="card-body description-card-body">
+                <div class="text-center pt-5">
+                    <h2 class="mb-4">Katalog Detail</h2>
+                </div>
+
+                <div class="row">
+                    <!-- Image Column -->
+                    <div class="col-md-6">
+                        <div class="image-card">
+                            <img class="card-img-top" alt="Katalog Image"
+                                th:src="'data:/image/jpg;base64,' + ${katalog.image}">
+                        </div>
+                    </div>
+                    <!-- Description Column -->
+                    <div class="col-md-6">
+                        <h4 class="card-title" th:text="${katalog.namaKatalog}"></h4>
+                        <p class="card-text" th:text="'ID: ' + ${katalog.id}"></p>
+                        <p class="card-text" th:text="'Deskripsi: ' + ${katalog.deskripsi}"></p>            
+                       <p class="card-text" th:text="'Harga: Rp ' + ${katalog.harga}"></p>
+                        <p class="card-text" th:text="'kategori: ' + ${katalog.kategori.namaKategori}"></p>
+                    </div>
+                    <div class="text-center m-3">
+                        <a type="button" class="btn btn-back btn-md" href="/katalog">Semua Katalog</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

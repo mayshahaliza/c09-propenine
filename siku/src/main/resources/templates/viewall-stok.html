@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+  <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+  <title>View All Stok</title>
+  <style>
+    table {
+        counter-reset: section;
+    }
+        
+    .count:before {
+        counter-increment: section;
+        content: counter(section);
+    }
+
+		#myButton {
+			display: none;
+		}
+  </style>
+</head>
+
+<body>
+  <div th:switch="${user.role}">
+    <div th:case="'admin'">
+        <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+    </div>
+    <div th:case="'operational'">
+        <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+    </div>
+  <div class="container">
+    <div class="text-center" th:if="${user.role == 'operational' || user.role == 'admin'}">
+    <div class="text-center pt-5">
+      <h2>Products Stock</h2>
+    </div>
+    <div class="text-center m-3">
+      <a type="button" class="btn btn-md btn-primary" href="/stok/tambah">Add Product</a>
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody th:each="stok: ${listStok}">
+          <tr>
+            <th scope="row" id="counting" class="count">
+            </th>
+            <td th:text="${stok.idKatalog}"></td>
+            <td th:text="${stok.namaKatalog}"></td>
+            <td th:text="${stok.kategori.namaKategori}"></td>
+            <td th:text="${stok.stok}"></td>
+            <td th:text="${stok.harga}"></td>
+            <td th:text="${stok.status} ? 'Tersedia' : 'Habis'"></td>
+            <td><a type="button" class="btn btn-md btn-primary" th:href="@{/stok/update/} + ${stok.idKatalog}">Edit Stock</a></td>
+          </tr>
+        </tbody>      
+    </table>
+  </div>
+    <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         window.location.replace('/no-access');
+         /*]]>*/
+     </script>
+    </div>
+</body>
+</html>
