@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <style>
+        .card {
+            max-width: 1100px; /* Lebar maksimal card */
+            margin: 0 auto; /* Pusatkan card secara horizontal */
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .btn-submit {
+            background-color: #0d1013;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'operational'">
+            <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+        </div>
+    </div>
+    <div class="text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
+<div class="card mt-5">
+    <div class="card-header text-center fw-bold" style="font-size: 24px;">
+        Add Katalog
+    </div>
+    <div class="card-body">
+        <!-- Warning message -->
+        <div class="alert alert-warning" role="alert">
+            Kapasitas maksimal gambar adalah 1 MB
+        </div>
+        
+        <form th:action="@{/katalog/tambah}" th:object="${katalogDTO}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="nama-katalog" class="form-label">Nama Katalog:</label>
+                <input type="text" class="form-control" id="nama-katalog" th:field="*{namaKatalog}"/>
+                <small id="nama-katalog-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="harga-katalog" class="form-label">Harga Katalog:</label>
+                <input type="text" class="form-control" id="harga-katalog" th:field="*{harga}"/>
+                <small id="harga-katalog-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="deskripsi-katalog" class="form-label">Katalog Description:</label>
+                <input type="text" class="form-control" id="deskripsi-katalog" th:field="*{deskripsi}"/>
+                <small id="deskripsi-katalog-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="kategori-katalog" class="form-label">Kategori Katalog:</label>
+                <select th:field="*{kategori}" class="form-control" id="kategori-katalog">
+                    <option value="">Pilih kategori</option>
+                    <option th:each="kategori : ${allKategori}" th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
+                </select>
+                <small id="kategori-katalog-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="image" class="form-label">Katalog Image:</label>
+                <input type="file" id="image" name="file" class="form-control"/>
+                <small id="image-error" class="text-danger"></small>
+            </div>
+            <div class="center-button">
+                <button class="btn btn-submit" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        var namaKatalog = document.getElementById("nama-katalog").value;
+        var hargaKatalog = document.getElementById("harga-katalog").value;
+        var deskripsiKatalog = document.getElementById("deskripsi-katalog").value;
+        var kategoriKatalog = document.getElementById("kategori-katalog").value;
+        var image = document.getElementById("image").value;
+
+        var namaKatalogError = document.getElementById("nama-katalog-error");
+        var hargaKatalogError = document.getElementById("harga-katalog-error");
+        var deskripsiKatalogError = document.getElementById("deskripsi-katalog-error");
+        var kategoriKatalogError = document.getElementById("kategori-katalog-error");
+        var imageError = document.getElementById("image-error");
+
+        if (namaKatalog.trim() === "") {
+            namaKatalogError.innerText = "Nama Katalog tidak boleh kosong";
+            return false;
+        } else {
+            namaKatalogError.innerText = "";
+        }
+
+        if (hargaKatalog.trim() === "") {
+            hargaKatalogError.innerText = "Harga Katalog tidak boleh kosong";
+            return false;
+        } else if(!(/^\d+$/.test(hargaKatalog))){
+            hargaKatalogError.innerText = "Harga Katalog harus berupa angka";
+            return false;
+        }else {
+            hargaKatalogError.innerText = "";
+        }
+
+        if (deskripsiKatalog.trim() === "") {
+            deskripsiKatalogError.innerText = "Deskripsi Katalog tidak boleh kosong";
+            return false;
+        } else {
+            deskripsiKatalogError.innerText = "";
+        }
+
+        if (kategoriKatalog.trim() === "") {
+            kategoriKatalogError.innerText = "Kategori Katalog tidak boleh kosong";
+            return false;
+        } else {
+            kategoriKatalogError.innerText = "";
+        }
+
+        if (image.trim() === "") {
+            imageError.innerText = "Katalog Image tidak boleh kosong";
+            return false;
+        } else {
+            imageError.innerText = "";
+        }
+
+        return true;
+    }
+</script>
+
+<div th:unless="${user.role == 'operational' || user.role =='admin'}">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+    </script>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+</body>
+</html>

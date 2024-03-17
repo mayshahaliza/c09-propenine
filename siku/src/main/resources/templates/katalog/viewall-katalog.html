@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa; /* Set a light background color */
+        }
+
+        .container {
+            background-color: #ffffff; /* Set a white background for the container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the container */
+            margin-top: 20px;
+        }
+
+        .card {
+            width: 240px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.5s;
+            margin-bottom: 15px;
+            margin-left: 30px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-content {
+            text-align: left;
+            padding: 10px;
+        }
+
+        .card h4,
+        .card h6 {
+            color: #000;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .btn-primary {
+            background-color: #0e131a;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+
+        .add-product-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0e131a;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .add-product-btn:hover {
+            background-color: #fff4f4;
+            box-shadow: #ddd;
+            transform: scale(1.1);
+            color: #000;
+        }
+
+        .search-filter-form {
+            width: 1100px;
+            margin-bottom: 15px;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .search-filter-form input,
+        .search-filter-form select {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+
+
+        .search-filter-container {
+            border: 1px solid #ddd;
+            border-radius: 2px; /* Add a slight rounded corner for a softer look */
+            width: 1200px;
+            margin-bottom: 15px;
+            margin-left: 30px;
+        }
+
+    </style>
+    <title>View All Product</title>
+</head>
+
+<body>
+    <div th:if="${user != null}">
+        <div th:switch="${user.role}">
+            <div th:case="'hr'">
+                <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
+            </div>
+            <div th:case="'executive'">
+                <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+            </div>
+            <div th:case="'admin'">
+                <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+            </div>
+            <div th:case="'operational'">
+                <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+            </div>
+        </div>
+    </div>
+    <div th:unless="${user != null}">
+        <nav th:replace="~{fragments/guest_navbar :: guest_navbar}"></nav>
+    </div>
+
+    <!-- <nav th:replace="~{fragments/navbar :: navbar}"></nav> -->
+    <div class="container">
+        <!-- Product Display -->
+        <div class="row">
+            <!-- Loop through each product and display it as a clickable card -->
+            <div class="col-md-3" th:each="katalog : ${listKatalog}">
+                <div class="card">
+                    <!-- Determine the appropriate URL based on user role -->
+                    <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}" th:href="@{/katalog/login/{id}(id=${katalog.id})}" style="text-decoration: none;">
+                        <!-- Update th:src to use katalog.image -->
+                        <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}">
+                        <div class="card-content">
+                            <!-- Update th:text to use katalog.namaKatalog -->
+                            <h4 th:text="${katalog.namaKatalog}"></h4>
+                            <!-- Update th:text to use katalog.harga -->
+                            <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
+                        </div>
+                    </a>
+                    <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}" th:href="@{/katalog/{id}(id=${katalog.id})}" style="text-decoration: none;">
+                        <!-- Update th:src to use katalog.image -->
+                        <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}">
+                        <div class="card-content">
+                            <!-- Update th:text to use katalog.namaKatalog -->
+                            <h4 th:text="${katalog.namaKatalog}"></h4>
+                            <!-- Update th:text to use katalog.harga -->
+                            <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div th:if="${user != null && (user.role == 'admin' || user.role == 'operational') }">
+                <button class="add-product-btn" onclick="location.href='/katalog/tambah'" style="font-size: larger;">+</button>
+            </div>
+
+        </div>
+
+        <script th:inline="javascript">
+            var currentUrl = /*[[@{/}]]*/ '';
+            if (currentUrl === '/') {
+                document.querySelector('a.nav-link[href="/"]').classList.add('active');
+            }
+        </script>
+
+        <div th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                window.location.replace('/no-access');
+                /*]]>*/
+            </script>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

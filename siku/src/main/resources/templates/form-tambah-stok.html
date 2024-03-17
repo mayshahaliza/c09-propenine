@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+  <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+  <title>Form Add Stok</title>
+</head>
+
+<body>
+  <div th:switch="${user.role}">
+    <div th:case="'admin'">
+        <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+    </div>
+    <div th:case="'operational'">
+        <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+    </div>
+</div>
+  <div class="container">
+    <div class="text-center" th:if="${user.role == 'operational' || user.role == 'admin'}">
+
+    <div class="card m-4 p-4">
+      <div class="card-body">
+        <div class="justify-content-center">
+          <h2>New Product</h2>
+          <br>
+          <form th:action="@{/stok/tambah}" th:object="${stokDTO}" method="POST">
+            Catalog Name:
+            <input class="form-control" type="text" th:field="*{namaKatalog}" required/>
+            <br><br>
+
+            <div class="form-group">
+              <label for="kategori-katalog" class="form-label">Kategori Katalog:</label>
+              <select th:field="*{kategori}" class="form-control" id="kategori-katalog">
+                  <option value="">Pilih kategori</option>
+                  <option th:each="kategori : ${allKategori}" th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
+              </select>
+              <small id="kategori-katalog-error" class="text-danger"></small>
+          </div>
+          <br><br>
+
+            Stock:
+            <input class="form-control" type="number" th:field="*{stok}" min="0" step="1" required/>
+            <br><br>
+
+            Price:
+            <input class="form-control" type="number" th:field="*{harga}" min="0" step="1" required/>
+            <br><br>
+
+            <div class="text-center">
+                <a class="btn btn-danger" href="/stok">Batal</a>
+                <button class="btn btn-primary" type="submit">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         window.location.replace('/no-access');
+         /*]]>*/
+     </script>
+    </div>
+
+</body>
+</html>
