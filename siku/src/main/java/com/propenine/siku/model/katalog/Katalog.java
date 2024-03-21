@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class Katalog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // atau GenerationType.UUID jika tersedia
+    @GeneratedValue(strategy = GenerationType.AUTO) 
     private UUID id;
 
     @NotNull
