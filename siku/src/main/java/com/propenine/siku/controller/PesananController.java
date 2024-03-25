@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.propenine.siku.model.Pesanan;
-import com.propenine.siku.modelstok.Stok;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
-import com.propenine.siku.servicestok.StokService;
+import com.propenine.siku.servicestok.ProductService;
 
 @Controller
 @RequestMapping("/pesanan")
 public class PesananController {
     
-    private final StokService stokService;
+    private final ProductService productService;
     private final PesananService pesananService;
     
     @Autowired
@@ -32,9 +32,9 @@ public class PesananController {
 
 
     @Autowired
-    public PesananController(PesananService pesananService, StokService stokService) {
+    public PesananController(PesananService pesananService, ProductService productService) {
         this.pesananService = pesananService;
-        this.stokService = stokService;
+        this.productService = productService;
     }
 
 
@@ -85,21 +85,21 @@ public class PesananController {
     public String showCreateForm(Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        List<Stok> stokList = stokService.getAllStok(); // Assuming you have a service for Stok
+        List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
         model.addAttribute("pesanan", new Pesanan());
-        model.addAttribute("stokList", stokList);
+        model.addAttribute("productList", productList);
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
     
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
-        Stok stok = pesanan.getStok();
+        Product product = pesanan.getProduct();
         int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-        if (stok != null && jumlahBarangPesanan > 0) {
-            int stokSaatIni = stok.getStok();
+        if (product != null && jumlahBarangPesanan > 0) {
+            int stokSaatIni = product.getStok();
             if (stokSaatIni >= jumlahBarangPesanan) {
-                stok.setStok(stokSaatIni - jumlahBarangPesanan);
-                stokService.updateStok(stok); // Update stok di database
+                product.setStok(stokSaatIni - jumlahBarangPesanan);
+                productService.updateProduct(product); // Update stok di database
             } else {
                 redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak mencukupi");
                 return "redirect:/pesanan/create";
@@ -114,8 +114,8 @@ public class PesananController {
     public String showUpdateForm(@PathVariable Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-      List<Stok> stokList = stokService.getAllStok(); // Assuming you have a service for Stok
-        model.addAttribute("stokList", stokList);
+      List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
+        model.addAttribute("productList", productList);
         Pesanan pesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         model.addAttribute("pesanan", pesanan);
@@ -126,15 +126,15 @@ public class PesananController {
     public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan, RedirectAttributes redirectAttributes) {
         Pesanan existingPesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
-        Stok stok = updatedPesanan.getStok();
+        Product product = updatedPesanan.getProduct();
         int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
         int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
         int selisihJumlahPesanan = jumlahBarangPesananSebelumnya - jumlahBarangPesanan;
-        int hasilAkhir = stok.getStok() + selisihJumlahPesanan;
+        int hasilAkhir = product.getStok() + selisihJumlahPesanan;
         if (hasilAkhir >= 0) {
-            if (stok != null && jumlahBarangPesanan > 0) {
-                stok.setStok(stok.getStok() + selisihJumlahPesanan);
-                stokService.updateStok(stok);
+            if (product != null && jumlahBarangPesanan > 0) {
+                product.setStok(product.getStok() + selisihJumlahPesanan);
+                productService.updateProduct(product);
             } else {
                 redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak boleh 0");
                 return "redirect:/pesanan/update/" + id;

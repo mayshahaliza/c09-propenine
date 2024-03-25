@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.propenine.siku.modelstok.Stok;
+import com.propenine.siku.modelstok.Product;
 
 @Data
 @AllArgsConstructor
@@ -37,8 +37,8 @@ public class Pesanan {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_katalog", referencedColumnName = "idKatalog")
-    private Stok stok;
+    @JoinColumn(name = "id_product", referencedColumnName = "idProduct")
+    private Product product;
 
     @Column(name = "jumlah_barang_pesanan")
     private Integer jumlahBarangPesanan;

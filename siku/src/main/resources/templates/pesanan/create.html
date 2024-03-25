@@ -35,10 +35,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="stok">Pesanan</label>
-                                <select class="form-control" id="stok" th:field="*{stok}" required>
-                                    <option value="">-- Select Stok --</option>
-                                    <option th:each="stok : ${stokList}" th:value="${stok.idKatalog}" th:text="${stok.namaKatalog}"></option>
+                                <label for="product">Pesanan</label>
+                                <select class="form-control" id="product" th:field="*{product}" required>
+                                    <option value="">-- Select Product --</option>
+                                    <option th:each="product : ${productList}" th:value="${product.idProduct}" th:text="${product.namaProduct}"></option>
                                 </select>
                             </div>
 
