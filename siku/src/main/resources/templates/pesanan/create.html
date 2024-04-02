@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Create Pesanan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8" />
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Tambah Pesanan</title>
 </head>
+
 <body>
     <div th:switch="${user.role}">
         <div th:case="'admin'">
@@ -26,37 +29,53 @@
                         <form th:action="@{/pesanan/create}" th:object="${pesanan}" method="post">
                             <div class="form-group">
                                 <label for="namaClient">Nama Client</label>
-                                <input type="text" class="form-control" id="namaClient" th:field="*{namaClient}" placeholder="Enter client name" required>
+                                <input type="text" class="form-control" id="namaClient" th:field="*{namaClient}"
+                                    placeholder="Enter client name" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="namaAgent">Nama Agent</label>
-                                <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}" placeholder="Enter agent name" required>
+                                <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}"
+                                    placeholder="Enter agent name" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="product">Pesanan</label>
                                 <select class="form-control" id="product" th:field="*{product}" required>
                                     <option value="">-- Select Product --</option>
-                                    <option th:each="product : ${productList}" th:value="${product.idProduct}" th:text="${product.namaProduct}"></option>
+                                    <option th:each="product : ${productList}" th:value="${product.idProduct}"
+                                        th:text="${product.namaProduct}"></option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="jumlahBarangPesanan">Jumlah Barang Pesanan</label>
-                                <input type="number" class="form-control" id="jumlahBarangPesanan" th:field="*{jumlahBarangPesanan}" placeholder="Enter jumlah barang pesanan" required>
+                                <input type="number" class="form-control" id="jumlahBarangPesanan"
+                                    th:field="*{jumlahBarangPesanan}" placeholder="Enter jumlah barang pesanan"
+                                    required>
                             </div>
-                            
+
 
                             <div class="form-group">
                                 <label for="statusPesanan">Status Pesanan</label>
                                 <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
-                                    <option value="ongoing">-- Select Status --</option>
-                                    <option value="ongoing" text="ongoing">Ongoing</option>
-                                    <option value="complete" text="complete">Complete</option>
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Ongoing" text="Ongoing">Ongoing</option>
+                                    <option value="Complete" text="Complete">Complete</option>
+                                    <option value="Canceled" text="Canceled">Canceled</option>
+
                                 </select>
                             </div>
-
+                            <div class="form-group">
+                                <label for="tanggalPemesanan">Tanggal Pemensan</label>
+                                <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan" th:field="*{tanggalPemesanan}"
+                                    placeholder="Tanggal Pemesanan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tanggalSelesai">Tanggal Selesai</label>
+                                <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai" th:field="*{tanggalSelesai}"
+                                    placeholder="Tanggal Selesai" required>
+                            </div>
                             <div th:if="${param.error}" class="alert alert-danger" role="alert">
                                 <strong th:text="${param.error}"></strong>
                             </div>
@@ -80,8 +99,9 @@
         </script>
     </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

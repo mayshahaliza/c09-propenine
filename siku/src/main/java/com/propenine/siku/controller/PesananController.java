@@ -23,13 +23,12 @@ import com.propenine.siku.servicestok.ProductService;
 @Controller
 @RequestMapping("/pesanan")
 public class PesananController {
-    
+
     private final ProductService productService;
     private final PesananService pesananService;
-    
+
     @Autowired
     private AuthenticationService authenticationService;
-
 
     @Autowired
     public PesananController(PesananService pesananService, ProductService productService) {
@@ -37,50 +36,59 @@ public class PesananController {
         this.productService = productService;
     }
 
-
     @GetMapping("/")
     public String root() {
         return "redirect:/pesanan/list";
     }
 
-    
     // @GetMapping("/list")
     // public String listAllPesanan(
-    //         @RequestParam(name = "namaClient", required = false) String namaClient,
-    //         @RequestParam(name = "namaAgent", required = false) String namaAgent,
-    //         @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
-    //         Model model) {
+    // @RequestParam(name = "searchInput", required = false) String searchInput,
+    // Model model) {
 
-        
+    // List<Pesanan> pesananList;
 
+    // if (searchInput != null && !searchInput.isEmpty()) {
+    // // Call a new method in the service that searches by client name or agent
+    // name.
+    // pesananList = pesananService.searchPesananByClientOrAgent(searchInput);
+    // } else {
+    // pesananList = pesananService.getAllPesanan();
+    // }
 
-    //     User loggedInUser = authenticationService.getLoggedInUser();
-    //     model.addAttribute("user", loggedInUser);
-    //     return "pesanan/list"; // HTML template for listing pesanans
+    // model.addAttribute("pesananList", pesananList);
+
+    // User loggedInUser = authenticationService.getLoggedInUser();
+    // model.addAttribute("user", loggedInUser);
+
+    // return "pesanan/list"; // HTML template for listing pesanans
     // }
 
     @GetMapping("/list")
     public String listAllPesanan(
-            @RequestParam(name = "namaClient", required = false) String namaClient,
-            @RequestParam(name = "namaAgent", required = false) String namaAgent,
+            @RequestParam(name = "searchInput", required = false) String searchInput,
             @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
+            @RequestParam(name = "tanggalPemesanan", required = false) String tanggalPemesanan,
             Model model) {
 
-        // Misalnya, Anda memiliki sebuah layanan pesanan yang dapat mengambil daftar pesanan
-        List<Pesanan> pesananList = pesananService.getAllPesanan();
+        List<Pesanan> pesananList;
 
-        // Menyimpan daftar pesanan dalam model untuk ditampilkan di halaman HTML
+        if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null && !statusPesanan.isEmpty())
+                || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
+            // Call a new method in the service that applies filters.
+            pesananList = pesananService.findWithFilters(searchInput, statusPesanan, tanggalPemesanan);
+        } else {
+            pesananList = pesananService.getAllPesanan();
+        }
+
         model.addAttribute("pesananList", pesananList);
 
-        // Mengambil informasi user yang sedang login
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         return "pesanan/list"; // HTML template for listing pesanans
     }
 
-
-    
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
@@ -90,7 +98,7 @@ public class PesananController {
         model.addAttribute("productList", productList);
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
-    
+
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();
@@ -109,12 +117,11 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
-
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-      List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
+        List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
         model.addAttribute("productList", productList);
         Pesanan pesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
@@ -123,7 +130,8 @@ public class PesananController {
     }
 
     @PostMapping("/update/{id}")
-    public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan, RedirectAttributes redirectAttributes) {
+    public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan,
+            RedirectAttributes redirectAttributes) {
         Pesanan existingPesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         Product product = updatedPesanan.getProduct();
@@ -139,8 +147,7 @@ public class PesananController {
                 redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak boleh 0");
                 return "redirect:/pesanan/update/" + id;
             }
-        }
-        else {
+        } else {
             redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak mencukupi");
             return "redirect:/pesanan/update/" + id;
         }
@@ -148,14 +155,16 @@ public class PesananController {
         pesananService.updatePesanan(id, updatedPesanan);
         return "redirect:/pesanan/list";
     }
-    
 
-    
-
-
-
-
-
-  
+    @GetMapping("/delete/{id}")
+    public String deletePesanan(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            pesananService.deletePesanan(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Pesanan has been deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error occurred while deleting the pesanan.");
+        }
+        return "redirect:/pesanan/list";
+    }
 
 }

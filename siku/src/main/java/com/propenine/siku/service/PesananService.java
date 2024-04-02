@@ -5,6 +5,8 @@ import com.propenine.siku.repository.PesananRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +50,9 @@ public class PesananService {
                     pesanan.setNamaClient(updatedPesanan.getNamaClient());
                     pesanan.setNamaAgent(updatedPesanan.getNamaAgent());
                     pesanan.setStatusPesanan(updatedPesanan.getStatusPesanan());
-                    pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan()); // Update jumlah pesanan
-    
+                    pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
+                    pesanan.setTanggalPemesanan(updatedPesanan.getTanggalPemesanan());
+                    pesanan.setTanggalSelesai(updatedPesanan.getTanggalSelesai());
                     return pesananRepository.save(pesanan);
                 })
                 .orElseGet(() -> {
@@ -57,7 +60,24 @@ public class PesananService {
                     return pesananRepository.save(updatedPesanan);
                 });
     }
+
+    public void deletePesanan(Long id) {
+        pesananRepository.deleteById(id);
+    }
     
+   
+    // public List<Pesanan> searchPesananByClientOrAgent(String searchInput) {
+    // return pesananRepository.findByNamaClientContainingOrNamaAgentContaining(searchInput, searchInput);
+    //}
+    public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
+        LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
+        LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement
+
+        return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
+    }
+
+    
+
 
     
 }
