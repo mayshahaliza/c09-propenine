@@ -36,9 +36,9 @@ public class PesananService {
     //     return pesananRepository.findByNamaClient(namaClient);
     // }
 
-    public List<Pesanan> getPesananByNamaAgent(String namaAgent) {
-        return pesananRepository.findByNamaAgent(namaAgent);
-    }
+    // public List<Pesanan> getPesananByNamaAgent(String namaAgent) {
+    //     return pesananRepository.findByNamaAgent(namaAgent);
+    // }
 
     public List<Pesanan> getPesananByStatusPesanan(String statusPesanan) {
         return pesananRepository.findByStatusPesanan(statusPesanan);
@@ -48,7 +48,7 @@ public class PesananService {
         return pesananRepository.findById(id)
                 .map(pesanan -> {
                     // pesanan.setNamaClient(updatedPesanan.getNamaClient());
-                    pesanan.setNamaAgent(updatedPesanan.getNamaAgent());
+                    // pesanan.setNamaAgent(updatedPesanan.getNamaAgent());
                     pesanan.setStatusPesanan(updatedPesanan.getStatusPesanan());
                     pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
                     pesanan.setTanggalPemesanan(updatedPesanan.getTanggalPemesanan());

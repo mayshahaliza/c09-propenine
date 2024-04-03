@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.propenine.siku.modelstok.Product;
-import com.propenine.siku.model.Klien;
+import com.propenine.siku.model.*;
 
 
 @Data
@@ -29,9 +29,10 @@ public class Pesanan {
     @JoinColumn(name = "id_klien", referencedColumnName = "id")
     private Klien klien;
 
-    @NotBlank(message = "Nama agent harus diisi")
-    @Column(name="nama_agent", nullable = false)
-    private String namaAgent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
+    private User user;
 
     @Value("ongoing")
     @Column(name="status_pesanan", nullable = false)

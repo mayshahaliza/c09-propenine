@@ -66,8 +66,8 @@
             <tbody>
                 <tr th:each="pesanan : ${pesananList}">
                     <td th:text="${pesanan.id}">ID</td>
-                    <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td> <!-- Perubahan di sini -->
-                    <td th:text="${pesanan.namaAgent}">Nama Agent</td>
+                    <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td> 
+                    <td th:text="${pesanan.user.username}">Nama Agent</td> 
                     <td>
                         <span th:text="${pesanan.statusPesanan}"
                             th:style="${pesanan.statusPesanan == 'Canceled' ? 'color: red' : ''}"></span>

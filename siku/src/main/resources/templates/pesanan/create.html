@@ -36,10 +36,18 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="namaAgent">Nama Agent</label>
                                 <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}"
                                     placeholder="Enter agent name" required>
+                            </div> -->
+                            <div class="form-group">
+                                <label for="user">Username Agent</label>
+                                <select class="form-control" id="user" th:field="*{user}" required>
+                                    <option value="">-- Select Agent --</option>
+                                    <option th:each="user : ${userList}" th:value="${user.id}"
+                                        th:text="${user.username}"></option>
+                                </select>
                             </div>
 
                             <div class="form-group">

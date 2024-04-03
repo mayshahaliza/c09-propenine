@@ -19,6 +19,8 @@ import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
+import com.propenine.siku.service.UserService;
+import com.propenine.siku.service.UserServiceImpl;
 import com.propenine.siku.service.klien.KlienService;
 import com.propenine.siku.servicestok.ProductService;
 
@@ -29,22 +31,25 @@ public class PesananController {
     private final ProductService productService;
     private final PesananService pesananService;
     private final KlienService klienService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    public PesananController(PesananService pesananService, ProductService productService, KlienService klienService) {
+    public PesananController(PesananService pesananService, ProductService productService, KlienService klienService,
+            UserServiceImpl userServiceImpl) {
         this.pesananService = pesananService;
         this.productService = productService;
         this.klienService = klienService;
+        this.userServiceImpl = userServiceImpl;
+
     }
 
     @GetMapping("/")
     public String root() {
         return "redirect:/pesanan/list";
     }
-
 
     @GetMapping("/list")
     public String listAllPesanan(
@@ -57,7 +62,6 @@ public class PesananController {
 
         if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null && !statusPesanan.isEmpty())
                 || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-            // Call a new method in the service that applies filters.
             pesananList = pesananService.findWithFilters(searchInput, statusPesanan, tanggalPemesanan);
         } else {
             pesananList = pesananService.getAllPesanan();
@@ -68,47 +72,85 @@ public class PesananController {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        return "pesanan/list"; // HTML template for listing pesanans
+        return "pesanan/list";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        List<Product> productList = productService.getAllProduct(); 
+        List<Product> productList = productService.getAllProduct();
         List<Klien> klienList = klienService.getAllKlien();
+        List<User> userList = userServiceImpl.getAllUsers();
         model.addAttribute("pesanan", new Pesanan());
         model.addAttribute("productList", productList);
         model.addAttribute("klienList", klienList);
+        model.addAttribute("userList", userList);
 
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
 
+    // @PostMapping("/create")
+    // public String createPesanan(@ModelAttribute Pesanan pesanan,
+    // RedirectAttributes redirectAttributes) {
+    // Product product = pesanan.getProduct();
+    // Klien klien = pesanan.getKlien();
+    // User user = pesanan.getUser();
+    // int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
+    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
+    // 0) {
+    // int stokSaatIni = product.getStok();
+    // if (stokSaatIni >= jumlahBarangPesanan) {
+    // product.setStok(stokSaatIni - jumlahBarangPesanan);
+    // productService.updateProduct(product); // Update stok di database
+    // } else {
+    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
+    // mencukupi");
+    // return "redirect:/pesanan/create";
+    // }
+    // }
+    // pesananService.createPesanan(pesanan);
+    // return "redirect:/pesanan/list";
+    // }
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();
         Klien klien = pesanan.getKlien();
+        User user = pesanan.getUser();
         int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-        if (klien != null && product != null && jumlahBarangPesanan > 0) {
+
+        // Pastikan semua nilai yang diperlukan telah diisi dan valid
+        if (user != null && klien != null && product != null && jumlahBarangPesanan > 0) {
             int stokSaatIni = product.getStok();
+
+            // Pastikan stok produk mencukupi
             if (stokSaatIni >= jumlahBarangPesanan) {
                 product.setStok(stokSaatIni - jumlahBarangPesanan);
                 productService.updateProduct(product); // Update stok di database
+
+                // Simpan pesanan ke dalam database
+                pesananService.createPesanan(pesanan);
+
+                return "redirect:/pesanan/list";
             } else {
                 redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak mencukupi");
-                return "redirect:/pesanan/create";
             }
+        } else {
+            redirectAttributes.addFlashAttribute("warningMessage", "Harap lengkapi semua data pesanan");
         }
-        pesananService.createPesanan(pesanan);
-        return "redirect:/pesanan/list";
+
+        return "redirect:/pesanan/create";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        List<Product> productList = productService.getAllProduct(); 
+        List<Product> productList = productService.getAllProduct();
         List<Klien> klienList = klienService.getAllKlien();
+        List<User> userList = userServiceImpl.getAllUsers();
+
+        model.addAttribute("userList", userList);
         model.addAttribute("klienList", klienList);
         model.addAttribute("productList", productList);
         Pesanan pesanan = pesananService.getPesananById(id)
@@ -124,12 +166,13 @@ public class PesananController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         Product product = updatedPesanan.getProduct();
         Klien klien = updatedPesanan.getKlien();
+        User user = updatedPesanan.getUser();
         int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
         int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
         int selisihJumlahPesanan = jumlahBarangPesananSebelumnya - jumlahBarangPesanan;
         int hasilAkhir = product.getStok() + selisihJumlahPesanan;
         if (hasilAkhir >= 0) {
-            if (klien != null && product != null && jumlahBarangPesanan > 0) {
+            if (user != null && klien != null && product != null && jumlahBarangPesanan > 0) {
                 product.setStok(product.getStok() + selisihJumlahPesanan);
                 productService.updateProduct(product);
             } else {
