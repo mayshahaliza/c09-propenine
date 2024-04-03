@@ -12,20 +12,22 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.propenine.siku.modelstok.Product;
+import com.propenine.siku.model.Klien;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "\"pesanan\"")
+@Table(name = "pesanan")
 public class Pesanan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "Nama client harus diisi")
-    @Column(name="nama_client", nullable = false)
-    private String namaClient;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_klien", referencedColumnName = "id")
+    private Klien klien;
 
     @NotBlank(message = "Nama agent harus diisi")
     @Column(name="nama_agent", nullable = false)

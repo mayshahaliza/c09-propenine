@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
+import com.propenine.siku.service.klien.KlienService;
 import com.propenine.siku.servicestok.ProductService;
 
 @Controller
@@ -26,14 +28,16 @@ public class PesananController {
 
     private final ProductService productService;
     private final PesananService pesananService;
+    private final KlienService klienService;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    public PesananController(PesananService pesananService, ProductService productService) {
+    public PesananController(PesananService pesananService, ProductService productService, KlienService klienService) {
         this.pesananService = pesananService;
         this.productService = productService;
+        this.klienService = klienService;
     }
 
     @GetMapping("/")
@@ -41,28 +45,6 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
-    // @GetMapping("/list")
-    // public String listAllPesanan(
-    // @RequestParam(name = "searchInput", required = false) String searchInput,
-    // Model model) {
-
-    // List<Pesanan> pesananList;
-
-    // if (searchInput != null && !searchInput.isEmpty()) {
-    // // Call a new method in the service that searches by client name or agent
-    // name.
-    // pesananList = pesananService.searchPesananByClientOrAgent(searchInput);
-    // } else {
-    // pesananList = pesananService.getAllPesanan();
-    // }
-
-    // model.addAttribute("pesananList", pesananList);
-
-    // User loggedInUser = authenticationService.getLoggedInUser();
-    // model.addAttribute("user", loggedInUser);
-
-    // return "pesanan/list"; // HTML template for listing pesanans
-    // }
 
     @GetMapping("/list")
     public String listAllPesanan(
@@ -93,17 +75,21 @@ public class PesananController {
     public String showCreateForm(Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
+        List<Product> productList = productService.getAllProduct(); 
+        List<Klien> klienList = klienService.getAllKlien();
         model.addAttribute("pesanan", new Pesanan());
         model.addAttribute("productList", productList);
+        model.addAttribute("klienList", klienList);
+
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
 
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();
+        Klien klien = pesanan.getKlien();
         int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-        if (product != null && jumlahBarangPesanan > 0) {
+        if (klien != null && product != null && jumlahBarangPesanan > 0) {
             int stokSaatIni = product.getStok();
             if (stokSaatIni >= jumlahBarangPesanan) {
                 product.setStok(stokSaatIni - jumlahBarangPesanan);
@@ -121,7 +107,9 @@ public class PesananController {
     public String showUpdateForm(@PathVariable Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        List<Product> productList = productService.getAllProduct(); // Assuming you have a service for Stok
+        List<Product> productList = productService.getAllProduct(); 
+        List<Klien> klienList = klienService.getAllKlien();
+        model.addAttribute("klienList", klienList);
         model.addAttribute("productList", productList);
         Pesanan pesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
@@ -135,12 +123,13 @@ public class PesananController {
         Pesanan existingPesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         Product product = updatedPesanan.getProduct();
+        Klien klien = updatedPesanan.getKlien();
         int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
         int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
         int selisihJumlahPesanan = jumlahBarangPesananSebelumnya - jumlahBarangPesanan;
         int hasilAkhir = product.getStok() + selisihJumlahPesanan;
         if (hasilAkhir >= 0) {
-            if (product != null && jumlahBarangPesanan > 0) {
+            if (klien != null && product != null && jumlahBarangPesanan > 0) {
                 product.setStok(product.getStok() + selisihJumlahPesanan);
                 productService.updateProduct(product);
             } else {

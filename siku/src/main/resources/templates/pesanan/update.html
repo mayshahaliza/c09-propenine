@@ -25,9 +25,13 @@
         </div>
         <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}" method="post">
             <div class="form-group">
-                <label for="namaClient">Nama Client</label>
-                <input type="text" class="form-control" id="namaClient" th:field="*{namaClient}"
-                    placeholder="Enter client name" required>
+                <label for="product">Product</label>
+                <select class="form-control" id="klien" th:field="*{klien}" required>
+                    <option value="">-- Select Klien --</option>
+                    <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                        th:selected="${klien.id == pesanan.klien.id}"
+                        th:text="${klien.namaKlien}"></option>
+                </select>
             </div>
 
             <div class="form-group">

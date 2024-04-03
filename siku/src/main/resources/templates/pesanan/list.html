@@ -54,7 +54,7 @@
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Nama Client</th>
+                    <th>Nama Klien</th>
                     <th>Nama Agent</th>
                     <th>Status Pesanan</th>
                     <th>Jumlah Pesanan</th>
@@ -66,7 +66,7 @@
             <tbody>
                 <tr th:each="pesanan : ${pesananList}">
                     <td th:text="${pesanan.id}">ID</td>
-                    <td th:text="${pesanan.namaClient}">Nama Client</td>
+                    <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td> <!-- Perubahan di sini -->
                     <td th:text="${pesanan.namaAgent}">Nama Agent</td>
                     <td>
                         <span th:text="${pesanan.statusPesanan}"
