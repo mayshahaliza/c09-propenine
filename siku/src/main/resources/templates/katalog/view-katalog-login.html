@@ -114,17 +114,14 @@
                     </div>
                     <!-- Description Column -->
                     <div class="col-md-6">
-                        <h4 class="card-title" th:text="${katalog.namaKatalog}"></h4>
-                        <p class="card-text" th:text="'ID: ' + ${katalog.id}"></p>
+                        <h4 class="card-title" th:text="${katalog.namaProduct}"></h4>
+                        <p class="card-text" th:text="'ID: ' + ${katalog.idProduct}"></p>
                         <p class="card-text" th:text="'Deskripsi: ' + ${katalog.deskripsi}"></p>            
                        <p class="card-text" th:text="'Harga: Rp ' + ${katalog.harga}"></p>
                         <p class="card-text" th:text="'kategori: ' + ${katalog.kategori.namaKategori}"></p>
                     </div>
                     <div class="text-center m-3">
                         <a type="button" class="btn btn-back btn-md" href="/katalog">Semua Katalog</a>
-                        <!-- Add update button -->
-                        <a type="button" class="btn btn-update btn-md"
-                            th:href="@{/katalog/update/{id}(id=${katalog.id})}">Update</a>
                     </div>
                 </div>
             </div>

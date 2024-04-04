@@ -16,21 +16,20 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'org.postgresql:postgresql'
-	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.3'
-	implementation 'org.springframework.security:spring-security-crypto'
-	compileOnly("org.projectlombok:lombok:1.18.26")
-	annotationProcessor('org.projectlombok:lombok:1.18.26')
-	implementation 'org.mapstruct:mapstruct:1.5.0.Final' // Use the latest version available
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.0.Final'
-	implementation 'com.github.javafaker:javafaker:1.0.2'// Use the same version as the main mapstruct dependency
-	implementation 'org.yaml:snakeyaml:1.28'
-	implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.3'
+    implementation 'org.springframework.security:spring-security-crypto'
+    compileOnly("org.projectlombok:lombok:1.18.26")
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    implementation 'org.mapstruct:mapstruct:1.5.0.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.0.Final'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'org.yaml:snakeyaml:1.28'
 }
 
 tasks.named('test') {

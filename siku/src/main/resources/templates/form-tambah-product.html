@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-  <title>Form Add Stok</title>
+  <title>Form Add Product</title>
 </head>
 
 <body>
@@ -25,13 +25,13 @@
         <div class="justify-content-center">
           <h2>New Product</h2>
           <br>
-          <form th:action="@{/stok/tambah}" th:object="${stokDTO}" method="POST">
-            Catalog Name:
-            <input class="form-control" type="text" th:field="*{namaKatalog}" required/>
+          <form th:action="@{/product/tambah}" th:object="${productDTO}" method="POST">
+            Product Name:
+            <input class="form-control" type="text" th:field="*{namaProduct}" required/>
             <br><br>
 
             <div class="form-group">
-              <label for="kategori-katalog" class="form-label">Kategori Katalog:</label>
+              <label for="kategori-katalog" class="form-label">Product Category:</label>
               <select th:field="*{kategori}" class="form-control" id="kategori-katalog">
                   <option value="">Pilih kategori</option>
                   <option th:each="kategori : ${allKategori}" th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
@@ -39,6 +39,14 @@
               <small id="kategori-katalog-error" class="text-danger"></small>
           </div>
           <br><br>
+
+            Description:
+            <input class="form-control" type="text" th:field="*{deskripsi}" required/>
+            <br><br>
+
+            Product Image:
+            <input type="file" th:field="*{image}" class="form-control" required/>
+            <br><br>
 
             Stock:
             <input class="form-control" type="number" th:field="*{stok}" min="0" step="1" required/>

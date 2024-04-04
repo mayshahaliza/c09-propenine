@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.katalog.Katalog;
-import com.propenine.siku.modelstok.Stok;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.repository.KlienDb;
 
 @Service
