@@ -1,5 +1,7 @@
 package com.propenine.siku.controller.katalog;
 
+import com.propenine.siku.dtostok.ProductMapper;
+import com.propenine.siku.servicestok.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +46,13 @@ public class KatalogController {
     KategoriMapper kategoriMapper;
 
     @Autowired
-    private AuthenticationService authenticationService;    
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     //CREATE KATALOG
     @GetMapping("katalog/tambah")
@@ -109,34 +117,68 @@ public class KatalogController {
 
 
     //VIEW DETAIL KATALOG NOT LOGIN
+//    @GetMapping("/katalog/{id}")
+//    public String detailKatalogNotLogin(@PathVariable("id") UUID id, Model model) {
+//        var katalog = katalogService.getKatalogById(id);
+//
+//        model.addAttribute("katalog", katalog);
+//        return "katalog/view-katalog-notlogin";
+//    }
+
+    //VIEW DETAIL KATALOG NOT LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/{id}")
     public String detailKatalogNotLogin(@PathVariable("id") UUID id, Model model) {
-        var katalog = katalogService.getKatalogById(id);
+        var katalog = productService.getProductById(id);
 
         model.addAttribute("katalog", katalog);
         return "katalog/view-katalog-notlogin";
     }
 
+
     //VIEW DETAIL KATALOG  LOGIN
+//    @GetMapping("/katalog/login/{id}")
+//    public String detailKatalogLogin(@PathVariable("id") UUID id, Model model) {
+//        var katalog = katalogService.getKatalogById(id);
+//        User loggedInUser = authenticationService.getLoggedInUser();
+//
+//        model.addAttribute("user", loggedInUser);
+//        model.addAttribute("katalog", katalog);
+//        return "katalog/view-katalog-login";
+//    }
+
+    //VIEW DETAIL KATALOG  LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/login/{id}")
     public String detailKatalogLogin(@PathVariable("id") UUID id, Model model) {
-        var katalog = katalogService.getKatalogById(id);
+        var katalog = productService.getProductById(id);
         User loggedInUser = authenticationService.getLoggedInUser();
-        
+
         model.addAttribute("user", loggedInUser);
         model.addAttribute("katalog", katalog);
         return "katalog/view-katalog-login";
     }
 
     //VIEWALL KATALOG 
+//    @GetMapping("katalog")
+//    public String listKatalog(Model model) {
+//        //Mendapatkan semua buku
+//        List<Katalog> listKatalog = katalogService.getAllkatalog();
+//        //Add variabel semua bukuModel ke "ListBuku" untuk dirender pada thymeleaf
+//        User loggedInUser = authenticationService.getLoggedInUser();
+//        model.addAttribute("user", loggedInUser);
+//        model.addAttribute("listKatalog", listKatalog);
+//        return "katalog/viewall-katalog";
+//    }
+
+    //VIEWALL KATALOG CONNECT TO PRODUCT
     @GetMapping("katalog")
     public String listKatalog(Model model) {
-        //Mendapatkan semua buku
-        List<Katalog> listKatalog = katalogService.getAllkatalog();
-        //Add variabel semua bukuModel ke "ListBuku" untuk dirender pada thymeleaf
+        var listProduct = productService.getAllProduct();
+        model.addAttribute("listKatalog", listProduct);
+
+        // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        model.addAttribute("listKatalog", listKatalog);
+
         return "katalog/viewall-katalog";
     }
 
