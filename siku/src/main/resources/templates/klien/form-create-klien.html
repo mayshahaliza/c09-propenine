@@ -51,13 +51,18 @@
                 <small id="nama-klien-error" class="text-danger"></small>
             </div>
             <div class="form-group">
+                <label for="rumah-sakit" class="form-label">Rumah Sakit:</label>
+                <input type="text" class="form-control" id="rumah-sakit" th:field="*{rumahSakit}"/>
+                <small id="rumah-sakit-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
                 <label for="email-klien" class="form-label">Email Klien:</label>
                 <input type="text" class="form-control" id="email-klien" th:field="*{emailKlien}"/>
                 <small id="email-klien-error" class="text-danger"></small>
             </div>
             <div class="form-group">
                 <label for="nohp-klien" class="form-label">Nomor Handphone Klien:</label>
-                <input type="text" class="form-control" id="nohp-klien" th:field="*{noHpKlien}"/>
+                <input type="number" class="form-control" id="nohp-klien" th:field="*{noHpKlien}"/>
                 <small id="nohp-klien-error" class="text-danger"></small>
             </div>
             <div class="form-group">
@@ -75,17 +80,25 @@
 <script>
     function validateForm() {
         var namaKlien = document.getElementById("nama-klien").value;
+        var namaKlien = document.getElementById("rumah-sakit").value;
         var emailKlien = document.getElementById("email-klien").value;
         var noHpKlien = document.getElementById("nohp-klien").value;
         var alamatKlien = document.getElementById("alamat-klien").value;
 
         var namaKlienError = document.getElementById("nama-klien-error");
+        var namaKlienError = document.getElementById("rumah-sakit-error");
         var emailKlienError = document.getElementById("email-klien-error");
         var noHpKlienError = document.getElementById("nohp-klien-error");
         var alamatKlienError = document.getElementById("alamat-klien-error");
 
         if (namaKlien.trim() === "") {
             namaKlienError.innerText = "Nama Klien tidak boleh kosong";
+            return false;
+        } else {
+            namaKlienError.innerText = "";
+        }
+        if (rumahSakit.trim() === "") {
+            rumahSakitError.innerText = "Rumah sakit tidak boleh kosong";
             return false;
         } else {
             namaKlienError.innerText = "";
