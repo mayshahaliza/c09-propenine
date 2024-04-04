@@ -1,6 +1,8 @@
 package com.propenine.siku.repository;
 
 import com.propenine.siku.model.Pesanan;
+import com.propenine.siku.model.RekapPenjualan;
+import com.propenine.siku.modelstok.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,4 +43,19 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
     // List<Pesanan> findByNamaClient(String nama_client);
     // List<Pesanan> findByNamaAgent(String nama_agent);
     List<Pesanan> findByStatusPesanan(String status_pesanan);
+
+    @Query("SELECT NEW com.propenine.siku.model.RekapPenjualan(p.product, SUM(p.jumlahBarangPesanan)) " +
+            "FROM Pesanan p " +
+            "GROUP BY p.product")
+    List<RekapPenjualan> getAllOrderSummaries();
+
+    @Query("SELECT NEW com.propenine.siku.model.RekapPenjualan(p.product, CAST(SUM(p.jumlahBarangPesanan) AS java.lang.Long)) " +
+            "FROM Pesanan p " +
+            "WHERE EXTRACT(YEAR FROM p.tanggalPemesanan) = :tahun " +
+            "AND EXTRACT(MONTH FROM p.tanggalPemesanan) = :bulan " +
+            "AND p.statusPesanan = 'Complete' " +
+            "GROUP BY p.product")
+    List<RekapPenjualan> getOrderSummaryByMonthAndYear(@Param("bulan") int bulan, @Param("tahun") int tahun);
+
+
 }

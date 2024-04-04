@@ -1,6 +1,7 @@
 package com.propenine.siku.service;
 
 import com.propenine.siku.model.Pesanan;
+import com.propenine.siku.model.RekapPenjualan;
 import com.propenine.siku.repository.PesananRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,13 @@ public class PesananService {
         return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
     }
 
-    
+    public List<RekapPenjualan> getAllOrderSummaries() {
+        return pesananRepository.getAllOrderSummaries();
+    }
+
+    public List<RekapPenjualan> getOrderSummaryByMonthAndYear(int bulan, int tahun) {
+        return pesananRepository.getOrderSummaryByMonthAndYear(bulan, tahun);
+    }
 
 
     

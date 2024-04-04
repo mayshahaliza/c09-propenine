@@ -2,6 +2,7 @@ package com.propenine.siku.controller;
 
 import java.util.List;
 
+import com.propenine.siku.model.RekapPenjualan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,6 @@ import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
-import com.propenine.siku.service.UserService;
 import com.propenine.siku.service.UserServiceImpl;
 import com.propenine.siku.service.klien.KlienService;
 import com.propenine.siku.servicestok.ProductService;
@@ -198,5 +198,29 @@ public class PesananController {
         }
         return "redirect:/pesanan/list";
     }
+
+    @GetMapping("/rekap-penjualan")
+    public String getOrderSummary(@RequestParam(required = false) Integer bulan,
+                                  @RequestParam(required = false) Integer tahun,
+                                  Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        List<RekapPenjualan> orderSummary;
+        if (bulan != null && tahun != null) {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        } else {
+            orderSummary = pesananService.getAllOrderSummaries();
+        }
+
+        if (orderSummary.isEmpty()) {
+            model.addAttribute("message", "Tidak ada pesanan.");
+            return "laporan-penjualan";
+        }
+
+        model.addAttribute("orderSummary", orderSummary);
+        return "laporan-penjualan";
+    }
+
 
 }

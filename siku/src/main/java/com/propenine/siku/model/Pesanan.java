@@ -38,7 +38,6 @@ public class Pesanan {
     @Column(name="status_pesanan", nullable = false)
     private String statusPesanan;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product", referencedColumnName = "idProduct")
     private Product product;

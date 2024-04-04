@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+  <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+  <title>Laporan Penjualan</title>
+</head>
+
+<body>
+<div th:switch="${user.role}">
+  <div th:case="'admin'">
+    <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+  </div>
+  <div th:case="'executive'">
+    <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+  </div>
+</div>
+
+<div class="container mt-3">
+  <div class="text-center">
+    <h1>Daftar Penjualan</h1>
+  </div>
+
+  <!-- Form for filtering by month and year -->
+  <form action="/rekap-penjualan" method="get">
+    <label for="bulan">Bulan:</label>
+    <select name="bulan" id="bulan">
+      <option value="">Pilih Bulan</option>
+      <option value="1">Januari</option>
+      <option value="2">Februari</option>
+      <!-- Add more options for other months -->
+    </select>
+    <label for="tahun">Tahun:</label>
+    <input type="text" name="tahun" id="tahun">
+    <button type="submit">Filter</button>
+  </form>
+
+  <th:block th:if="${not #lists.isEmpty(orderSummary)}">
+  <table class="table table-bordered table-hover mt-3">
+    <thead class="thead-dark">
+    <tr>
+      <th>No</th>
+      <th>ID</th>
+      <th>Nama Produk</th>
+      <th>Jumlah Dipesan</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="penjualan, iterStat: ${orderSummary}">
+      <td th:text="${iterStat.index + 1}"></td>
+      <td th:text="${penjualan.product.idProduct}">ID</td>
+      <td th:text="${penjualan.product.namaProduct}">Nama produk</td>
+      <td th:text="${penjualan.totalQuantity}">Jumlah Barang Dipesan</td>
+    </tr>
+    </tbody>
+  </table>
+  </th:block>
+</div>
+
+<th:block th:if="${#lists.isEmpty(orderSummary)}">
+  <p>Tidak ada pesanan.</p>
+</th:block>
+
+<div th:unless="${user.role == 'executive' || user.role =='admin'}">
+  <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+        </script>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
