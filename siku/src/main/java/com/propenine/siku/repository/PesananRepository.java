@@ -46,6 +46,7 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
 
     @Query("SELECT NEW com.propenine.siku.model.RekapPenjualan(p.product, SUM(p.jumlahBarangPesanan)) " +
             "FROM Pesanan p " +
+            "WHERE p.statusPesanan = 'Complete' " +
             "GROUP BY p.product")
     List<RekapPenjualan> getAllOrderSummaries();
 

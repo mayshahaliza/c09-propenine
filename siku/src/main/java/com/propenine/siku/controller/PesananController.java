@@ -1,17 +1,13 @@
 package com.propenine.siku.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.propenine.siku.model.RekapPenjualan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.propenine.siku.model.Klien;
@@ -221,6 +217,48 @@ public class PesananController {
         model.addAttribute("orderSummary", orderSummary);
         return "laporan-penjualan";
     }
+
+    @GetMapping("/rekap-penjualan-chart")
+    public String getOrderSummaryChart(@RequestParam(required = false) Integer bulan,
+                                       @RequestParam(required = false) Integer tahun,
+                                       Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        // Fetch order summary data based on the provided month and year or use the current month and year by default
+        List<RekapPenjualan> orderSummary;
+        if (bulan != null && tahun != null) {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        } else {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(currentMonth, currentYear);
+        }
+
+        // Pass the order summary data and current month/year to the Thymeleaf template
+        model.addAttribute("orderSummary", orderSummary);
+        model.addAttribute("currentMonth", currentMonth);
+        model.addAttribute("currentYear", currentYear);
+
+        // Return the name of the Thymeleaf template to render
+        return "rekap-penjualan-chart";
+    }
+
+    @GetMapping("/rekap-penjualan-chart-data")
+    @ResponseBody
+    public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Fetch order summary data for the specified month and year
+        List<RekapPenjualan> orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        return orderSummary;
+    }
+
+
 
 
 }
