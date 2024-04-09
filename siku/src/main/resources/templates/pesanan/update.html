@@ -114,17 +114,17 @@
             </div>
 
             <div class="form-group" th:each="product : ${productList}">
-                <label for="tanggalPemesanan">Tanggal Pemesanan</label>
-                <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan" th:field="*{tanggalPemesanan}"
-                     placeholder="Tanggal Pemesanan" required>
+                <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi Perubahan</b></h6>
+                <label for="tanggalPemesanan">Tanggal Pemesanan </label>
+                <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan"
+                       th:field="*{tanggalPemesanan}" th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
             </div>
             <div class="form-group" th:each="product : ${productList}">
                 <label for="tanggalSelesai">Tanggal Selesai</label>
-                <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai" th:field="*{tanggalSelesai}"
-                    placeholder="Tanggal Selesai" required>
+                <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
+                       th:field="*{tanggalSelesai}" th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
             </div>
-
-
+            
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>

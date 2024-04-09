@@ -47,6 +47,9 @@ public class PesananService {
                 .map(pesanan -> {
                     pesanan.setStatusPesanan(updatedPesanan.getStatusPesanan());
                     pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
+                    pesanan.setKlien(updatedPesanan.getKlien());
+                    pesanan.setUser(updatedPesanan.getUser());
+                    pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
                     pesanan.setTanggalPemesanan(updatedPesanan.getTanggalPemesanan());
                     pesanan.setTanggalSelesai(updatedPesanan.getTanggalSelesai());
                     return pesananRepository.save(pesanan);
@@ -57,9 +60,7 @@ public class PesananService {
                 });
     }
 
-    // public void deletePesanan(Long id) {
-    // pesananRepository.deleteById(id);
-    // }
+
     public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
         LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
         LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement

@@ -46,7 +46,6 @@ public class Pesanan {
     @Column(name = "jumlah_barang_pesanan")
     private Integer jumlahBarangPesanan;
 
-    @NotNull(message = "Tanggal pemesanan harus diisi")
     @Column(name = "tanggal_pemesanan", nullable = false)
     private LocalDate tanggalPemesanan;
 

@@ -52,7 +52,6 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
- 
     @GetMapping("/list")
     public String listAllPesanan(
             @RequestParam(name = "searchInput", required = false) String searchInput,
@@ -61,7 +60,6 @@ public class PesananController {
             Model model) {
 
         List<Pesanan> pesananList;
-
 
         if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
                 && !statusPesanan.isEmpty())
@@ -110,7 +108,6 @@ public class PesananController {
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
 
-
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();
@@ -155,9 +152,45 @@ public class PesananController {
         Pesanan pesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         model.addAttribute("pesanan", pesanan);
+        model.addAttribute("tanggalPemesanan", pesanan.getTanggalPemesanan().toString());
+        model.addAttribute("tanggalSelesai", pesanan.getTanggalSelesai().toString());
+
         return "pesanan/update"; // HTML template for updating an existing pesanana
     }
 
+    // @PostMapping("/update/{id}")
+    // public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan
+    // updatedPesanan,
+    // RedirectAttributes redirectAttributes) {
+    // Pesanan existingPesanan = pesananService.getPesananById(id)
+    // .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
+    // Product product = updatedPesanan.getProduct();
+    // Klien klien = updatedPesanan.getKlien();
+    // User user = updatedPesanan.getUser();
+    // int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
+    // int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
+    // int selisihJumlahPesanan = jumlahBarangPesananSebelumnya -
+    // jumlahBarangPesanan;
+    // int hasilAkhir = product.getStok() + selisihJumlahPesanan;
+    // if (hasilAkhir >= 0) {
+    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
+    // 0) {
+    // product.setStok(product.getStok() + selisihJumlahPesanan);
+    // productService.updateProduct(product);
+    // } else {
+    // redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak
+    // boleh 0");
+    // return "redirect:/pesanan/update/" + id;
+    // }
+    // } else {
+    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
+    // mencukupi");
+    // return "redirect:/pesanan/update/" + id;
+    // }
+
+    // pesananService.updatePesanan(id, updatedPesanan);
+    // return "redirect:/pesanan/list";
+    // }
     @PostMapping("/update/{id}")
     public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan,
             RedirectAttributes redirectAttributes) {
@@ -170,6 +203,12 @@ public class PesananController {
         int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
         int selisihJumlahPesanan = jumlahBarangPesananSebelumnya - jumlahBarangPesanan;
         int hasilAkhir = product.getStok() + selisihJumlahPesanan;
+
+        if (updatedPesanan.getTanggalPemesanan() == null || updatedPesanan.getTanggalSelesai() == null) {
+            updatedPesanan.setTanggalPemesanan(existingPesanan.getTanggalPemesanan());
+            updatedPesanan.setTanggalSelesai(existingPesanan.getTanggalSelesai());
+        }
+
         if (hasilAkhir >= 0) {
             if (user != null && klien != null && product != null && jumlahBarangPesanan > 0) {
                 product.setStok(product.getStok() + selisihJumlahPesanan);
