@@ -10,6 +10,5 @@ public interface UserService {
 
     public boolean existsByEmail(String email);
 
-
     public void editUserProfile(User user);
 }

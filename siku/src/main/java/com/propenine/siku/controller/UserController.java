@@ -161,157 +161,84 @@ public class UserController {
            return "redirect:/login";
        }
 
-
        model.addAttribute("user", loggedInUser);
        return "edit-profile";
    }
 
-
-   // @PostMapping("/success-edit-profile")
-   // public String updatedProfile(@Valid @ModelAttribute("user") User updatedUser,
-   //                         BindingResult bindingResult,
-   //                         Model model) {
-   // User loggedInUser = authenticationService.getLoggedInUser();
-   // if (loggedInUser == null) {
-   //     return "redirect:/login";
-   // }
-
-
-   // if (bindingResult.hasErrors()) {
-   //     return "edit-profile";
-   // }
-
-
-   // loggedInUser.setUsername(updatedUser.getUsername());
-   // loggedInUser.setEmail(updatedUser.getEmail());
-   // loggedInUser.setNomor_hp(updatedUser.getNomor_hp());
-
-
-   // userService.editUserProfile(loggedInUser);
-
-
-   // return "redirect:/view-profile";
-   // }
-
-
-@PostMapping("/success-edit-profile")
-public String updatedProfile(@Valid @ModelAttribute("user") User updatedUser,
+    @PostMapping("/success-edit-profile")
+    public String updatedProfile(@Valid @ModelAttribute("user") User updatedUser,
                             BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes) {
-   User loggedInUser = authenticationService.getLoggedInUser();
-   if (loggedInUser == null) {
-       return "redirect:/login";
-   }
+                            Model model) {
+    User loggedInUser = authenticationService.getLoggedInUser();
+    if (loggedInUser == null) {
+        return "redirect:/login";
+    }
 
+    if (bindingResult.hasErrors()) {
+        return "edit-profile";
+    }
 
-   // Check if the username or email has changed
-   if (!loggedInUser.getUsername().equals(updatedUser.getUsername())) {
-       if (userService.existsByUsername(updatedUser.getUsername())) {
-           // Username already exists for another user, add error message and redirect
-           bindingResult.rejectValue("username", "error.user", "Username sudah digunakan oleh pengguna lain");
-           redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-           return "redirect:/edit-profile";
-       }
-   }
+    loggedInUser.setUsername(updatedUser.getUsername());
+    loggedInUser.setEmail(updatedUser.getEmail());
+    loggedInUser.setNomor_hp(updatedUser.getNomor_hp());
 
+    userService.editUserProfile(loggedInUser);
 
-   if (!loggedInUser.getEmail().equals(updatedUser.getEmail())) {
-       if (userService.existsByEmail(updatedUser.getEmail())) {
-           // Email already exists for another user, add error message and redirect
-           bindingResult.rejectValue("email", "error.user", "Email sudah digunakan oleh pengguna lain");
-           redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-           return "redirect:/edit-profile";
-       }
-   }
-
-
-   // Perform other validations here...
-
-
-   // If there are validation errors, redirect back to the edit profile page with errors
-   if (bindingResult.hasErrors()) {
-       redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-       return "redirect:/edit-profile";
-   }
-
-
-   // Update user profile if all validations pass
-   // Copy data from updatedUser to loggedInUser
-   loggedInUser.setUsername(updatedUser.getUsername());
-   loggedInUser.setEmail(updatedUser.getEmail());
-   loggedInUser.setNomor_hp(updatedUser.getNomor_hp());
-
-
-   // Save changes to the user profile
-   userService.editUserProfile(loggedInUser);
-
-
-   // Add success flash attribute and redirect to view profile page
-   redirectAttributes.addFlashAttribute("success", true);
-   return "redirect:/view-profile";
-}
-
-
-   @GetMapping("/change-password")
-   public String showChangePasswordForm(Model model) {
-       User loggedInUser = authenticationService.getLoggedInUser();
-       if (loggedInUser == null) {
-           return "redirect:/login";
-       }
-       model.addAttribute("user", loggedInUser);
-       return "form-edit-password";
-   }
+    return "success-edit-profile";
+    }
 
 
 
-
-   @PostMapping("/success-change-password")
-   public String changePassword(@Valid @ModelAttribute("user") User loggedInUser,
-                               @RequestParam String currentPassword,
-                               @RequestParam String newPassword,
-                               @RequestParam String confirmPassword,
-                               Model model) {
-
-
-   User userFromDatabase = userRepository.findByUsername(loggedInUser.getUsername());
-
-
-       if (userFromDatabase == null) {
-           // Handle case when user is not found
-           model.addAttribute("error", "User not found.");
-           return "no-access";
-       }
+    @GetMapping("/change-password")
+    public String showChangePasswordForm(Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", loggedInUser);
+        return "form-edit-password";
+    }
 
 
-       // Retrieve the stored password from the user fetched from the database
-       String storedPassword = userFromDatabase.getPassword();
+    @PostMapping("/success-change-password")
+    public String changePassword(@Valid @ModelAttribute("user") User loggedInUser,
+                                @RequestParam String currentPassword,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                Model model) {
 
+    User userFromDatabase = userRepository.findByUsername(loggedInUser.getUsername());
 
-       if (!storedPassword.equals(currentPassword)) {
-           model.addAttribute("error", "Current password is incorrect.");
-           System.out.println("current: " + currentPassword);
-           System.out.println("stored: " + storedPassword);
-           return "form-edit-password";
-       }
+        if (userFromDatabase == null) {
+            // Handle case when user is not found
+            model.addAttribute("error", "User not found.");
+            return "no-access";
+        }
 
+        // Retrieve the stored password from the user fetched from the database
+        String storedPassword = userFromDatabase.getPassword();
 
-       if (!newPassword.equals(confirmPassword)) {
-           model.addAttribute("error", "New passwords do not match.");
-           return "form-edit-password";
-       }
+        if (!storedPassword.equals(currentPassword)) {
+            model.addAttribute("error", "Current password is incorrect.");
+            System.out.println("current: " + currentPassword);
+            System.out.println("stored: " + storedPassword);
+            return "form-edit-password";
+        }
 
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "New passwords do not match.");
+            return "form-edit-password";
+        }
 
-       loggedInUser.setPassword(newPassword);
+        loggedInUser.setPassword(newPassword);
 
+        userService.editUserProfile(loggedInUser);
 
-       userService.editUserProfile(loggedInUser);
+        System.out.println("success pass: " + (loggedInUser.getPassword()));
 
+        return "success-change-password";
+    }
 
-       System.out.println("success pass: " + (loggedInUser.getPassword()));
-
-
-       return "success-change-password";
-   }
 
 
 }

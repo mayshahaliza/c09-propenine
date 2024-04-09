@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <title>Edit Profile</title>
+    <style>
+        /* Your existing CSS styles */
+
+        /* Additional styling */
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:switch="${user.role}">
+    <div th:case="'hr'">
+        <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
+    </div>
+    <div th:case="'executive'">
+        <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+    </div>
+    <div th:case="'admin'">
+        <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+    </div>
+    <div th:case="'operational'">
+        <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+    </div>
+</div>
+<div class="container">
+    <div class="text-center">
+        <h2>Edit Settings</h2>
+    </div>
+    <div th:if="${errors != null}" class="alert alert-danger">
+        <ul>
+            <li th:each="error : ${errors}" th:text="${error.defaultMessage}"></li>
+        </ul>
+    </div>
+    <div th:if="${success}" class="alert alert-success">
+        Profile updated successfully.
+    </div>
+    <div class="row justify-content-center">
+        <div class="card" style="width: 30rem;">
+            <div class="card-body">
+                <form id="editKaryawanForm" th:action="@{/karyawan/edit/{id}(id=${user.id})}" th:object="${user}" method="POST">
+                    <input type="hidden" th:field="*{id}" />
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" th:value="${user.nama_depan}"
+                               readonly disabled>
+                        <input type="hidden" th:field="*{nama_depan}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" th:value="${user.nama_belakang}"
+                               readonly disabled>
+                        <input type="hidden" th:field="*{nama_belakang}" />
+                    </div>
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" th:value="${user.username}"
+                               readonly disabled>
+                        <input type="hidden" th:field="*{username}" />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" th:value="${user.email}"
+                               readonly disabled>
+                        <input type="hidden" th:field="*{email}" />
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phoneNumber" th:value="${user.nomor_hp}"
+                               readonly disabled>
+                        <input type="hidden" th:field="*{nomor_hp}" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <input type="text" class="form-control" id="role" th:value="${user.role}" readonly
+                               disabled>
+                        <input type="hidden" th:field="${user.role}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="alamat" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="alamat" th:field="*{alamat}">
+                        <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{alamat}"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+                        <input type="text" class="form-control" id="tanggalLahir" th:value="${user.tanggal_lahir}" readonly disabled>
+                        <input type="hidden" th:field="*{tanggal_lahir}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="tempatLahir" class="form-label">Tempat Lahir</label>
+                        <input type="text" class="form-control" id="tempatLahir" th:value="${user.tempat_lahir}" readonly disabled>
+                        <input type="hidden" th:field="*{tempat_lahir}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="formStatusKaryawan" class="form-label">Status Karyawan</label>
+                        <select class="form-select" id="formStatusKaryawan" name="statusKaryawan">
+                            <option value="0" th:selected="${user.status_karyawan == false}">Tidak Aktif</option>
+                            <option value="1" th:selected="${user.status_karyawan == true}">Aktif</option>
+                        </select>
+
+                        <!-- <select class="form-select" id="formStatusKaryawan" name="statusKaryawan" th:field="*{statusKaryawan}">
+                            <option value="0" th:selected="${!editKaryawanReqDTO.statusKaryawan}">Tidak Aktif</option>
+                            <option value="1" th:selected="${editKaryawanReqDTO.statusKaryawan}">Aktif</option>
+                        </select> -->
+                        <!-- <select class="form-select" id="formStatusKaryawan" name="statusKaryawan" th:field="*{statusKaryawan}">
+                            <option value="false" th:selected="${!editKaryawanReqDTO.statusKaryawan}">Tidak Aktif</option>
+                            <option value="true" th:selected="${editKaryawanReqDTO.statusKaryawan}">Aktif</option>
+                        </select> -->
+                        
+                        
+                    </div>
+                                   
+                    <input type="hidden" th:field="*{password}" />
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <a href="/" class="btn btn-danger">Delete</a>
+                        <a href="/edit-profile" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+
+</html>
+
