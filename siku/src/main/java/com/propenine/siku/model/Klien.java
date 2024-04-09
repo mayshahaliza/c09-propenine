@@ -34,6 +34,10 @@ public class Klien {
     private String namaKlien;
 
     @NotNull
+    @Column(name = "rumah_sakit")
+    private String rumahSakit;
+
+    @NotNull
     @Column(name = "email_klien")
     private String emailKlien;
 

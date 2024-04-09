@@ -21,6 +21,7 @@ import lombok.*;
 public class CreateKlienRequestDTO {
     private UUID id;
     private String namaKlien;
+    private String rumahSakit;
     private String emailKlien;
     private String noHpKlien;
     private String alamatKlien;

@@ -1,6 +1,7 @@
 package com.propenine.siku.controller;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 import com.propenine.siku.model.RekapPenjualan;
@@ -18,6 +19,7 @@ import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
+import com.propenine.siku.service.UserService;
 import com.propenine.siku.service.UserServiceImpl;
 import com.propenine.siku.service.klien.KlienService;
 import com.propenine.siku.servicestok.ProductService;
@@ -58,12 +60,29 @@ public class PesananController {
 
         List<Pesanan> pesananList;
 
-        if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null && !statusPesanan.isEmpty())
+        if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
+                && !statusPesanan.isEmpty())
                 || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-            pesananList = pesananService.findWithFilters(searchInput, statusPesanan, tanggalPemesanan);
+            pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
+                    tanggalPemesanan);
         } else {
             pesananList = pesananService.getAllPesanan();
         }
+
+        // Menggunakan Comparator untuk mengurutkan berdasarkan status pesanan
+        pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
+                Comparator.comparing(status -> {
+                    switch (status) {
+                        case "Ongoing":
+                            return 0;
+                        case "Complete":
+                            return 1;
+                        case "Canceled":
+                            return 2;
+                        default:
+                            return 3; // default untuk kasus lainnya
+                    }
+                })));
 
         model.addAttribute("pesananList", pesananList);
 
@@ -88,28 +107,6 @@ public class PesananController {
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
 
-    // @PostMapping("/create")
-    // public String createPesanan(@ModelAttribute Pesanan pesanan,
-    // RedirectAttributes redirectAttributes) {
-    // Product product = pesanan.getProduct();
-    // Klien klien = pesanan.getKlien();
-    // User user = pesanan.getUser();
-    // int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
-    // 0) {
-    // int stokSaatIni = product.getStok();
-    // if (stokSaatIni >= jumlahBarangPesanan) {
-    // product.setStok(stokSaatIni - jumlahBarangPesanan);
-    // productService.updateProduct(product); // Update stok di database
-    // } else {
-    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
-    // mencukupi");
-    // return "redirect:/pesanan/create";
-    // }
-    // }
-    // pesananService.createPesanan(pesanan);
-    // return "redirect:/pesanan/list";
-    // }
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();
@@ -159,9 +156,45 @@ public class PesananController {
         Pesanan pesanan = pesananService.getPesananById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
         model.addAttribute("pesanan", pesanan);
+        model.addAttribute("tanggalPemesanan", pesanan.getTanggalPemesanan().toString());
+        model.addAttribute("tanggalSelesai", pesanan.getTanggalSelesai().toString());
+
         return "pesanan/update"; // HTML template for updating an existing pesanana
     }
 
+    // @PostMapping("/update/{id}")
+    // public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan
+    // updatedPesanan,
+    // RedirectAttributes redirectAttributes) {
+    // Pesanan existingPesanan = pesananService.getPesananById(id)
+    // .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
+    // Product product = updatedPesanan.getProduct();
+    // Klien klien = updatedPesanan.getKlien();
+    // User user = updatedPesanan.getUser();
+    // int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
+    // int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
+    // int selisihJumlahPesanan = jumlahBarangPesananSebelumnya -
+    // jumlahBarangPesanan;
+    // int hasilAkhir = product.getStok() + selisihJumlahPesanan;
+    // if (hasilAkhir >= 0) {
+    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
+    // 0) {
+    // product.setStok(product.getStok() + selisihJumlahPesanan);
+    // productService.updateProduct(product);
+    // } else {
+    // redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak
+    // boleh 0");
+    // return "redirect:/pesanan/update/" + id;
+    // }
+    // } else {
+    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
+    // mencukupi");
+    // return "redirect:/pesanan/update/" + id;
+    // }
+
+    // pesananService.updatePesanan(id, updatedPesanan);
+    // return "redirect:/pesanan/list";
+    // }
     @PostMapping("/update/{id}")
     public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan,
             RedirectAttributes redirectAttributes) {
@@ -174,6 +207,12 @@ public class PesananController {
         int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
         int selisihJumlahPesanan = jumlahBarangPesananSebelumnya - jumlahBarangPesanan;
         int hasilAkhir = product.getStok() + selisihJumlahPesanan;
+
+        if (updatedPesanan.getTanggalPemesanan() == null || updatedPesanan.getTanggalSelesai() == null) {
+            updatedPesanan.setTanggalPemesanan(existingPesanan.getTanggalPemesanan());
+            updatedPesanan.setTanggalSelesai(existingPesanan.getTanggalSelesai());
+        }
+
         if (hasilAkhir >= 0) {
             if (user != null && klien != null && product != null && jumlahBarangPesanan > 0) {
                 product.setStok(product.getStok() + selisihJumlahPesanan);
