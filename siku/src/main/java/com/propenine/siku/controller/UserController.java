@@ -80,6 +80,7 @@ public class UserController {
                // Handle duplicate username or email
                model.addAttribute("duplicateError", "Username atau email sudah terdaftar.");
                User user = authenticationService.getLoggedInUser();
+               model.addAttribute("userRegister", userRegister);
                model.addAttribute("user", user);
                return "register";
            }

@@ -12,29 +12,31 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.propenine.siku.modelstok.Product;
+import com.propenine.siku.model.*;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "\"pesanan\"")
+@Table(name = "pesanan")
 public class Pesanan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_klien", referencedColumnName = "id")
+    private Klien klien;
 
-    @NotBlank(message = "Nama client harus diisi")
-    @Column(name="nama_client", nullable = false)
-    private String namaClient;
 
-    @NotBlank(message = "Nama agent harus diisi")
-    @Column(name="nama_agent", nullable = false)
-    private String namaAgent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
+    private User user;
 
     @Value("ongoing")
     @Column(name="status_pesanan", nullable = false)
     private String statusPesanan;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product", referencedColumnName = "idProduct")
@@ -42,4 +44,11 @@ public class Pesanan {
 
     @Column(name = "jumlah_barang_pesanan")
     private Integer jumlahBarangPesanan;
+
+    @NotNull(message = "Tanggal pemesanan harus diisi")
+    @Column(name = "tanggal_pemesanan", nullable = false)
+    private LocalDate tanggalPemesanan;
+
+    @Column(name = "tanggal_selesai", nullable = false)
+    private LocalDate tanggalSelesai;
 }

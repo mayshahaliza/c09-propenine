@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <style>
+        .card {
+            max-width: 1100px; /* Lebar maksimal card */
+            margin: 0 auto; /* Pusatkan card secara horizontal */
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .btn-submit {
+            background-color: #0d1013;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'operational'">
+            <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+        </div>
+    </div>
+    <div th:if="${user.role == 'operational' || user.role =='admin'}">
+<div class="card mt-5">
+    <div class="card-header text-center fw-bold" style="font-size: 24px;">
+        Add Klien
+    </div>
+    <div class="card-body">
+        <form th:action="@{/klien/tambah}" th:object="${klienDTO}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="nama-klien" class="form-label">Nama Klien:</label>
+                <input type="text" class="form-control" id="nama-klien" th:field="*{namaKlien}"/>
+                <small id="nama-klien-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="email-klien" class="form-label">Email Klien:</label>
+                <input type="text" class="form-control" id="email-klien" th:field="*{emailKlien}"/>
+                <small id="email-klien-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="nohp-klien" class="form-label">Nomor Handphone Klien:</label>
+                <input type="text" class="form-control" id="nohp-klien" th:field="*{noHpKlien}"/>
+                <small id="nohp-klien-error" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="alamat-klien" class="form-label">Alamat Klien:</label>
+                <input type="text" class="form-control" id="alamat-klien" th:field="*{alamatKlien}"/>
+                <small id="alamat-klien-error" class="text-danger"></small>
+            </div>
+            <div class="center-button">
+                <button class="btn btn-submit" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        var namaKlien = document.getElementById("nama-klien").value;
+        var emailKlien = document.getElementById("email-klien").value;
+        var noHpKlien = document.getElementById("nohp-klien").value;
+        var alamatKlien = document.getElementById("alamat-klien").value;
+
+        var namaKlienError = document.getElementById("nama-klien-error");
+        var emailKlienError = document.getElementById("email-klien-error");
+        var noHpKlienError = document.getElementById("nohp-klien-error");
+        var alamatKlienError = document.getElementById("alamat-klien-error");
+
+        if (namaKlien.trim() === "") {
+            namaKlienError.innerText = "Nama Klien tidak boleh kosong";
+            return false;
+        } else {
+            namaKlienError.innerText = "";
+        }
+        if (emailKlien.trim() === "") {
+            emailKlienError.innerText = "Email Klien tidak boleh kosong";
+            return false;
+        } else if (!emailKlien.includes("@") || !emailKlien.includes(".com")) {
+            emailKlienError.innerText = "Email Klien tidak valid (contoh: example@example.com)";
+            return false;
+        } else {
+            emailKlienError.innerText = "";
+        }
+        if (noHpKlien.trim() === "") {
+            noHpKlienError.innerText = "Nomor Handphone Klien tidak boleh kosong";
+            return false;
+        } else if (isNaN(noHpKlien)) {
+            noHpKlienError.innerText = "Nomor Handphone Klien harus berupa angka";
+            return false;
+        } else {
+            noHpKlienError.innerText = "";
+        }
+        if (alamatKlien.trim() === "") {
+            alamatKlienError.innerText = "Alamat Klien tidak boleh kosong";
+            return false;
+        } else {
+            alamatKlienError.innerText = "";
+        }
+        return true;
+    }
+</script>
+
+
+
+
+<div th:unless="${user.role == 'operational' || user.role =='admin'}">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+    </script>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+</body>
+</html>

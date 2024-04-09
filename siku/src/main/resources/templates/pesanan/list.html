@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>List of Pesanan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8" />
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Pesanan</title>
 </head>
+
 <body>
     <div th:switch="${user.role}">
         <div th:case="'admin'">
@@ -18,61 +21,72 @@
     <div class="container mt-3">
         <div class="text-center">
             <h1>List of Pesanan</h1>
-
-            <form class="form-inline justify-content-center" th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-primary">Log Out</button>
-            </form>
-            <br>
-
-            <form th:action="@{/pesanan/list}" method="get">
-                <div class="form-row justify-content-center">
-                    <div class="form-group col-md-3">
-                        <input type="text" class="form-control" id="namaClient" name="namaClient" placeholder="Nama Client">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <input type="text" class="form-control" id="namaAgent" name="namaAgent" placeholder="Nama Agent">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <select class="form-control" id="statusPesanan" name="statusPesanan">
-                            <option value="">Status Pesanan</option>
-                            <option value="ongoing">Ongoing</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
-                </div>
-            </form>
-
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Client</th>
-                        <th>Nama Agent</th>
-                        <th>Status Pesanan</th>
-                        <th>Jumlah Pesanan</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="pesanan : ${pesananList}">
-                        <td th:text="${pesanan.id}">ID</td>
-                        <td th:text="${pesanan.namaClient}">Nama Client</td>
-                        <td th:text="${pesanan.namaAgent}">Nama Agent</td>
-                        <td th:text="${pesanan.statusPesanan}">Status Pesanan</td>
-                        <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
-                        <td>
-                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}" class="btn btn-primary btn-sm">Edit</a>
-                            <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm" th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <a href="/pesanan/create" class="btn btn-success">Create New Pesanan</a>
         </div>
+
+        <form class="form-filter" th:action="@{/pesanan/list}" method="get">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="searchInput" name="searchInput"
+                        placeholder="Search by Client Name or Agent Name">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" id="statusPesanan" name="statusPesanan">
+                        <option value="">Status Pesanan</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Complete">Complete</option>
+                        <option value="Canceled">Canceled</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" id="tanggalPemesanan" name="tanggalPemesanan">
+                        <option value="">Select Date Range</option>
+                        <option value="recent">Recent 14 Days</option>
+                        <option value="old">Old 14 Days</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary float-right">Filter</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-bordered table-hover mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Klien</th>
+                    <th>Nama Agent</th>
+                    <th>Status Pesanan</th>
+                    <th>Jumlah Pesanan</th>
+                    <th>Tanggal Pemesanan</th>
+                    <th>Tanggal Selesai</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pesanan : ${pesananList}">
+                    <td th:text="${pesanan.id}">ID</td>
+                    <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td> 
+                    <td th:text="${pesanan.user.username}">Nama Agent</td> 
+                    <td>
+                        <span th:text="${pesanan.statusPesanan}"
+                            th:style="${pesanan.statusPesanan == 'Canceled' ? 'color: red' : ''}"></span>
+                    </td>
+                    <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                    <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
+                    <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
+                    <td>
+                        <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}" class="btn btn-primary btn-sm">Edit</a>
+                        <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
+                            <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
+                                th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
+                        </th:block>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/pesanan/create" class="btn btn-success">Create New Pesanan</a>
     </div>
 
     <div th:unless="${user.role == 'operational' || user.role =='admin'}">
@@ -87,4 +101,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
