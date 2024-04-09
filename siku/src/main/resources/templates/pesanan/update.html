@@ -47,14 +47,14 @@
 </head>
 
 <body>
-    <nav th:switch="${user.role}">
+    <div th:switch="${user.role}">
         <div th:case="'admin'">
             <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
         </div>
         <div th:case="'operational'">
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
-    </nav>
+    </div>
 
     <div class="container mt-3 text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
         <h1>Edit Pesanan</h1>

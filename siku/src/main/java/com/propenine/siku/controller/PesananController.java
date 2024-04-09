@@ -52,33 +52,7 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
-    // @GetMapping("/list")
-    // public String listAllPesanan(
-    // @RequestParam(name = "searchInput", required = false) String searchInput,
-    // @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
-    // @RequestParam(name = "tanggalPemesanan", required = false) String
-    // tanggalPemesanan,
-    // Model model) {
-
-    // List<Pesanan> pesananList;
-
-    // if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
-    // && !statusPesanan.isEmpty())
-    // || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-    // pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
-    // tanggalPemesanan);
-    // } else {
-    // pesananList = pesananService.getAllPesanan();
-    // }
-
-    // model.addAttribute("pesananList", pesananList);
-
-    // User loggedInUser = authenticationService.getLoggedInUser();
-    // model.addAttribute("user", loggedInUser);
-
-    // return "pesanan/list";
-    // }
-
+ 
     @GetMapping("/list")
     public String listAllPesanan(
             @RequestParam(name = "searchInput", required = false) String searchInput,
@@ -88,11 +62,6 @@ public class PesananController {
 
         List<Pesanan> pesananList;
 
-        // if (searchInput != null || tanggalPemesanan != null) {
-        // pesananList = pesananService.findWithFilters(searchInput, tanggalPemesanan);
-        // } else {
-        // pesananList = pesananService.getAllPesanan();
-        // }
 
         if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
                 && !statusPesanan.isEmpty())
@@ -141,28 +110,7 @@ public class PesananController {
         return "pesanan/create"; // HTML template for creating a new pesanan
     }
 
-    // @PostMapping("/create")
-    // public String createPesanan(@ModelAttribute Pesanan pesanan,
-    // RedirectAttributes redirectAttributes) {
-    // Product product = pesanan.getProduct();
-    // Klien klien = pesanan.getKlien();
-    // User user = pesanan.getUser();
-    // int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
-    // 0) {
-    // int stokSaatIni = product.getStok();
-    // if (stokSaatIni >= jumlahBarangPesanan) {
-    // product.setStok(stokSaatIni - jumlahBarangPesanan);
-    // productService.updateProduct(product); // Update stok di database
-    // } else {
-    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
-    // mencukupi");
-    // return "redirect:/pesanan/create";
-    // }
-    // }
-    // pesananService.createPesanan(pesanan);
-    // return "redirect:/pesanan/list";
-    // }
+
     @PostMapping("/create")
     public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
         Product product = pesanan.getProduct();

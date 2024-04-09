@@ -1,9 +1,13 @@
 package com.propenine.siku.service;
 
 import com.propenine.siku.model.Pesanan;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.repository.PesananRepository;
+import com.propenine.siku.servicestok.ProductService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -14,10 +18,12 @@ import java.util.Optional;
 public class PesananService {
 
     private final PesananRepository pesananRepository;
+    private final ProductService productService;
 
     @Autowired
-    public PesananService(PesananRepository pesananRepository) {
+    public PesananService(PesananRepository pesananRepository, ProductService productService) {
         this.pesananRepository = pesananRepository;
+        this.productService = productService;
     }
 
     public Pesanan createPesanan(Pesanan pesanan) {
@@ -31,7 +37,6 @@ public class PesananService {
     public Optional<Pesanan> getPesananById(Long id) {
         return pesananRepository.findById(id);
     }
-
 
     public List<Pesanan> getPesananByStatusPesanan(String statusPesanan) {
         return pesananRepository.findByStatusPesanan(statusPesanan);
@@ -52,18 +57,30 @@ public class PesananService {
                 });
     }
 
-    public void deletePesanan(Long id) {
-        pesananRepository.deleteById(id);
-    }
+    // public void deletePesanan(Long id) {
+    // pesananRepository.deleteById(id);
+    // }
     public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
         LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
         LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement
 
-        return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
+        return pesananRepository.findByFilters(searchInput, statusPesanan,
+                tanggalPemesanan, recentDate, oldDate);
     }
 
-    
+    @Transactional
+    public void deletePesanan(Long id) {
+        Optional<Pesanan> optionalPesanan = pesananRepository.findById(id);
+        if (optionalPesanan.isPresent()) {
+            Pesanan pesanan = optionalPesanan.get();
+            Product product = pesanan.getProduct();
+            int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
+            int stokSaatIni = product.getStok();
+            product.setStok(stokSaatIni + jumlahBarangPesanan);
+            pesananRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Pesanan dengan ID " + id + " tidak ditemukan");
+        }
+    }
 
-
-    
 }
