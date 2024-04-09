@@ -30,4 +30,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean existsOtherUserWithSameUsername(Long userId, String username) {
+    return userRepository.existsByUsernameAndIdNot(username, userId);
+    }
+
+    public boolean existsOtherUserWithSameEmail(Long userId, String email) {
+        return userRepository.existsByEmailAndIdNot(email, userId);
+    }
+
 }

@@ -25,8 +25,8 @@ public class KaryawanServiceImpl implements KaryawanService{
     }
 
     @Override
-    public User editKaryawan(User user) {
-        return karyawanRepository.save(user);
+    public void editKaryawan(User user) {
+        karyawanRepository.save(user);
     }
 
     @Override
@@ -46,22 +46,15 @@ public class KaryawanServiceImpl implements KaryawanService{
     // }
 
     @Override
-    public List<User> searchKaryawanByNama(String namaDepan, String namaBelakang) {
-        if (namaDepan != null && namaBelakang != null) {
-            return karyawanRepository.findByNamaDepanContainingIgnoreCaseOrNamaBelakangContainingIgnoreCase(namaDepan, namaBelakang);
-        } else if (namaDepan != null) {
-            return karyawanRepository.findByNamaDepanContainingIgnoreCase(namaDepan);
-        } else if (namaBelakang != null) {
-            return karyawanRepository.findByNamaBelakangContainingIgnoreCase(namaBelakang);
-        } else {
-            return karyawanRepository.findAll();
-        }
+    public List<User> searchByName(String name) {
+        // Call the repository method with a custom query using the LIKE clause
+        return karyawanRepository.findByNamaContainingIgnoreCase(name);
     }
 
-    // @Override
-    // public void deleteKaryawan(User karyawan) {
-    //     karyawanRepository.delete(karyawan);
-    // }
+    @Override
+    public void deleteKaryawan(User karyawan) {
+        karyawanRepository.delete(karyawan);
+    }
 
 }
 

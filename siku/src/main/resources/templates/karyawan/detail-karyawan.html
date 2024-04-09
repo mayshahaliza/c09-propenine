@@ -9,29 +9,28 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-    <!-- Tambahkan tautan untuk font Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Employee Details</title>
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif; /* Gunakan font Poppins */
-            margin: 0; /* Remove default margin */
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
         }
     
         .container {
-            padding: 0 15px; /* Adjust container padding for desktop */
-            max-width: 1200px; /* Set maximum width for better desktop layout */
-            margin: 50px auto 20px; /* Center align the container and add margin-top for spacing */
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: 50px auto 20px;
         }
     
         .card {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px; /* Adjust card margin */
+            margin-bottom: 20px;
         }
     
         .card-body {
-            padding: 20px; /* Adjust card body padding */
+            padding: 20px;
         }
     
         .form-label {
@@ -40,7 +39,7 @@
     
         .btn-primary,
         .btn-secondary {
-            padding: 10px 20px; /* Adjust button padding */
+            padding: 10px 20px;
         }
     
         .btn-primary:hover,
@@ -50,20 +49,18 @@
         }
     
         .navbar {
-            margin-bottom: 0; /* Remove margin bottom */
-            margin-top: 0; /* Remove margin top */
+            margin-bottom: 0;
+            margin-top: 0;
         }
     
-        /* Custom styling for form fields */
         .form-group {
-            margin-bottom: 15px; /* Add margin bottom to form groups */
+            margin-bottom: 15px; 
         }
     
         .form-group label {
-            margin-bottom: 5px; /* Add margin bottom to labels */
+            margin-bottom: 5px;
         }
     
-        /* Customize form field positioning */
         .form-row {
             display: flex;
             flex-wrap: wrap;
@@ -78,30 +75,28 @@
             padding-left: 5px;
         }
     
-        /* Extend width of ID and Address fields */
         .id-field,
         .address-field {
             width: 100% - 44px;
         }
 
         .id-field {
-        margin-bottom: 20px; /* Adjust margin bottom */
-        padding-right: 15px; /* Adjust padding right */
-        padding-left: 15px; /* Adjust padding left */
+        margin-bottom: 20px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
-    /* Adjust padding and margin for Address field */
     .address-field {
-        margin-bottom: 20px; /* Adjust margin bottom */
-        padding-right: 15px; /* Adjust padding right */
-        padding-left: 15px; /* Adjust padding left */
+        margin-bottom: 20px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
     
     </style>
 </head>
 
 <body>
-<!-- <div th:switch="${user.role}">
+<div th:switch="${user.role}">
     <div th:case="'hr'">
         <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
     </div>
@@ -111,7 +106,7 @@
     <div th:case="'admin'">
         <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
     </div>
-</div> -->
+</div>
 <div class="container">
     <div class="text-center">
         <h2>Employee Details</h2>
@@ -122,72 +117,106 @@
                 <form>
                     <div class="form-group">
                         <label for="id" class="form-label">ID:</label>
-                        <input type="text" class="form-control id-field" id="id" th:value="${user.id}" disabled>
+                        <input type="text" class="form-control id-field" id="id" th:value="${karyawan.id}" disabled>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="firstName" class="form-label">First Name:</label>
-                            <input type="text" class="form-control" id="firstName" th:value="${user.nama_depan}" disabled>
+                            <input type="text" class="form-control" id="firstName" th:value="${karyawan.nama_depan}" disabled>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="lastName" class="form-label">Last Name:</label>
-                            <input type="text" class="form-control" id="lastName" th:value="${user.nama_belakang}" disabled>
+                            <input type="text" class="form-control" id="lastName" th:value="${karyawan.nama_belakang}" disabled>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="username" class="form-label">Username:</label>
-                            <input type="text" class="form-control" id="username" th:value="${user.username}" disabled>
+                            <input type="text" class="form-control" id="username" th:value="${karyawan.username}" disabled>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="email" th:value="${user.email}" disabled>
+                            <input type="email" class="form-control" id="email" th:value="${karyawan.email}" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="address" class="form-label">Address:</label>
-                        <input type="text" class="form-control address-field" id="address" th:value="${user.alamat}" disabled>
+                        <input type="text" class="form-control address-field" id="address" th:value="${karyawan.alamat}" disabled>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="birthdate" class="form-label">Birthdate:</label>
-                            <input type="text" class="form-control" id="birthdate" th:value="${user.tanggal_lahir}" disabled>
+                            <input type="text" class="form-control" id="birthdate" th:value="${karyawan.tanggal_lahir}" disabled>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="birthplace" class="form-label">Birthplace:</label>
-                            <input type="text" class="form-control" id="birthplace" th:value="${user.tempat_lahir}" disabled>
+                            <input type="text" class="form-control" id="birthplace" th:value="${karyawan.tempat_lahir}" disabled>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="role" class="form-label">Role:</label>
-                            <input type="text" class="form-control" id="role" th:value="${user.role}" disabled>
+                            <input type="text" class="form-control" id="role" th:value="${karyawan.role}" disabled>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="statusKaryawan" class="form-label">Employee Status:</label>
-                            <input type="text" class="form-control" id="statusKaryawan" th:value="${user.status_karyawan ? 'Aktif' : 'Tidak Aktif'}" readonly disabled>
+                            <input type="text" class="form-control" id="statusKaryawan" th:value="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}" readonly disabled>
                         </div>
                     </div>
                     <div class="text-center">
-                        <a th:href="@{/karyawan/edit/{id}(id=${user.id})}" class="btn btn-primary">Edit</a>
-                        <a href="/" class="btn btn-secondary">Cancel</a>
+                        <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-primary">Edit</a>
+                        <a th:href="@{/karyawan/viewall}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" aria-labelledby="statusSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusSuccessModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+                Employee status updated successfully.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
-</body>
+<script>
+    $(document).ready(function() {
+        var url = window.location.href;
+        if (url.includes('success=status')) {
+            $('#statusSuccessModal').modal('show');
+        }
+    });
 
+    $('#statusSuccessModal').on('hidden.bs.modal', function (e) {
+        console.log('Modal ditutup');
+    });
+</script>
+</body>
+<div th:unless="${user.role == 'hr' || user.role =='admin' || user.role =='executive'}">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+    </script>
+</div>
 </html>

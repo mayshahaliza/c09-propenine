@@ -13,8 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import com.propenine.siku.dto.karyawan.KaryawanMapper;
-import com.propenine.siku.dto.karyawan.request.EditKaryawanReqDTO;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.KaryawanService;
@@ -22,138 +20,90 @@ import com.propenine.siku.service.KaryawanService;
 import jakarta.validation.Valid;
 
 @Controller
-public class KaryawanController {  
+public class KaryawanController {
+
     @Autowired
     private KaryawanService karyawanService;
 
     @Autowired
-    private KaryawanMapper karyawanMapper;
+    private AuthenticationService authenticationService;
 
-    // @GetMapping("/karyawan/viewall")
-    // public String listKaryawan(Model model) {
-    //     List<User> listUser = karyawanService.getAllKaryawan();
-
-    //     System.out.println("Number of users: " + listUser.size());
-
-    //     for (User user : listUser) {
-    //         System.out.println(user); // Assuming User class has overridden toString method
-    //     }
-
-    //     model.addAttribute("listUser", listUser);
-    //     return "karyawan/viewall-karyawan";
-    // }
-
+    // VIEW ALL DATA KARYAWAN & SEARCH BY FILTER ROLE
     @GetMapping("/karyawan/viewall")
     public String listKaryawan(@RequestParam(name = "role", required = false) String role, Model model) {
-        List<User> listUser;
+        User loggedInUser = authenticationService.getLoggedInUser();
+        List<User> listKaryawan;
 
         if (role != null && !role.isEmpty()) {
-            // If role parameter is provided, filter users by role
-            listUser = karyawanService.findByRoleContainingIgnoreCase(role);
+            listKaryawan = karyawanService.findByRoleContainingIgnoreCase(role);
         } else {
-            // Otherwise, get all users
-            listUser = karyawanService.getAllKaryawan();
+            listKaryawan = karyawanService.getAllKaryawan();
         }
 
-        System.out.println("Number of users: " + listUser.size());
+        System.out.println("Number of users: " + listKaryawan.size());
 
-        for (User user : listUser) {
-            System.out.println(user); // Assuming User class has overridden toString method
+        for (User karyawan : listKaryawan) {
+            System.out.println(karyawan);
         }
 
-        model.addAttribute("listUser", listUser);
+        model.addAttribute("listKaryawan", listKaryawan);
+        model.addAttribute("user", loggedInUser);
         return "karyawan/viewall-karyawan";
     }
 
-
-
+    // SEARCH BY NAME
     @GetMapping("/search-karyawan")
-    public String searchKaryawanByNama(
-            @RequestParam(value = "nama_depan", required = false) String nama_depan,
-            @RequestParam(value = "nama_belakang", required = false) String nama_belakang,
-            Model model) {
-        
-        System.out.println("Searching for users with first name: " + nama_depan + ", last name: " + nama_belakang);
+    public String searchKaryawan(@RequestParam("name") String name, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        List<User> searchResults = karyawanService.searchByName(name);
 
-        List<User> karyawanFiltered = karyawanService.searchKaryawanByNama(nama_depan, nama_belakang);
+        model.addAttribute("listKaryawan", searchResults);
+        model.addAttribute("user", loggedInUser);
 
-        System.out.println("Number of users found: " + karyawanFiltered.size());
-        for (User user : karyawanFiltered) {
-            System.out.println(user);
-        }
-        model.addAttribute("listUser", karyawanFiltered);
         return "karyawan/viewall-karyawan";
     }
-
-
-    // @GetMapping("/search-karyawan")
-    // public String searchKaryawanByNama(
-    //         @RequestParam(value = "query", required = false) String nama,
-    //         @RequestParam(value = "nama_belakang", required = false) String nama_belakang,
-    //         Model model) {
-        
-    //     List<User> karyawanFiltered = karyawanService.searchKaryawanByNama(nama_depan, nama_belakang);
-    //     model.addAttribute("listUser", karyawanFiltered);
-    //     return "viewall-karyawan"; // Sesuaikan dengan nama view yang akan digunakan
-    // }
-
 
     // DETAIL
     @GetMapping("/karyawan/{id}")
     public String detailUser(@PathVariable("id") Long id, Model model) {
-        User user = karyawanService.getUserById(id);
-        model.addAttribute("user", user);
+        User loggedInUser = authenticationService.getLoggedInUser();
+        User karyawan = karyawanService.getUserById(id);
+        model.addAttribute("karyawan", karyawan);
+        model.addAttribute("user", loggedInUser);
         return "karyawan/detail-karyawan";
     }
 
     // EDIT
     @GetMapping("/karyawan/edit/{id}")
     public String editKaryawan(@PathVariable("id") Long id, Model model) {
-        User user = karyawanService.getUserById(id);
-        model.addAttribute("user", user);
-        return "karyawan/edit-karyawan"; // Assuming you have a view for editing user details
+        User loggedInUser = authenticationService.getLoggedInUser();
+        User karyawan = karyawanService.getUserById(id);
+        model.addAttribute("karyawan", karyawan);
+        model.addAttribute("user", loggedInUser);
+        return "karyawan/edit-karyawan";
     }
 
     @PostMapping("/karyawan/edit/{id}")
-    public String updateKaryawan(@PathVariable("id") Long id, @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
-        // Update the user details using the service
-        user.setId(id); // Set the ID of the user to ensure correct update
-        karyawanService.editKaryawan(user);
-        redirectAttributes.addAttribute("id", id); // Pass the ID as a parameter in the redirect URL
-        return "redirect:/karyawan/{id}"; // Redirect to the detail page for the updated user
+    public String updateKaryawan(@PathVariable("id") Long id, @ModelAttribute("user") User karyawan, RedirectAttributes redirectAttributes) {
+        karyawan.setId(id);
+        karyawanService.editKaryawan(karyawan);
+        redirectAttributes.addAttribute("success", "status");
+        return "redirect:/karyawan/{id}";
     }
 
+    // SOFT DELETE
+    @GetMapping("/karyawan/delete/{id}")
+    public String deleteKaryawan(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        var karyawan = karyawanService.getUserById(id);
+        karyawanService.deleteKaryawan(karyawan);
 
+        model.addAttribute("user", loggedInUser);
 
+        redirectAttributes.addFlashAttribute("successMessage", "Employee deleted successfully.");
 
-    // @GetMapping("karyawan/edit/{id}")
-    // public String editKaryawanForm(@PathVariable("id") Long id, Model model) {
-    //     // Retrieve the karyawan entity by its ID
-    //     User user = karyawanService.getUserById(id);
-    //     // Map the karyawan entity to the EditKaryawanReqDTO
-    //     EditKaryawanReqDTO editKaryawanReqDTO = karyawanMapper.karyawanToEditKaryawanRequestDTO(user);
-    //     // Add the EditKaryawanReqDTO to the model
-    //     model.addAttribute("editKaryawanReqDTO", editKaryawanReqDTO);
-    //     return "karyawan/edit-karyawan"; // Assuming you have a view for editing karyawan
-    // }
-
-    // @PostMapping("karyawan/edit/{id}")
-    // public String processEditKaryawan(@Valid @ModelAttribute EditKaryawanReqDTO karyawanDTO, BindingResult bindingResult, Model model) {
-
-    //     if (bindingResult.hasErrors()) {
-    //         // Handle validation errors
-    //         return "karyawan/edit-karyawan";
-    //     }
-
-    //     var karyawanFromDTO = karyawanMapper.editKaryawanRequestDTOToKaryawan(karyawanDTO);
-
-    //     // Update the user details
-    //     var updatedKaryawan = karyawanService.editKaryawan(karyawanFromDTO);
-
-    //     System.out.println("Status Karyawan: " + karyawanDTO.getStatusKaryawan());
-
-    //     // Redirect to the updated user details page
-    //     return "redirect:/karyawan/" + updatedKaryawan.getId();
-    // }
-
+        return "redirect:/karyawan/viewall";
+    }
 }
+
+

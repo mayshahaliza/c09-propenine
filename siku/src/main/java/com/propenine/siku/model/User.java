@@ -10,14 +10,15 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.SQLDelete;
 // import org.hibernate.annotations.WhereClause;
+import org.hibernate.annotations.Where;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "\"user\"")
-// @SQLDelete(sql = "UPDATE user SET is_deleted = true WHERE id = ?")
-// @WhereClause(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE \"user\" SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 
 public class User {
     @Id
@@ -81,8 +82,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    // @NotNull
-    // @Column(name = "is_deleted", nullable = false)
-    // private boolean isDeleted = Boolean.FALSE;
+    @NotNull
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = Boolean.FALSE;
 }
 

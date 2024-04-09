@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.propenine.siku.model.User;
 
-import lombok.var;
 
 public interface KaryawanService {
     
@@ -12,11 +11,11 @@ public interface KaryawanService {
 
     public User getUserById(Long id);
 
-    public User editKaryawan(User user);
+    public void editKaryawan(User user);
 
-    List<User> findByRoleContainingIgnoreCase(String role);
+    public List<User> findByRoleContainingIgnoreCase(String role);
 
-    public List<User> searchKaryawanByNama(String namaDepan, String namaBelakang) ;
+    public List<User> searchByName(String name);
 
-    // public void deleteKaryawan(User karyawan);
+    public void deleteKaryawan(User karyawan);
 }

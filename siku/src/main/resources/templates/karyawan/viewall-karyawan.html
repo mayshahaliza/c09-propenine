@@ -22,7 +22,7 @@
             text-align: center;
             margin-top: 20px;
             margin-bottom: 30px;
-            color: #000000; /* Warna teks menjadi hitam */
+            color: #000000;
         }
         .search-bar-container {
             display: flex;
@@ -75,7 +75,7 @@
     </style>
 </head>
 <body>
-    <!-- <div th:switch="${user.role}">
+    <div th:switch="${user.role}">
         <div th:case="'hr'">
             <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
         </div>
@@ -85,32 +85,34 @@
         <div th:case="'admin'">
             <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
         </div>
-    </div> -->
+    </div>
 
     <div style="margin: auto; width: 80%;">
-        <h2>Employees BROOOKKK</h2>
-        <!-- <div class="search-bar-container">
-            <form th:action="@{/search-karyawan}" method="get">
-                <input type="text" class="search-bar" name="nama_depan" placeholder="First Name...">
-                <input type="text" class="search-bar" name="nama_belakang" placeholder="Last Name...">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-            <form th:action="@{/search}" method="GET">
-                <input type="text" name="query" placeholder="Enter your search query" th:value="${query}" />
-                <button class="btn btn-primary" type="submit">Search</button>
-            </form>
-        </div> -->
-        <div class="search-bar-container">
-            <form th:action="@{/karyawan/viewall}" method="get">
-                <select class="form-select" id="formRole" name="role">
-                    <option value="admin">Admin</option>
-                    <option value="operational">Operational</option>
-                    <option value="hr">HR</option>
-                    <option value="executive">Executive</option>
-                </select>
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </form>
-        </div>
+        <h2>Employees List</h2>
+        <div class="row justify-content-center align-items-center mb-4">
+            <div class="col-md-6">
+                <form th:action="@{/search-karyawan}" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name" placeholder="Search by name...">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form th:action="@{/karyawan/viewall}" method="get">
+                    <div class="input-group">
+                        <select class="form-select" id="formRole" name="role">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="operational">Operational</option>
+                            <option value="hr">HR</option>
+                            <option value="executive">Executive</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary ms-2">Filter by Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>    
         <div class="table-container">
             <table>
                 <thead>
@@ -124,19 +126,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="user, index : ${listUser}" th:id="'row-' + ${index}">
+                    <tr th:each="karyawan, index : ${listKaryawan}" th:id="'row-' + ${index}">
                         <td th:text="${index.index + 1}"></td>
-                        <td th:text="${user.id}"></td>
-                        <td th:text="${user.nama_depan + ' ' + user.nama_belakang}"></td>
-                        <td th:text="${user.role}"></td>
-                        <td th:text="${user.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
-                        <td><a th:href="@{/karyawan/{id}(id=${user.id})}">Detail</a></td>
+                        <td th:text="${karyawan.id}"></td>
+                        <td th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang}"></td>
+                        <td th:text="${karyawan.role}"></td>
+                        <td th:text="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
+                        <td><a th:href="@{/karyawan/{id}(id=${karyawan.id})}">Detail</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    <div th:if="${successMessage}" class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteSuccessModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+
+    <script th:if="${successMessage}">
+        $(document).ready(function() {
+            $('#deleteSuccessModal').modal('show');
+        });
+    </script>
 </body>
+<div th:unless="${user.role == 'hr' || user.role =='admin' || user.role =='executive'}">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+    </script>
+</div>
 </html>
