@@ -3,20 +3,58 @@
 
 <head>
     <meta charset="UTF-8" />
-    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
-    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Pesanan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS styles */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-add:focus {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+    </style>
 </head>
 
 <body>
-    <div th:switch="${user.role}">
+    <nav th:switch="${user.role}">
         <div th:case="'admin'">
             <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
         </div>
         <div th:case="'operational'">
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
-    </div>
+    </nav>
 
     <div class="container mt-3 text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
         <h1>Edit Pesanan</h1>
@@ -25,32 +63,32 @@
         </div>
         <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}" method="post">
             <div class="form-group">
-                <label for="product">Product</label>
-                <select class="form-control" id="klien" th:field="*{klien}" required>
-                    <option value="">-- Select Klien --</option>
-                    <option th:each="klien : ${klienList}" th:value="${klien.id}"
-                        th:selected="${klien.id == pesanan.klien.id}"
-                        th:text="${klien.namaKlien}"></option>
-                </select>
+                <label for="klien">Nama Klien</label>
+                <div class="input-group">
+                    <select class="form-control" id="klien" th:field="*{klien}" required>
+                        <option value="">-- Select Klien --</option>
+                        <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                            th:selected="${klien.id == pesanan.klien.id}"
+                            th:text="${klien.namaKlien}"></option>
+                    </select>
+                    <div class="input-group-append">
+                        <a href="/klien/tambah" class="btn btn-add">+</a>
+                    </div>
+                </div>
             </div>
 
-            <!-- <div class="form-group">
-                <label for="namaAgent">Nama Agent</label>
-                <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}"
-                    placeholder="Enter agent name" required>
-            </div> -->
             <div class="form-group">
-                <label for="product">Product</label>
+                <label for="user">Username Agent</label>
                 <select class="form-control" id="user" th:field="*{user}" required>
-                    <option value="">-- Select Klien --</option>
-                    <option th:each="user : ${userList}" th:value="${userid}"
-                        th:selected="${user.id == user.klien.id}"
+                    <option value="">-- Select Agent --</option>
+                    <option th:each="user : ${userList}" th:value="${user.id}"
+                        th:selected="${user.id == pesanan.user.id}"
                         th:text="${user.username}"></option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="product">Product</label>
+                <label for="product">Pesanan</label>
                 <select class="form-control" id="product" th:field="*{product}" required>
                     <option value="">-- Select Product --</option>
                     <option th:each="product : ${productList}" th:value="${product.idProduct}"
@@ -72,11 +110,11 @@
                     <option value="Ongoing" text="Ongoing">Ongoing</option>
                     <option value="Complete" text="Complete">Complete</option>
                     <option value="Canceled" text="Canceled">Canceled</option>
-
                 </select>
             </div>
+
             <div class="form-group" th:each="product : ${productList}">
-                <label for="tanggalPemesanan">Tanggal Pemensan</label>
+                <label for="tanggalPemesanan">Tanggal Pemesanan</label>
                 <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan" th:field="*{tanggalPemesanan}"
                      placeholder="Tanggal Pemesanan" required>
             </div>

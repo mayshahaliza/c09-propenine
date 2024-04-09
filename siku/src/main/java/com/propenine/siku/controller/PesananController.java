@@ -1,5 +1,6 @@
 package com.propenine.siku.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,33 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
+    // @GetMapping("/list")
+    // public String listAllPesanan(
+    // @RequestParam(name = "searchInput", required = false) String searchInput,
+    // @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
+    // @RequestParam(name = "tanggalPemesanan", required = false) String
+    // tanggalPemesanan,
+    // Model model) {
+
+    // List<Pesanan> pesananList;
+
+    // if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
+    // && !statusPesanan.isEmpty())
+    // || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
+    // pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
+    // tanggalPemesanan);
+    // } else {
+    // pesananList = pesananService.getAllPesanan();
+    // }
+
+    // model.addAttribute("pesananList", pesananList);
+
+    // User loggedInUser = authenticationService.getLoggedInUser();
+    // model.addAttribute("user", loggedInUser);
+
+    // return "pesanan/list";
+    // }
+
     @GetMapping("/list")
     public String listAllPesanan(
             @RequestParam(name = "searchInput", required = false) String searchInput,
@@ -60,12 +88,35 @@ public class PesananController {
 
         List<Pesanan> pesananList;
 
-        if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null && !statusPesanan.isEmpty())
+        // if (searchInput != null || tanggalPemesanan != null) {
+        // pesananList = pesananService.findWithFilters(searchInput, tanggalPemesanan);
+        // } else {
+        // pesananList = pesananService.getAllPesanan();
+        // }
+
+        if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
+                && !statusPesanan.isEmpty())
                 || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-            pesananList = pesananService.findWithFilters(searchInput, statusPesanan, tanggalPemesanan);
+            pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
+                    tanggalPemesanan);
         } else {
             pesananList = pesananService.getAllPesanan();
         }
+
+        // Menggunakan Comparator untuk mengurutkan berdasarkan status pesanan
+        pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
+                Comparator.comparing(status -> {
+                    switch (status) {
+                        case "Ongoing":
+                            return 0;
+                        case "Complete":
+                            return 1;
+                        case "Canceled":
+                            return 2;
+                        default:
+                            return 3; // default untuk kasus lainnya
+                    }
+                })));
 
         model.addAttribute("pesananList", pesananList);
 
