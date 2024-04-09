@@ -80,13 +80,13 @@
 <script>
     function validateForm() {
         var namaKlien = document.getElementById("nama-klien").value;
-        var namaKlien = document.getElementById("rumah-sakit").value;
+        var rumahSakit = document.getElementById("rumah-sakit").value;
         var emailKlien = document.getElementById("email-klien").value;
         var noHpKlien = document.getElementById("nohp-klien").value;
         var alamatKlien = document.getElementById("alamat-klien").value;
 
         var namaKlienError = document.getElementById("nama-klien-error");
-        var namaKlienError = document.getElementById("rumah-sakit-error");
+        var rumahSakitError = document.getElementById("rumah-sakit-error");
         var emailKlienError = document.getElementById("email-klien-error");
         var noHpKlienError = document.getElementById("nohp-klien-error");
         var alamatKlienError = document.getElementById("alamat-klien-error");
@@ -101,7 +101,7 @@
             rumahSakitError.innerText = "Rumah sakit tidak boleh kosong";
             return false;
         } else {
-            namaKlienError.innerText = "";
+            rumahSakitError.innerText = "";
         }
         if (emailKlien.trim() === "") {
             emailKlienError.innerText = "Email Klien tidak boleh kosong";
@@ -130,6 +130,7 @@
         return true;
     }
 </script>
+
 
 
 

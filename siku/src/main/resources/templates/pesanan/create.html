@@ -27,13 +27,18 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/pesanan/create}" th:object="${pesanan}" method="post">
-                            <div class="form-group">
+                            <div class="form-group-inline">
                                 <label for="product">Nama Klien</label>
-                                <select class="form-control" id="klien" th:field="*{klien}" required>
-                                    <option value="">-- Select Klien --</option>
-                                    <option th:each="klien : ${klienList}" th:value="${klien.id}"
-                                        th:text="${klien.namaKlien}"></option>
-                                </select>
+                                <div class="input-group">
+                                    <select class="form-control" id="klien" th:field="*{klien}" required>
+                                        <option value="">-- Select Klien --</option>
+                                        <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                                            th:text="${klien.namaKlien}"></option>
+                                    </select>
+                                    <div class="input-group-append btn-group">
+                                        <a href="/klien/tambah" class="btn btn-outline-secondary" type="button">+</a>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- <div class="form-group">
