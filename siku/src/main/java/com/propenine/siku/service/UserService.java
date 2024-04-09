@@ -15,4 +15,5 @@ public interface UserService {
     public boolean existsOtherUserWithSameUsername(Long userId, String username);
 
     public boolean existsOtherUserWithSameEmail(Long userId, String email);
+    
 }

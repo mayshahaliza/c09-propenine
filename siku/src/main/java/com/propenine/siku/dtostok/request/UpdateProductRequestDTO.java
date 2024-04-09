@@ -11,7 +11,7 @@ import com.propenine.siku.model.katalog.Kategori;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateStokRequestDTO extends CreateStokRequestDTO {
+public class UpdateProductRequestDTO extends CreateProductRequestDTO {
     @NotNull
-    private UUID idKatalog;
+    private UUID idProduct;
 }

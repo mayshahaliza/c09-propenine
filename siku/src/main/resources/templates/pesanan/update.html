@@ -1,10 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Edit Pesanan</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Pesanan</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS styles */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-add:focus {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+    </style>
 </head>
+
 <body>
     <div th:switch="${user.role}">
         <div th:case="'admin'">
@@ -22,36 +63,68 @@
         </div>
         <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}" method="post">
             <div class="form-group">
-                <label for="namaClient">Nama Client</label>
-                <input type="text" class="form-control" id="namaClient" th:field="*{namaClient}" placeholder="Enter client name" required>
+                <label for="klien">Nama Klien</label>
+                <div class="input-group">
+                    <select class="form-control" id="klien" th:field="*{klien}" required>
+                        <option value="">-- Select Klien --</option>
+                        <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                            th:selected="${klien.id == pesanan.klien.id}"
+                            th:text="${klien.namaKlien}"></option>
+                    </select>
+                    <div class="input-group-append">
+                        <a href="/klien/tambah" class="btn btn-add">+</a>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="namaAgent">Nama Agent</label>
-                <input type="text" class="form-control" id="namaAgent" th:field="*{namaAgent}" placeholder="Enter agent name" required>
+                <label for="user">Username Agent</label>
+                <select class="form-control" id="user" th:field="*{user}" required>
+                    <option value="">-- Select Agent --</option>
+                    <option th:each="user : ${userList}" th:value="${user.id}"
+                        th:selected="${user.id == pesanan.user.id}"
+                        th:text="${user.username}"></option>
+                </select>
             </div>
 
             <div class="form-group">
-                <label for="stok">Stok</label>
-                <select class="form-control" id="stok" th:field="*{stok}" required>
-                    <option value="">-- Select Stok --</option>
-                    <option th:each="stok : ${stokList}" th:value="${stok.idKatalog}" th:selected="${stok.idKatalog == pesanan.stok.idKatalog}" th:text="${stok.namaKatalog}"></option>
+                <label for="product">Pesanan</label>
+                <select class="form-control" id="product" th:field="*{product}" required>
+                    <option value="">-- Select Product --</option>
+                    <option th:each="product : ${productList}" th:value="${product.idProduct}"
+                        th:selected="${product.idProduct == pesanan.product.idProduct}"
+                        th:text="${product.namaProduct}"></option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="jumlahBarangPesanan">Jumlah Barang Pesanan</label>
-                <input type="number" class="form-control" id="jumlahBarangPesanan" th:field="*{jumlahBarangPesanan}" placeholder="Enter quantity" required>
+                <input type="number" class="form-control" id="jumlahBarangPesanan" th:field="*{jumlahBarangPesanan}"
+                    placeholder="Enter quantity" required>
             </div>
 
             <div class="form-group">
                 <label for="statusPesanan">Status Pesanan</label>
                 <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
-                    <option value="ongoing">-- Select Status --</option>
-                    <option value="ongoing">Ongoing</option>
-                    <option value="complete">Complete</option>
+                    <option value="">-- Select Status --</option>
+                    <option value="Ongoing" text="Ongoing">Ongoing</option>
+                    <option value="Complete" text="Complete">Complete</option>
+                    <option value="Canceled" text="Canceled">Canceled</option>
                 </select>
             </div>
+
+            <div class="form-group" th:each="product : ${productList}">
+                <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi Perubahan</b></h6>
+                <label for="tanggalPemesanan">Tanggal Pemesanan </label>
+                <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan"
+                       th:field="*{tanggalPemesanan}" th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
+            </div>
+            <div class="form-group" th:each="product : ${productList}">
+                <label for="tanggalSelesai">Tanggal Selesai</label>
+                <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
+                       th:field="*{tanggalSelesai}" th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
+            </div>
+            
             <button type="submit" class="btn btn-success">Update</button>
         </form>
     </div>
@@ -68,4 +141,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

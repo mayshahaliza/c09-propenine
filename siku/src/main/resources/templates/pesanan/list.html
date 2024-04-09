@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of Pesanan</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+        }
+
+        .pesanan-table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .pesanan-table td,
+        .pesanan-table th {
+            text-align: center;
+        }
+
+        .btn-create {
+            margin-top: 20px;
+            float: right;
+        }
+    </style>
 </head>
+
 <body>
     <div th:switch="${user.role}">
         <div th:case="'admin'">
@@ -14,77 +56,79 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
+    <div class="container">
+        <h1>List of Pesanan</h1>
 
-    <div class="container mt-3">
-        <div class="text-center">
-            <h1>List of Pesanan</h1>
+        <!-- Filter Form -->
+        <form class="form-inline filter-form">
+            <div class="form-group mx-sm-3 mb-2">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by Client or Agent">
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <select class="form-control" id="statusPesanan">
+                    <option value="">Status Pesanan</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Complete">Complete</option>
+                    <option value="Canceled">Canceled</option>
+                </select>
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <select class="form-control" id="tanggalPemesanan">
+                    <option value="">Date Range</option>
+                    <option value="recent">Recent 14 Days</option>
+                    <option value="old">Old 14 Days</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Filter</button>
+        </form>
 
-            <form class="form-inline justify-content-center" th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-primary">Log Out</button>
-            </form>
-            <br>
-
-            <form th:action="@{/pesanan/list}" method="get">
-                <div class="form-row justify-content-center">
-                    <div class="form-group col-md-3">
-                        <input type="text" class="form-control" id="namaClient" name="namaClient" placeholder="Nama Client">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <input type="text" class="form-control" id="namaAgent" name="namaAgent" placeholder="Nama Agent">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <select class="form-control" id="statusPesanan" name="statusPesanan">
-                            <option value="">Status Pesanan</option>
-                            <option value="ongoing">Ongoing</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
-                </div>
-            </form>
-
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
+        <!-- Pesanan Table -->
+        <div class="table-container">
+            <table class="table table-striped table-bordered pesanan-table">
+                <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nama Client</th>
+                        <th>Nama Klien</th>
                         <th>Nama Agent</th>
                         <th>Status Pesanan</th>
                         <th>Jumlah Pesanan</th>
+                        <th>Tanggal Pemesanan</th>
+                        <th>Tanggal Selesai</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Data Rows -->
                     <tr th:each="pesanan : ${pesananList}">
                         <td th:text="${pesanan.id}">ID</td>
-                        <td th:text="${pesanan.namaClient}">Nama Client</td>
-                        <td th:text="${pesanan.namaAgent}">Nama Agent</td>
-                        <td th:text="${pesanan.statusPesanan}">Status Pesanan</td>
+                        <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td>
+                        <td th:text="${pesanan.user.username}">Nama Agent</td>
+                        <td>
+                            <span th:text="${pesanan.statusPesanan}"
+                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : ''}"></span>
+                        </td>
                         <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                        <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
+                        <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
                         <td>
                             <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}" class="btn btn-primary btn-sm">Edit</a>
-                            <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm" th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
+                            <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
+                                <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
+                                    th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
+                            </th:block>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
-            <a href="/pesanan/create" class="btn btn-success">Create New Pesanan</a>
         </div>
-    </div>
 
-    <div th:unless="${user.role == 'operational' || user.role =='admin'}">
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            window.location.replace('/no-access');
-            /*]]>*/
-        </script>
+        <!-- Create Pesanan Button -->
+        <a href="/pesanan/create" class="btn btn-success btn-create">Create New Pesanan</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

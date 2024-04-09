@@ -2,9 +2,9 @@ package com.propenine.siku;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.propenine.siku.dtostok.StokMapper;
-import com.propenine.siku.dtostok.request.CreateStokRequestDTO;
-import com.propenine.siku.servicestok.StokService;
+import com.propenine.siku.dtostok.ProductMapper;
+import com.propenine.siku.dtostok.request.CreateProductRequestDTO;
+import com.propenine.siku.servicestok.ProductService;
 
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
