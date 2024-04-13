@@ -8,11 +8,18 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.SQLDelete;
+// import org.hibernate.annotations.WhereClause;
+import org.hibernate.annotations.Where;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "\"user\"")
+@SQLDelete(sql = "UPDATE \"user\" SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,5 +81,9 @@ public class User {
     @Size(min = 8, message = "Panjang password minimal 8 karakter")
     @Column(name = "password", nullable = false)
     private String password;
+
+    @NotNull
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = Boolean.FALSE;
 }
 

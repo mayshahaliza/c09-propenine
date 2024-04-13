@@ -8,6 +8,7 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <title>Account Settings</title>
     <style>
@@ -15,39 +16,73 @@
             background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
         }
+
         .container {
             padding-top: 50px;
         }
+
+        .alert-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .alert {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .alert .row {
+            align-items: center;
+        }
+
+        .alert .col-10 {
+            padding-right: 0;
+        }
+
+        .alert .col-2 {
+            text-align: right;
+            padding-left: 0;
+        }
+
         .card {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .card-body {
             padding: 30px;
         }
+
         .form-label {
             font-weight: 500;
         }
+
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
             padding: 10px 30px;
             margin-right: 10px;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #0056b3;
         }
+
         .btn-secondary {
             background-color: #6c757d;
             border-color: #6c757d;
             padding: 10px 30px;
             margin-left: 10px;
         }
+
         .btn-secondary:hover {
             background-color: #5a6268;
             border-color: #5a6268;
         }
     </style>
+
 </head>
 
 <body>
@@ -106,6 +141,52 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="passwordSuccessModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Your password has been changed successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="profileSuccessModal" tabindex="-1" aria-labelledby="editSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSuccessModalLabel">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Profile updated successfully.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            var url = window.location.href;
+            
+            if (url.includes('success=profile')) {
+                $('#profileSuccessModal').modal('show');
+            } else if (url.includes('success=password')) {
+                $('#passwordSuccessModal').modal('show');
+            }
+        });
+    </script>
+
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
 </body>
