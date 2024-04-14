@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Bar Chart - Rekap Penjualan</title>
+</head>
+
+<body>
+
+<div class="text-center" th:if="${user != null && user.role == 'admin' || user.role == 'executive'}"> </div>
+<div th:switch="${user.role}">
+    <div th:case="'admin'">
+        <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+    </div>
+    <div th:case="'executive'">
+        <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+    </div>
+</div>
+
+<div class="text-center">
+    <h1>Daftar Penjualan</h1>
+</div>
+
+<!-- Container for the bar chart -->
+<div style="width: 800px; margin: auto;">
+    <!-- Dropdown menu for selecting the month -->
+    <label for="month">Select Month:</label>
+    <select id="month" required>
+        <option value="">Pilih Bulan</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+    <!-- Dropdown menu for selecting the year -->
+    <label for="year">Select Year:</label>
+    <input type="number" name="tahun" id="year" required min="1">
+
+    <button onclick="filterData()">Filter</button>
+
+    <!-- Canvas for the bar chart -->
+    <canvas id="barChart"></canvas>
+</div>
+
+<script th:inline="javascript">
+        /*<![CDATA[*/
+        // Get sales summary data passed from the backend
+        var salesData = /*[[${orderSummary}]]*/ [];
+
+        // Extract product names and total quantities from salesData
+        var productNames = salesData.map(entry => entry.product.namaProduct);
+        var totalQuantities = salesData.map(entry => entry.totalQuantity);
+
+        // Function to filter data based on selected month and year
+        function filterData() {
+            var selectedMonth = document.getElementById('month').value;
+            var selectedYear = document.getElementById('year').value;
+            // Perform AJAX request to fetch sales summary data for the selected month and year
+            fetch('/pesanan/rekap-penjualan-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
+                .then(response => response.json())
+                .then(data => {
+                    // Extract product names and total quantities from the fetched data
+                    var productNames = data.map(entry => entry.product.namaProduct);
+                    var totalQuantities = data.map(entry => entry.totalQuantity);
+
+                    // Update the chart with the new data
+                    barChart.data.labels = productNames;
+                    barChart.data.datasets[0].data = totalQuantities;
+                    barChart.update();
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Create a new Chart instance
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: productNames, // Product names on X-axis
+                datasets: [{
+                    label: 'Total Quantity',
+                    data: totalQuantities, // Total quantities on Y-axis
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
+                    borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true // Start Y-axis from zero
+                        }
+                    }]
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+
+<div th:unless="${user != null && (user.role == 'executive' || user.role =='admin') }">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+        </script>
+</div>
+
+</html>

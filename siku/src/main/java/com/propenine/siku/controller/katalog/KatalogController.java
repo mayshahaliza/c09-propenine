@@ -1,5 +1,7 @@
 package com.propenine.siku.controller.katalog;
 
+import com.propenine.siku.dtostok.ProductMapper;
+import com.propenine.siku.servicestok.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +38,7 @@ public class KatalogController {
 
     @Autowired
     KatalogService katalogService;
-    
+
     @Autowired
     KatalogMapper katalogMapper;
 
@@ -44,12 +46,18 @@ public class KatalogController {
     KategoriMapper kategoriMapper;
 
     @Autowired
-    private AuthenticationService authenticationService;    
+    private AuthenticationService authenticationService;
 
-    //CREATE KATALOG
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    // CREATE KATALOG
     @GetMapping("katalog/tambah")
     public String formAddKatalog(Model model) {
-        //Membuat DTO baru sebagai isian form pengguna
+        // Membuat DTO baru sebagai isian form pengguna
         var katalogDTO = new CreateKatalogRequestDTO();
         var allKategori = kategoriService.getAllKategori();
         User loggedInUser = authenticationService.getLoggedInUser();
@@ -62,8 +70,8 @@ public class KatalogController {
 
     @PostMapping("/katalog/tambah")
     public String addKatalog(@ModelAttribute("katalogDTO") @Valid CreateKatalogRequestDTO katalogDTO,
-                            @RequestParam("file") MultipartFile file, BindingResult bindingResult,
-                            Model model) {
+            @RequestParam("file") MultipartFile file, BindingResult bindingResult,
+            Model model) {
         try {
             // Validate file name
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -107,42 +115,67 @@ public class KatalogController {
         }
     }
 
+    // VIEW DETAIL KATALOG NOT LOGIN
+    // @GetMapping("/katalog/{id}")
+    // public String detailKatalogNotLogin(@PathVariable("id") UUID id, Model model)
+    // {
+    // var katalog = katalogService.getKatalogById(id);
+    //
+    // model.addAttribute("katalog", katalog);
+    // return "katalog/view-katalog-notlogin";
+    // }
 
-    //VIEW DETAIL KATALOG NOT LOGIN
+    // VIEW DETAIL KATALOG NOT LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/{id}")
     public String detailKatalogNotLogin(@PathVariable("id") UUID id, Model model) {
-        var katalog = katalogService.getKatalogById(id);
+        var katalog = productService.getProductById(id);
 
         model.addAttribute("katalog", katalog);
         return "katalog/view-katalog-notlogin";
     }
 
-    //VIEW DETAIL KATALOG  LOGIN
+    // VIEW DETAIL KATALOG LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/login/{id}")
     public String detailKatalogLogin(@PathVariable("id") UUID id, Model model) {
-        var katalog = katalogService.getKatalogById(id);
+        var katalog = productService.getProductById(id);
         User loggedInUser = authenticationService.getLoggedInUser();
-        
+
         model.addAttribute("user", loggedInUser);
         model.addAttribute("katalog", katalog);
         return "katalog/view-katalog-login";
     }
 
-    //VIEWALL KATALOG 
+    // VIEWALL KATALOG CONNECT TO PRODUCT
     @GetMapping("katalog")
     public String listKatalog(Model model) {
-        //Mendapatkan semua buku
-        List<Katalog> listKatalog = katalogService.getAllkatalog();
-        //Add variabel semua bukuModel ke "ListBuku" untuk dirender pada thymeleaf
+        var listProduct = productService.getAllProduct();
+        model.addAttribute("listKatalog", listProduct);
+
+        // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
-        model.addAttribute("listKatalog", listKatalog);
+
         return "katalog/viewall-katalog";
     }
 
-    //UPDATE KATALOG
+    @GetMapping("/katalog/filter/{kategoriId}")
+    public String filterByCategory(@PathVariable("kategoriId") Long kategoriId, Model model) {
+        var filteredProducts = productService.getProductsByCategory(kategoriId);
+        model.addAttribute("listKatalog", filteredProducts);
+
+        var allKategori = kategoriService.getAllKategori();
+        model.addAttribute("allKategori", allKategori);
+
+        // Autentikasi
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        return "katalog/viewall-katalog";
+    }
+
+    // UPDATE KATALOG
     @GetMapping("/katalog/update/{id}")
-    public String formUpdateKatalog(@PathVariable("id") UUID id, Model model){
+    public String formUpdateKatalog(@PathVariable("id") UUID id, Model model) {
         var katalog = katalogService.getKatalogById(id);
         var katalogDTO = katalogMapper.katalogToUpdateKatalogRequestDTO(katalog);
         katalogDTO.setId(katalog.getId());
@@ -161,9 +194,9 @@ public class KatalogController {
 
     @PostMapping("/katalog/update/{id}")
     public String updateKatalog(@PathVariable("id") UUID id,
-                                @ModelAttribute("katalogDTO") @Valid CreateKatalogRequestDTO katalogDTO,
-                                @RequestParam(value = "file", required = false) MultipartFile file,
-                                Model model) {
+            @ModelAttribute("katalogDTO") @Valid CreateKatalogRequestDTO katalogDTO,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            Model model) {
         try {
             // Retrieve existing katalog from database
             Katalog existingKatalog = katalogService.getKatalogById(id);
@@ -203,11 +236,4 @@ public class KatalogController {
         }
     }
 
-
 }
-
-
- 
-
-
-

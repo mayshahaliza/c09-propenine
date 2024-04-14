@@ -16,16 +16,15 @@ import com.propenine.siku.model.katalog.Kategori;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "stok")
-public class Stok {
+@Table(name = "product")
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID idKatalog;
+    private UUID idProduct;
 
     @NotNull
-    @Column(name = "nama_katalog")
-    private String namaKatalog;
-
+    @Column(name = "nama_product")
+    private String namaProduct;
 
     @NotNull
     @Column(name = "stok")
@@ -38,6 +37,15 @@ public class Stok {
     @NotNull
     @Column(name = "status")
     private Boolean status;
+
+    @NotNull
+    @Column(name = "deskripsi")
+    private String deskripsi;
+
+    @Lob
+    @Column(name = "image")
+    @Basic(fetch = FetchType.LAZY)
+    private String image;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)

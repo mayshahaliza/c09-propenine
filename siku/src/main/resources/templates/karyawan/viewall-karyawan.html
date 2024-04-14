@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Employees List</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #000000;
+        }
+        .search-bar-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            width: 300px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            margin-right: 10px;
+        }
+        .table-container {
+            display: flex;
+            justify-content: center;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #212529;
+            font-weight: bold;
+        }
+        td:last-child {
+            text-align: center;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div th:switch="${user.role}">
+        <div th:case="'hr'">
+            <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
+        </div>
+        <div th:case="'executive'">
+            <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+        </div>
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+    </div>
+
+    <div style="margin: auto; width: 80%;">
+        <h2>Employees List</h2>
+        <div class="row justify-content-center align-items-center mb-4">
+            <div class="col-md-6">
+                <form th:action="@{/search-karyawan}" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name" placeholder="Search by name...">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form th:action="@{/karyawan/viewall}" method="get">
+                    <div class="input-group">
+                        <select class="form-select" id="formRole" name="role">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="operational">Operational</option>
+                            <option value="hr">HR</option>
+                            <option value="executive">Executive</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary ms-2">Filter by Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>    
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="karyawan, index : ${listKaryawan}" th:id="'row-' + ${index}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${karyawan.id}"></td>
+                        <td th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang}"></td>
+                        <td th:text="${karyawan.role}"></td>
+                        <td th:text="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
+                        <td><a th:href="@{/karyawan/{id}(id=${karyawan.id})}">Detail</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listKaryawan)}">
+                        <td colspan="6" class="text-center">No employees found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div th:if="${successMessage}" class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteSuccessModalLabel">Success</h5>
+                </div>
+                <div class="modal-body">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <div class="modal-footer">
+                    <span>Click anywhere to close</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+
+    <script th:if="${successMessage}">
+        $(document).ready(function() {
+            $('#deleteSuccessModal').modal('show');
+        });
+    </script>
+</body>
+<div th:unless="${user.role == 'hr' || user.role =='admin' || user.role =='executive'}">
+    <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+    </script>
+</div>
+</html>

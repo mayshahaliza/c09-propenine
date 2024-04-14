@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <title>Detail Klien</title>
+
+    <!-- Include additional styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .description-card {
+            max-width: 600px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 150px;
+            margin-left: auto; /* Tambahkan ini */
+            margin-right: auto; /* dan ini */
+        }
+
+        .description-card .card-body {
+            padding: 0; /* Remove padding to prevent extra space */
+        }
+
+        .text-center {
+            text-align: center;
+            margin-top: 20px; /* Memberikan margin top pada tombol */
+        }
+
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            background-color: #0d1013;
+            color: #fff;
+        }
+
+        .btn-update {
+            background-color: #0d1013;
+            color: #fff;
+        }
+        .btn-hapus {
+        background-color: #960f0f;
+        color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:if="${user != null}">
+        <div th:switch="${user.role}">
+            <div th:case="'admin'">
+                <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+            </div>
+            <div th:case="'operational'">
+                <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div th:if="${user.role == 'operational' || user.role =='admin'}">
+            <div class="description-card">
+                <div class="card-body description-card-body">
+                    <div class="text-center">
+                        <h2 class="mb-4">Detail Klien</h2>
+                    </div>
+
+                    <div class="row">
+                        <!-- Description Column -->
+                        <div class="col-md-12">
+                            <h4 class="card-title" th:text="${klien.namaKlien}"></h4>
+                            <p class="card-text" th:text="'ID: ' + ${klien.id}"></p>
+                            <p class="card-text" th:text="'Rumah Sakit: ' + ${klien.rumahSakit}"></p>
+                            <p class="card-text" th:text="'Email: ' + ${klien.emailKlien}"></p>
+                            <p class="card-text" th:text="'Nomor Handphone: ' + ${klien.noHpKlien}"></p>
+                            <p class="card-text" th:text="'Alamat: ' + ${klien.alamatKlien}"></p>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a type="button" class="btn btn-back btn-md" href="/klien">Daftar Klien</a>
+                            <!-- Add update button -->
+                            <a type="button" class="btn btn-update btn-md"
+                                th:href="@{/klien/update/{id}(id=${klien.id})}">Update</a>
+                            <a type="button" class="btn btn-hapus btn-md"
+                                th:href="@{/klien/{id}/delete(id=${klien.id})}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+            <script th:inline="javascript">
+               /*<![CDATA[*/
+               window.location.replace('/no-access');
+               /*]]>*/
+           </script>
+        </div>
+    </div>
+</body>
+
+</html>

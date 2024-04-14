@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-  <title>View All Stok</title>
+  <title>View All Product</title>
   <style>
     table {
         counter-reset: section;
@@ -36,7 +36,7 @@
       <h2>Products Stock</h2>
     </div>
     <div class="text-center m-3">
-      <a type="button" class="btn btn-md btn-primary" href="/stok/tambah">Add Product</a>
+      <a type="button" class="btn btn-md btn-primary" href="/product/tambah">Add Product</a>
     </div>
     <table class="table">
         <thead class="thead-dark">
@@ -51,17 +51,17 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody th:each="stok: ${listStok}">
+        <tbody th:each="product: ${listProduct}">
           <tr>
             <th scope="row" id="counting" class="count">
             </th>
-            <td th:text="${stok.idKatalog}"></td>
-            <td th:text="${stok.namaKatalog}"></td>
-            <td th:text="${stok.kategori.namaKategori}"></td>
-            <td th:text="${stok.stok}"></td>
-            <td th:text="${stok.harga}"></td>
-            <td th:text="${stok.status} ? 'Tersedia' : 'Habis'"></td>
-            <td><a type="button" class="btn btn-md btn-primary" th:href="@{/stok/update/} + ${stok.idKatalog}">Edit Stock</a></td>
+            <td th:text="${product.idProduct}"></td>
+            <td th:text="${product.namaProduct}"></td>
+            <td th:text="${product.kategori.namaKategori}"></td>
+            <td th:text="${product.stok}"></td>
+            <td th:text="${product.harga}"></td>
+            <td th:text="${product.status} ? 'Tersedia' : 'Habis'"></td>
+            <td><a type="button" class="btn btn-md btn-primary" th:href="@{/product/update/} + ${product.idProduct}">Edit Stock</a></td>
           </tr>
         </tbody>      
     </table>
