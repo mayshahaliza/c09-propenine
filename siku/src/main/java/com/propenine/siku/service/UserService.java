@@ -10,6 +10,10 @@ public interface UserService {
 
     public boolean existsByEmail(String email);
 
-
     public void editUserProfile(User user);
+
+    public boolean existsOtherUserWithSameUsername(Long userId, String username);
+
+    public boolean existsOtherUserWithSameEmail(Long userId, String email);
+    
 }

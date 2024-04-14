@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+  <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+  <title>View All Klien</title>
+  <style>
+    table {
+        counter-reset: section;
+    }
+        
+    .count:before {
+        counter-increment: section;
+        content: counter(section);
+    }
+
+    #myButton {
+        display: none;
+    }
+
+    .btn-detail {
+        background-color: #0d1013;
+        color: #fff;
+    }
+    .btn-hapus {
+        background-color: #960f0f;
+        color: #fff;
+    }
+
+    /* Menggeser teks ke kiri sedikit */
+    .nama-klien {
+        text-align: left;
+    }
+    .add-product-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0e131a;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+      }
+
+    .add-product-btn:hover {
+            background-color: #fff4f4;
+            box-shadow: #ddd;
+            transform: scale(1.1);
+            color: #000;
+    }
+
+    #searchInput {
+            width: 300px; /* Sesuaikan dengan lebar yang diinginkan */
+    }
+
+  </style>
+</head>
+
+<body>
+  <div th:if="${user != null}">
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'operational'">
+            <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+        </div>
+    </div>
+</div>
+  </div> <!-- Menutup tag div yang terbuka sebelumnya -->
+  <div class="container">
+    <div class="text-center" th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}">
+    <div class="text-center pt-5">
+      <h2>Daftar Klien</h2>
+    </div>
+    <br><br>
+    <div class="search-container text-center">
+      <form action="/search" method="GET"> <!-- Form untuk mengirimkan input pencarian -->
+          <input type="text" id="searchInput" name="query" placeholder="Cari klien berdasarkan nama...">
+          <button type="submit" class="btn btn-md btn-detail">Cari</button> <!-- Gunakan type submit dan beri name="query" agar nilai input terkirim -->
+      </form>
+    </div>
+    <br><br>
+    <table class="table" style="max-width: 1000px; margin: 0 auto;">
+      <thead class="thead-dark" style="background-color: rgb(0, 0, 0); color: white;">
+          <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nama Klien</th>
+              <th scope="col">Rumah Sakit</th>
+              <th scope="col">No Handphone</th>
+              <th scope="col">Detail</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr th:if="${listKlien.isEmpty()}">
+              <td colspan="5">Klien tidak ditemukan.</td>
+          </tr>
+          <tr th:each="klien, iterStat : ${listKlien}" th:if="${not listKlien.isEmpty()}">
+              <th scope="row" id="counting" th:text="${iterStat.count}"></th>
+              <td class="nama-klien" th:text="${klien.namaKlien}"></td>
+              <td class="email-klien" th:text="${klien.rumahSakit}"></td>
+              <td class="no-hp-klien" th:text="${klien.noHpKlien}"></td>
+              <td><a type="button" class="btn btn-md btn-detail" th:href="@{'/klien/' + ${klien.id}}">Detail</a></td>
+          </tr>
+      </tbody>
+  </table>
+
+    <div>
+      <button class="add-product-btn" onclick="location.href='/klien/tambah'" style="font-size: larger;">+</button>
+    </div>
+  </div>
+    <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         window.location.replace('/no-access');
+         /*]]>*/
+     </script>
+    </div>
+</body>
+
+
+</html>

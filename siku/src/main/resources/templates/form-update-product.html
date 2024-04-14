@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <title>Update Stock</title>
+    <title>Update Product</title>
     <object th:insert="~{fragments/common :: css}" th:remove="tag"></object>
     <object th:insert="~{fragments/common :: js}" th:remove="tag"></object>
 </head>
@@ -18,17 +18,17 @@
         <div class="text-center" th:if="${user.role == 'operational' || user.role == 'admin'}">
         <div class="card mx-lg-5">
             <h2 class="card-header text-center p-3">
-                Update Stock
+                Update Product
             </h2>
             <div class="card-body">
                 <div class="justify-content-center">
-                    <form th:action="@{'/stok/update/'} + ${stokDTO.idKatalog}" th:object="${stokDTO}" method="POST" class="mx-4">
+                    <form th:action="@{'/product/update/'} + ${productDTO.idProduct}" th:object="${productDTO}" method="POST" class="mx-4">
                         ID:
-                        <input required class="form-control" type="text" name="idKatalog" th:value="*{idKatalog}" readonly />
+                        <input required class="form-control" type="text" name="idProduct" th:value="*{idProduct}" readonly />
                         <br><br>
 
                         Product Name:
-                        <input required class="form-control" type="text" name="namaKatalog" th:value="*{namaKatalog}" />
+                        <input required class="form-control" type="text" name="namaProduct" th:value="*{namaProduct}" />
                         <br><br>
 
                         Category:
@@ -38,6 +38,13 @@
                         </select>
                         <br><br>
                         
+                        Description:
+                        <input class="form-control" type="text" name="deskripsi" th:value="*{deskripsi}" required/>
+                        <br><br>
+
+                        Product Image:
+                        <input type="file" name="image" th:value="*{image}" class="form-control"/>
+                        <br><br>
 
                         Stock:
                         <input required class="form-control" type="number" name="stok"

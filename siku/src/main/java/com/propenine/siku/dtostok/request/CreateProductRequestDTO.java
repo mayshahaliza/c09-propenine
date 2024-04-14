@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateStokRequestDTO {
-    private String namaKatalog;
+public class CreateProductRequestDTO {
+    private String namaProduct;
     private Kategori kategori;
     private Integer stok;
     private Integer harga;
     private Boolean status;
+    private String deskripsi;
+    private String image;
 }
