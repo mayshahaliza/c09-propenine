@@ -32,6 +32,11 @@ public class KaryawanController {
     @GetMapping("/karyawan/viewall")
     public String listKaryawan(@RequestParam(name = "role", required = false) String role, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
+
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
         List<User> listKaryawan;
 
         if (role != null && !role.isEmpty()) {
@@ -55,6 +60,11 @@ public class KaryawanController {
     @GetMapping("/search-karyawan")
     public String searchKaryawan(@RequestParam("name") String name, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
+
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
         List<User> searchResults = karyawanService.searchByName(name);
 
         model.addAttribute("listKaryawan", searchResults);
@@ -67,6 +77,11 @@ public class KaryawanController {
     @GetMapping("/karyawan/{id}")
     public String detailUser(@PathVariable("id") Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
+
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
         User karyawan = karyawanService.getUserById(id);
         model.addAttribute("karyawan", karyawan);
         model.addAttribute("user", loggedInUser);
@@ -77,6 +92,11 @@ public class KaryawanController {
     @GetMapping("/karyawan/edit/{id}")
     public String editKaryawan(@PathVariable("id") Long id, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
+
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
         User karyawan = karyawanService.getUserById(id);
         model.addAttribute("karyawan", karyawan);
         model.addAttribute("user", loggedInUser);
@@ -95,6 +115,11 @@ public class KaryawanController {
     @GetMapping("/karyawan/delete/{id}")
     public String deleteKaryawan(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
+
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        
         var karyawan = karyawanService.getUserById(id);
         karyawanService.deleteKaryawan(karyawan);
 

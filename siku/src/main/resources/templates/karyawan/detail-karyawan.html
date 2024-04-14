@@ -173,7 +173,9 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-primary">Edit</a>
+                        <th:block th:if="${user.role == 'hr' || user.role == 'admin'}">
+                            <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-primary">Edit</a>
+                        </th:block>
                         <a th:href="@{/karyawan/viewall}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
@@ -191,11 +193,12 @@
                 Employee status updated successfully.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <span>Click anywhere to close</span>
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
