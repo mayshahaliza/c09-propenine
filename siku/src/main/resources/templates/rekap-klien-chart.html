@@ -45,8 +45,13 @@
 
     <button onclick="filterData()">Filter</button>
 
-    <!-- Canvas for the bar chart -->
-    <canvas id="barChart"></canvas>
+    <th:block th:if="${not #lists.isEmpty(klienSummary)}">
+        <!-- Canvas for the bar chart -->
+        <canvas id="barChart"></canvas>
+    </th:block>
+    <th:block th:if="${#lists.isEmpty(klienSummary)}">
+        <p>Tidak ada pesanan.</p>
+    </th:block>
 </div>
 
 <script th:inline="javascript">

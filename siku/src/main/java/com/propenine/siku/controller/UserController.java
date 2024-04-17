@@ -101,26 +101,26 @@ public class UserController {
    }
 
 
-   @PostMapping("/loginUser")
-   public String loginUser(@ModelAttribute("user") User user, Model model) {
-       String username = user.getUsername();
-       User userData = userRepository.findByUsername(username);
+    @PostMapping("/loginUser")
+    public String loginUser(@ModelAttribute("user") User user, Model model) {
+        String username = user.getUsername();
+        User userData = userRepository.findByUsername(username);
 
-
-       if ( userData != null && user.getPassword().equals(userData.getPassword())) {
-           authenticationService.addLoggedInUser(userData);
-
-
-           User loggedInUser = authenticationService.getLoggedInUser();
-           model.addAttribute("user", loggedInUser);
-
-
-           return "landing-page";
-       } else {
-           model.addAttribute("error", "Invalid username or password");
-           return "login";
-       }
-   }
+        if (userData != null && user.getPassword().equals(userData.getPassword())) {
+            if (!Boolean.toString(userData.getStatus_karyawan()).equals("false")) {
+                authenticationService.addLoggedInUser(userData);
+                User loggedInUser = authenticationService.getLoggedInUser();
+                model.addAttribute("user", loggedInUser);
+                return "landing-page";
+            } else {
+                model.addAttribute("error", "Your account is inactive. Please contact HR for further information.");
+                return "login";
+            }
+        } else {
+            model.addAttribute("error", "Invalid username or password");
+            return "login";
+        }
+    }
 
 
    @PostMapping("/logout")
