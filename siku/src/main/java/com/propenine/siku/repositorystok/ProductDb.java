@@ -11,4 +11,7 @@ public interface ProductDb extends JpaRepository<Product, UUID> {
     List<Product> findAll();
     Optional<Product> findById(UUID idProduct);
     List<Product> findByKategoriId(Long kategoriId);
+    List<Product> findByNamaProductContaining(String namaProduk);
+    List<Product> findByKategoriIdAndNamaProductContaining(Long kategoriId, String productName);
 }
+
