@@ -32,8 +32,22 @@ public class KlienService {
         klienDb.delete(klien);
     }
 
-    public List<Klien> listKlienFiltered(String namaKlien){
-        List<Klien> klienFiltered = klienDb.findByNamaKlienContainingIgnoreCase(namaKlien);
+    public List<Klien> listKlienFiltered(String namaKlien, String rumahSakit) {
+        List<Klien> klienFiltered;
+        if (namaKlien != null && !namaKlien.isEmpty() && rumahSakit != null && !rumahSakit.isEmpty()) {
+            // Mencari klien berdasarkan nama dan rumah sakit
+            klienFiltered = klienDb.findByNamaKlienContainingIgnoreCaseAndRumahSakitContainingIgnoreCase(namaKlien, rumahSakit);
+        } else if (namaKlien != null && !namaKlien.isEmpty()) {
+            // Mencari klien berdasarkan nama saja
+            klienFiltered = klienDb.findByNamaKlienContainingIgnoreCase(namaKlien);
+        } else if (rumahSakit != null && !rumahSakit.isEmpty()) {
+            // Mencari klien berdasarkan rumah sakit saja
+            klienFiltered = klienDb.findByRumahSakitContainingIgnoreCase(rumahSakit);
+        } else {
+            // Jika tidak ada kriteria pencarian yang diberikan, maka tampilkan semua klien
+            klienFiltered = klienDb.findAll();
+        }
+
         return klienFiltered;
     }
 }

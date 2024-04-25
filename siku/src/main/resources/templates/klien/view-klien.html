@@ -2,60 +2,61 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8" />
-    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
-    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-    <title>Detail Klien</title>
-
-    <!-- Include additional styles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
+        .card {
+            max-width: 1100px; /* Maximum card width */
+            margin: 0 auto; /* Center the card horizontally */
         }
-
-        .container {
+        .center-button {
             display: flex;
-            justify-content: center; 
-            align-items: center;
+            justify-content: center;
         }
-
-        .description-card {
-            max-width: 600px;
-            width: 100%;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 150px;
-            margin-left: auto; /* Tambahkan ini */
-            margin-right: auto; /* dan ini */
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-
-        .description-card .card-body {
-            padding: 0; /* Remove padding to prevent extra space */
+        .btn-submit {
+            background-color: #5eac2a;
+            color: #fff;
         }
-
-        .text-center {
-            text-align: center;
-            margin-top: 20px; /* Memberikan margin top pada tombol */
+        .btn-back,
+        .btn-update,
+        .btn-hapus {
+            margin-right: 10px;
         }
-
-        .mb-4 {
-            margin-bottom: 20px;
-        }
-
         .btn-back {
-            background-color: #0d1013;
-            color: #fff;
+            background-color: #6c757d;
         }
-
         .btn-update {
-            background-color: #0d1013;
-            color: #fff;
+            background-color: #007bff;
         }
         .btn-hapus {
-        background-color: #960f0f;
-        color: #fff;
+            background-color: #dc3545;
+        }
+        .navbar {
+            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+        }
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #F3D266;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
         }
     </style>
 </head>
@@ -71,36 +72,88 @@
             </div>
         </div>
     </div>
+    <div class="left-top-corner">
+        <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
+    </div>
+    
     <div class="container">
         <div th:if="${user.role == 'operational' || user.role =='admin'}">
             <div class="description-card">
                 <div class="card-body description-card-body">
-                    <div class="text-center">
-                        <h2 class="mb-4">Detail Klien</h2>
-                    </div>
 
-                    <div class="row">
-                        <!-- Description Column -->
-                        <div class="col-md-12">
-                            <h4 class="card-title" th:text="${klien.namaKlien}"></h4>
-                            <p class="card-text" th:text="'ID: ' + ${klien.id}"></p>
-                            <p class="card-text" th:text="'Rumah Sakit: ' + ${klien.rumahSakit}"></p>
-                            <p class="card-text" th:text="'Email: ' + ${klien.emailKlien}"></p>
-                            <p class="card-text" th:text="'Nomor Handphone: ' + ${klien.noHpKlien}"></p>
-                            <p class="card-text" th:text="'Alamat: ' + ${klien.alamatKlien}"></p>
+                    <div class="card mt-5">
+                        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #F3D266;">
+                            Client Detail
                         </div>
-                        <div class="text-center mt-4">
-                            <a type="button" class="btn btn-back btn-md" href="/klien">Daftar Klien</a>
-                            <!-- Add update button -->
-                            <a type="button" class="btn btn-update btn-md"
-                                th:href="@{/klien/update/{id}(id=${klien.id})}">Update</a>
-                            <a type="button" class="btn btn-hapus btn-md"
-                                th:href="@{/klien/{id}/delete(id=${klien.id})}">Delete</a>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="nama-klien" class="form-label">Client Name:</label>
+                                    <input type="text" class="form-control" id="nama-klien" th:value="${klien.namaKlien}" disabled />
+                                </div>
+                                <div class="form-group">
+                                    <label for="rumah-sakit" class="form-label">Hospital:</label>
+                                    <input type="text" class="form-control" id="rumah-sakit" th:value="${klien.rumahSakit}" disabled />
+                                </div>                                
+                                <div class="form-group">
+                                    <label for="email-klien" class="form-label">Client Email:</label>
+                                    <input type="text" class="form-control" id="email-klien" th:value="${klien.emailKlien}" disabled />
+                                </div>
+                                <div class="form-group">
+                                    <label for="nohp-klien" class="form-label">Client Phone Number:</label>
+                                    <input type="number" class="form-control" id="nohp-klien" th:value="${klien.noHpKlien}" disabled />
+                                </div>
+                                <div class="form-group">
+                                    <label for="alamat-klien" class="form-label">Client Address:</label>
+                                    <input type="text" class="form-control" id="alamat-klien" th:value="${klien.alamatKlien}" disabled />
+                                </div>
+                                <div class="text-center mt-4">
+                                    <a th:href="@{/klien/update/{id}(id=${klien.id})}" class="btn btn-update btn-md" style="background-color:#007bff">Update</a>
+                                    <a th:href="@{'/klien/delete/' + ${klien.id}}" class="btn btn-hapus btn-md" onclick="return confirmDelete()" style="background-color: #dc3545;"><i class="fas fa-trash-alt"></i> Delete</a>
+                                </div>                                                            
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+<!-- Modal untuk update -->
+<div class="modal fade" id="updateSuccessModal" tabindex="-1" aria-labelledby="updateSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateSuccessModalLabel">Success</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Client successfully updated.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Check if the 'klienUpdated' attribute is set to true
+    var klienUpdated = /*[[${klienUpdated}]]*/ false;
+    if (klienUpdated) {
+      // Call the function to show the modal
+      $(document).ready(function() {
+        $('#updateSuccessModal').modal('show');
+      });
+    }
+    /*]]>*/
+</script>
+
+<!-- BATASS-->
 
         <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
             <script th:inline="javascript">
@@ -110,6 +163,19 @@
            </script>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
+
+    <script>
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete this client?')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 </body>
 
 </html>
