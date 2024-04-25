@@ -60,12 +60,12 @@
         <h1>List of Pesanan</h1>
 
         <!-- Filter Form -->
-        <form class="form-inline filter-form">
+        <form class="form-inline filter-form" action="/pesanan/list" method="get">
             <div class="form-group mx-sm-3 mb-2">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by Client or Agent">
+                <input type="text" class="form-control" id="searchInput" name="searchInput" placeholder="Search by Client or Agent">
             </div>
             <div class="form-group mx-sm-3 mb-2">
-                <select class="form-control" id="statusPesanan">
+                <select class="form-control" id="statusPesanan" name="statusPesanan">
                     <option value="">Status Pesanan</option>
                     <option value="Ongoing">Ongoing</option>
                     <option value="Complete">Complete</option>
@@ -73,7 +73,7 @@
                 </select>
             </div>
             <div class="form-group mx-sm-3 mb-2">
-                <select class="form-control" id="tanggalPemesanan">
+                <select class="form-control" id="tanggalPemesanan" name="tanggalPemesanan">
                     <option value="">Date Range</option>
                     <option value="recent">Recent 14 Days</option>
                     <option value="old">Old 14 Days</option>

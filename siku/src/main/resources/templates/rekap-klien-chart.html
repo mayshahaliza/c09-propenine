@@ -6,11 +6,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-    <title>Bar Chart - Rekap Penjualan</title>
+    <title>Bar Chart - Rekap Klien</title>
 </head>
 
 <body>
-
 <div class="text-center" th:if="${user != null && user.role == 'admin' || user.role == 'executive'}"> </div>
 <div th:switch="${user.role}">
     <div th:case="'admin'">
@@ -20,11 +19,6 @@
         <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
     </div>
 </div>
-
-<div class="text-center">
-    <h1>Daftar Penjualan</h1>
-</div>
-
 <!-- Container for the bar chart -->
 <div style="width: 800px; margin: auto;">
     <!-- Dropdown menu for selecting the month -->
@@ -51,17 +45,22 @@
 
     <button onclick="filterData()">Filter</button>
 
-    <!-- Canvas for the bar chart -->
-    <canvas id="barChart"></canvas>
+    <th:block th:if="${not #lists.isEmpty(klienSummary)}">
+        <!-- Canvas for the bar chart -->
+        <canvas id="barChart"></canvas>
+    </th:block>
+    <th:block th:if="${#lists.isEmpty(klienSummary)}">
+        <p>Tidak ada pesanan.</p>
+    </th:block>
 </div>
 
 <script th:inline="javascript">
         /*<![CDATA[*/
         // Get sales summary data passed from the backend
-        var salesData = /*[[${orderSummary}]]*/ [];
+        var salesData = /*[[${klienSummary}]]*/ [];
 
         // Extract product names and total quantities from salesData
-        var productNames = salesData.map(entry => entry.product.namaProduct);
+        var klienNames = salesData.map(entry => entry.klien.namaKlien);
         var totalQuantities = salesData.map(entry => entry.totalQuantity);
 
         // Function to filter data based on selected month and year
@@ -69,15 +68,15 @@
             var selectedMonth = document.getElementById('month').value;
             var selectedYear = document.getElementById('year').value;
             // Perform AJAX request to fetch sales summary data for the selected month and year
-            fetch('/pesanan/rekap-penjualan-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
+            fetch('/pesanan/rekap-klien-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
                 .then(response => response.json())
                 .then(data => {
                     // Extract product names and total quantities from the fetched data
-                    var productNames = data.map(entry => entry.product.namaProduct);
+                    var klienNames = data.map(entry => entry.klien.namaKlien);
                     var totalQuantities = data.map(entry => entry.totalQuantity);
 
                     // Update the chart with the new data
-                    barChart.data.labels = productNames;
+                    barChart.data.labels = klienNames;
                     barChart.data.datasets[0].data = totalQuantities;
                     barChart.update();
                 })
@@ -91,7 +90,7 @@
         var barChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: productNames, // Product names on X-axis
+                labels: klienNames, // Product names on X-axis
                 datasets: [{
                     label: 'Total Quantity',
                     data: totalQuantities, // Total quantities on Y-axis

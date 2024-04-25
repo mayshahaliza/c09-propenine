@@ -33,26 +33,6 @@ public class KategoriServiceImpl implements KategoriService{
     public Long countData(){
         return kategoriDb.count();
     }
-    
-    // @Override
-    // public void createKategori(){
-    //     String[] manualKategori = {
-    //         "Surgery",
-    //         "Urologi",
-    //         "Anesthesia",
-    //         "Obstetrics & Gynecology"};
-
-    //         if (kategoriDb.count() == 0) {
-    //             for (String namaKategori : manualKategori) {
-    //                 var kategoriDTO = new CreateKategoriRequestDTO();
-    //                 kategoriDTO.setNamaKategori(namaKategori);
-
-    //                 var kategori = kategoriMapper.createKategoriRequestDTOToKategori(kategoriDTO);
-
-    //                 saveKategori(kategori);
-    //             }
-    //         }
-    // }
 
     public Kategori getKategoriById(Long kategoriId) {
         Optional<Kategori> kategoriOptional = kategoriDb.findById(kategoriId);

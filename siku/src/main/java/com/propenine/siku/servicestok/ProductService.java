@@ -27,4 +27,8 @@ public class ProductService {
     public Product getProductById(UUID idProduct) {
         return productDb.findById(idProduct).get();
     }
+    public List<Product> getProductsByCategory(Long kategoriId) {
+        return productDb.findByKategoriId(kategoriId);
+    }
+    
 }

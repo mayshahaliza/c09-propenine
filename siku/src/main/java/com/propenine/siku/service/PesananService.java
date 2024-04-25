@@ -1,6 +1,9 @@
 package com.propenine.siku.service;
 
 import com.propenine.siku.model.Pesanan;
+import com.propenine.siku.model.RekapAgent;
+import com.propenine.siku.model.RekapPenjualan;
+import com.propenine.siku.model.RekapKlien;
 import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.repository.PesananRepository;
 import com.propenine.siku.servicestok.ProductService;
@@ -49,7 +52,6 @@ public class PesananService {
                     pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
                     pesanan.setKlien(updatedPesanan.getKlien());
                     pesanan.setUser(updatedPesanan.getUser());
-                    pesanan.setJumlahBarangPesanan(updatedPesanan.getJumlahBarangPesanan());
                     pesanan.setTanggalPemesanan(updatedPesanan.getTanggalPemesanan());
                     pesanan.setTanggalSelesai(updatedPesanan.getTanggalSelesai());
                     return pesananRepository.save(pesanan);
@@ -60,13 +62,35 @@ public class PesananService {
                 });
     }
 
-
     public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
         LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
         LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement
 
-        return pesananRepository.findByFilters(searchInput, statusPesanan,
-                tanggalPemesanan, recentDate, oldDate);
+        return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
+    }
+
+    public List<RekapPenjualan> getAllOrderSummaries() {
+        return pesananRepository.getAllOrderSummaries();
+    }
+
+    public List<RekapPenjualan> getOrderSummaryByMonthAndYear(int bulan, int tahun) {
+        return pesananRepository.getOrderSummaryByMonthAndYear(bulan, tahun);
+    }
+
+    public List<RekapKlien> getAllKlienSummaries() {
+        return pesananRepository.getAllKlienSummaries();
+    }
+ 
+    public List<RekapKlien> getKlienSummaryByMonthAndYear(int bulan, int tahun) {
+        return pesananRepository.getKlienSummaryByMonthAndYear(bulan, tahun);
+    }
+
+    public List<RekapAgent> getAllAgentSummaries() {
+        return pesananRepository.getAllAgentSummaries();
+    }
+ 
+    public List<RekapAgent> getAgentSummaryByMonthAndYear(int bulan, int tahun) {
+        return pesananRepository.getAgentSummaryByMonthAndYear(bulan, tahun);
     }
 
     @Transactional
