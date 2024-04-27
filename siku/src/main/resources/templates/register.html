@@ -91,7 +91,6 @@
             <div class="form-group">
                 <label for="formStatusKaryawan" class="form-label">Status Karyawan</label>
                 <select class="form-select" id="formStatusKaryawan" th:field = "*{status_karyawan}" name="statusKaryawan">
-                    <option value="0">Tidak Aktif</option>
                     <option value="1">Aktif</option>
                 </select>
                 <small th:if="${#fields.hasErrors('status_karyawan')}" class="text-danger" th:errors="*{status_karyawan}"></small>
