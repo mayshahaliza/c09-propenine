@@ -120,6 +120,33 @@
             $('#myTable').DataTable();
         });
     </script>
+<!-- Modal untuk delete klien -->
+<div th:if="${successMessage}" class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteSuccessModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+                <span th:text="${successMessage}"></span>
+            </div>
+            <div class="modal-footer">
+                <span>Click anywhere to close</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:if="${successMessage}">
+    $(document).ready(function() {
+        $('#deleteSuccessModal').modal('show');
+    });
+</script>
+
+<!-- BATAS -->
+
+
+
 </body>
 <div th:unless="${user.role == 'operational' || user.role =='admin'}">
     <script th:inline="javascript">

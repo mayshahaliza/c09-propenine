@@ -120,38 +120,38 @@
 
 
 <!-- Modal untuk update -->
-<div class="modal fade" id="updateSuccessModal" tabindex="-1" aria-labelledby="updateSuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateSuccessModalLabel">Success</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" aria-labelledby="statusSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusSuccessModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+                Client updated successfully.
+            </div>
+            <div class="modal-footer">
+                <span>Click anywhere to close</span>
+            </div>
         </div>
-        <div class="modal-body">
-          Client successfully updated.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
-  
+</div>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    // Check if the 'klienUpdated' attribute is set to true
-    var klienUpdated = /*[[${klienUpdated}]]*/ false;
-    if (klienUpdated) {
-      // Call the function to show the modal
-      $(document).ready(function() {
-        $('#updateSuccessModal').modal('show');
-      });
-    }
-    /*]]>*/
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var url = window.location.href;
+        if (url.includes('success=status')) {
+            $('#statusSuccessModal').modal('show');
+        }
+    });
+
+    $('#statusSuccessModal').on('hidden.bs.modal', function (e) {
+        console.log('Modal ditutup');
+        // Mengarahkan pengguna kembali ke halaman /klien setelah menutup modal
+        window.location.href = '/klien';
+    });
 </script>
+
 
 <!-- BATASS-->
 

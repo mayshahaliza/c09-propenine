@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.propenine.siku.dto.klien.CreateKlienRequestDTO;
 import com.propenine.siku.dto.klien.KlienMapper;
@@ -44,26 +45,26 @@ public class KlienController {
     }
 
     @PostMapping("/klien/tambah")
-public String addKlien(@ModelAttribute("klienDTO") @Valid CreateKlienRequestDTO klienDTO,
-                        BindingResult bindingResult, Model model) {
+    public String addKlien(@ModelAttribute("klienDTO") @Valid CreateKlienRequestDTO klienDTO,
+                            BindingResult bindingResult, Model model) {
 
-    if (bindingResult.hasErrors()) {
-        // Jika terdapat kesalahan validasi, kembali ke halaman formulir
+        if (bindingResult.hasErrors()) {
+            // Jika terdapat kesalahan validasi, kembali ke halaman formulir
+            return "klien/form-create-klien";
+        }
+
+        var klien = klienMapper.createKlienRequestDTOToKlien(klienDTO);
+        klienService.saveKlien(klien);
+
+        // Set klienAdded ke true untuk menunjukkan bahwa klien telah ditambahkan
+        model.addAttribute("klienAdded", true);
+
+        // Autentikasi
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
         return "klien/form-create-klien";
     }
-
-    var klien = klienMapper.createKlienRequestDTOToKlien(klienDTO);
-    klienService.saveKlien(klien);
-
-    // Set klienAdded ke true untuk menunjukkan bahwa klien telah ditambahkan
-    model.addAttribute("klienAdded", true);
-
-    // Autentikasi
-    User loggedInUser = authenticationService.getLoggedInUser();
-    model.addAttribute("user", loggedInUser);
-
-    return "klien/form-create-klien";
-}
 
 
 
@@ -133,30 +134,28 @@ public String addKlien(@ModelAttribute("klienDTO") @Valid CreateKlienRequestDTO 
         model.addAttribute("id", existingKlien.getId());
         model.addAttribute("namaKlien", existingKlien.getNamaKlien());
     
-        // Set klienUpdated menjadi true untuk menampilkan modal
-        model.addAttribute("klienUpdated", true);
-    
-        return "redirect:/klien/{id}";
+        // Menambahkan parameter success=status untuk menampilkan modal
+        return "redirect:/klien/{id}?success=status";
     }
     
     
 
     //DELETE KLIEN
-@GetMapping("klien/delete/{id}")
-public String deleteKlien(@PathVariable("id") UUID id, Model model) {
-    var klien = klienService.getKlienById(id);
-    String namaKlien = klien.getNamaKlien(); // Simpan nama klien sebelum dihapus
-    
-    klienService.deleteKlien(klien);
+    @GetMapping("klien/delete/{id}")
+    public String deleteKlien(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes, Model model) {
+        var klien = klienService.getKlienById(id);
+        String namaKlien = klien.getNamaKlien(); // Simpan nama klien sebelum dihapus
+        
+        klienService.deleteKlien(klien);
 
-    // Autentikasi
-    User loggedInUser = authenticationService.getLoggedInUser();
-    model.addAttribute("user", loggedInUser);
+        // Autentikasi
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
 
-    model.addAttribute("namaKlien", namaKlien); 
-    model.addAttribute("klienDeleted", true); // Set klienDeleted menjadi true untuk menampilkan modal
-    return "redirect:/klien";
-}
+        model.addAttribute("namaKlien", namaKlien); 
+        redirectAttributes.addFlashAttribute("successMessage", "Client deleted successfully.");
+        return "redirect:/klien";
+    }
 
 
     //SEARCH KLIEN BY NAMA
