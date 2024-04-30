@@ -285,26 +285,55 @@ public class PesananController {
     }
 
     @GetMapping("/rekap-klien")
-    public String getOrderSummaryByKlien(@RequestParam(required = false) Integer bulan,
+    public String getOrderSummaryByKlien(
+            @RequestParam(required = false) Integer bulan,
             @RequestParam(required = false) Integer tahun,
+            @RequestParam(required = false) String clientName,
+            @RequestParam(required = false) String sortBy,
             Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         List<RekapKlien> klienSummary;
+
         if (bulan != null && tahun != null) {
-            klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+            if (clientName != null && !clientName.isEmpty()) {
+                klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+                klienSummary = klienSummary.stream().filter(rekap_klien -> rekap_klien.getKlien().getNamaKlien().toLowerCase().contains(clientName))
+                        .collect(Collectors.toList());
+            } else {
+                klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+            }
         } else {
-            klienSummary = pesananService.getAllKlienSummaries();
+            if (clientName != null && !clientName.isEmpty()) {
+                klienSummary = pesananService.getAllKlienSummaries();
+                klienSummary = klienSummary.stream().filter(rekap_klien -> rekap_klien.getKlien().getNamaKlien().toLowerCase().contains(clientName.toLowerCase()))
+                    .collect(Collectors.toList());
+            } else {
+                klienSummary = pesananService.getAllKlienSummaries();
+            }
         }
 
-        if (klienSummary.isEmpty()) {
-            model.addAttribute("message", "Tidak ada pesanan.");
+        if (sortBy == null || sortBy.equals("mostItems")) {          
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity).reversed());
+        } else if (sortBy.equals("leastItems")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity));
+        } else if (sortBy.equals("highestPrice")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalPrice).reversed());
+        } else if (sortBy.equals("lowestPrice")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalPrice));
+        }
+
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-klien";
+        } else if (klienSummary.isEmpty()) {
+            model.addAttribute("message", "No orders found.");
+            return "laporan-klien";
+        } else {
+            model.addAttribute("klienSummary", klienSummary);
             return "laporan-klien";
         }
-
-        model.addAttribute("klienSummary", klienSummary);
-        return "laporan-klien";
     }
 
     @GetMapping("/rekap-agent")
