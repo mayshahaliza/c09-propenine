@@ -177,6 +177,7 @@ public class PesananController {
                 } else {
                     product.setStatus(false);
                 }
+                pesanan.setJumlahBiayaPesanan(jumlahBarangPesanan * product.getHarga());
                 productService.updateProduct(product);
 
                 pesananService.createPesanan(pesanan);

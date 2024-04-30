@@ -45,13 +45,13 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
             "GROUP BY p.product")
     List<RekapPenjualan> getOrderSummaryByMonthAndYear(@Param("bulan") int bulan, @Param("tahun") int tahun);
 
-    @Query("SELECT NEW com.propenine.siku.model.RekapKlien(p.klien, SUM(p.jumlahBarangPesanan)) " +
+    @Query("SELECT NEW com.propenine.siku.model.RekapKlien(p.klien, SUM(p.jumlahBarangPesanan), SUM(p.jumlahBiayaPesanan)) " +
             "FROM Pesanan p " +
             "WHERE p.statusPesanan = 'Complete' " +
             "GROUP BY p.klien")
     List<RekapKlien> getAllKlienSummaries();
 
-    @Query("SELECT NEW com.propenine.siku.model.RekapKlien(p.klien, CAST(SUM(p.jumlahBarangPesanan) AS java.lang.Long)) " +
+    @Query("SELECT NEW com.propenine.siku.model.RekapKlien(p.klien, CAST(SUM(p.jumlahBarangPesanan) AS java.lang.Long), CAST(SUM(p.jumlahBiayaPesanan) AS java.lang.Long)) " +
             "FROM Pesanan p " +
             "WHERE EXTRACT(YEAR FROM p.tanggalPemesanan) = :tahun " +
             "AND EXTRACT(MONTH FROM p.tanggalPemesanan) = :bulan " +
@@ -59,13 +59,13 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
             "GROUP BY p.klien")
     List<RekapKlien> getKlienSummaryByMonthAndYear(@Param("bulan") int bulan, @Param("tahun") int tahun);
 
-    @Query("SELECT NEW com.propenine.siku.model.RekapAgent(p.user, SUM(p.jumlahBarangPesanan)) " +
+    @Query("SELECT NEW com.propenine.siku.model.RekapAgent(p.user, SUM(p.jumlahBarangPesanan), SUM(p.jumlahBiayaPesanan)) " +
             "FROM Pesanan p " +
             "WHERE p.statusPesanan = 'Complete' " +
             "GROUP BY p.user")
     List<RekapAgent> getAllAgentSummaries();
 
-    @Query("SELECT NEW com.propenine.siku.model.RekapAgent(p.user, CAST(SUM(p.jumlahBarangPesanan) AS java.lang.Long)) " +
+    @Query("SELECT NEW com.propenine.siku.model.RekapAgent(p.user, CAST(SUM(p.jumlahBarangPesanan) AS java.lang.Long), CAST(SUM(p.jumlahBiayaPesanan) AS java.lang.Long)) " +
             "FROM Pesanan p " +
             "WHERE EXTRACT(YEAR FROM p.tanggalPemesanan) = :tahun " +
             "AND EXTRACT(MONTH FROM p.tanggalPemesanan) = :bulan " +
