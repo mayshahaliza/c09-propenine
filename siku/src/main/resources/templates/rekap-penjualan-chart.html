@@ -98,6 +98,21 @@
         .h4-custom {
             font-size: 1rem; /* Adjust the font size as needed */
         }
+
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #F3D266;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
     </style>
     <title>Bar Chart - Rekap Penjualan</title>
 </head>
@@ -114,6 +129,10 @@
     <div th:case="'executive'">
         <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
     </div>
+</div>
+
+<div class="left-top-corner">
+    <a type="button" class="btn btn-back btn-md" href="/pesanan/dashboard"><i class="fas fa-chevron-left"></i></a>
 </div>
 
 <div class="text-center">
