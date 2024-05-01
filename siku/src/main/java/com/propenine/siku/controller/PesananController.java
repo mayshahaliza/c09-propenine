@@ -445,7 +445,13 @@ public class PesananController {
             klienSummary = pesananService.getKlienSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
-        model.addAttribute("klienSummary", klienSummary);
+        klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity).reversed());
+
+        List<RekapKlien> topClients = klienSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        model.addAttribute("klienSummary", topClients);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
@@ -470,8 +476,14 @@ public class PesananController {
             agentSummary = pesananService.getAgentSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
+        agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity).reversed());
+
+        List<RekapAgent> topAgents = agentSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
         // Pass the order summary data and current month/year to the Thymeleaf template
-        model.addAttribute("agentSummary", agentSummary);
+        model.addAttribute("agentSummary", topAgents);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
