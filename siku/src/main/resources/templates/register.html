@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
             integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
@@ -24,22 +25,42 @@
         .form-group {
             margin-bottom: 1.5rem;
         }
-        .btn-submit {
-            background-color: #0d1013;
-            color: #fff;
-        }
+
 
         body {
             font-family: 'Poppins', sans-serif;
+        }
+
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #F3D266;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .navbar {
+            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
         }
     </style>
 </head>
 <body>
 <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
 
+<div class="left-top-corner">
+    <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
+</div>
+
 <div class="text-center" th:if="${user.role == 'admin'}"> </div>
 <div class="card mt-5">
-    <div class="card-header text-center fw-bold" style="font-size: 24px;">
+    <div class="card-header text-center fw-bold" style="font-size: 24px">
         Register Employee
     </div>
     <div class="card-body">
@@ -49,38 +70,38 @@
             </div>
 
             <div class="form-group">
-                <label for="formNamaDepan" class="form-label">Nama Depan</label>
-                <input type="text" th:field = "*{nama_depan}" class="form-control" id="formNamaDepan" placeholder ="Masukkan nama depan">
+                <label for="formNamaDepan" class="form-label">First name</label>
+                <input type="text" th:field = "*{nama_depan}" class="form-control" id="formNamaDepan" placeholder ="Enter first name">
                 <small th:if="${#fields.hasErrors('nama_depan')}" class="text-danger" th:errors="*{nama_depan}"></small>
             </div>
             <div class="form-group">
-                <label for="formNamaBelakang" class="form-label">Nama Belakang</label>
-                <input type="text" th:field = "*{nama_belakang}" class="form-control" id="formNamaBelakang" placeholder ="Masukkan nama belakang">
+                <label for="formNamaBelakang" class="form-label">Last name</label>
+                <input type="text" th:field = "*{nama_belakang}" class="form-control" id="formNamaBelakang" placeholder ="Enter last name">
                 <small th:if="${#fields.hasErrors('nama_belakang')}" class="text-danger" th:errors="*{nama_belakang}"></small>
             </div>
             <div class="form-group">
                 <label for="formEmail" class="form-label">Email</label>
-                <input type="text" th:field = "*{email}"  class="form-control" id="formEmail" placeholder ="Masukkan email">
+                <input type="text" th:field = "*{email}"  class="form-control" id="formEmail" placeholder ="Enter email">
                 <small th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></small>
             </div>
             <div class="form-group">
-                <label for="formNomorHp" class="form-label">Nomor Hp</label>
-                <input type="number" th:field = "*{nomor_hp}"  class="form-control" id="formNomorHp" placeholder ="Masukkan nomor hp">
+                <label for="formNomorHp" class="form-label">Phone number</label>
+                <input type="number" th:field = "*{nomor_hp}"  class="form-control" id="formNomorHp" placeholder ="Enter phone number">
                 <small th:if="${#fields.hasErrors('nomor_hp')}" class="text-danger" th:errors="*{nomor_hp}"></small>
             </div>
             <div class="form-group">
-                <label for="formAlamat" class="form-label">Alamat</label>
-                <input type="text" th:field = "*{alamat}" class="form-control" id="formAlamat" placeholder ="Masukkan alamat">
+                <label for="formAlamat" class="form-label">Address</label>
+                <input type="text" th:field = "*{alamat}" class="form-control" id="formAlamat" placeholder ="Enter address">
                 <small th:if="${#fields.hasErrors('alamat')}" class="text-danger" th:errors="*{alamat}"></small>
             </div>
             <div class="form-group">
-                <label for="formTanggalLahir" class="form-label">Tanggal Lahir</label>
+                <label for="formTanggalLahir" class="form-label">Birthdate</label>
                 <input type="date" th:field = "*{tanggal_lahir}" class="form-control" id="formTanggalLahir">
                 <small th:if="${#fields.hasErrors('tanggal_lahir')}" class="text-danger" th:errors="*{tanggal_lahir}"></small>
             </div>
             <div class="form-group">
-                <label for="formTempatLahir" class="form-label">Tempat Lahir</label>
-                <input type="text" th:field = "*{tempat_lahir}" class="form-control" id="formTempatLahir" placeholder ="Masukkan tempat lahir">
+                <label for="formTempatLahir" class="form-label">Birth town</label>
+                <input type="text" th:field = "*{tempat_lahir}" class="form-control" id="formTempatLahir" placeholder ="Enter birth town">
                 <small id="tempat-lahir-error" class="text-danger"></small>
             </div>
             <div class="form-group">
@@ -94,15 +115,15 @@
                 <small th:if="${#fields.hasErrors('role')}" class="text-danger" th:errors="*{role}"></small>
             </div>
             <div class="form-group">
-                <label for="formStatusKaryawan" class="form-label">Status Karyawan</label>
+                <label for="formStatusKaryawan" class="form-label">Employee Status</label>
                 <select class="form-select" id="formStatusKaryawan" th:field = "*{status_karyawan}" name="statusKaryawan">
-                    <option value="1">Aktif</option>
+                    <option value="1">Active</option>
                 </select>
                 <small th:if="${#fields.hasErrors('status_karyawan')}" class="text-danger" th:errors="*{status_karyawan}"></small>
             </div>
             <div class="form-group">
                 <label for="formUsername" class="form-label">Username</label>
-                <input type="text" th:field = "*{username}" class="form-control" id="formUsername" placeholder ="Masukkan username">
+                <input type="text" th:field = "*{username}" class="form-control" id="formUsername" placeholder ="Enter username">
                 <small th:if="${#fields.hasErrors('username')}" class="text-danger" th:errors="*{username}"></small>
             </div>
             <div class="form-group">
@@ -111,7 +132,7 @@
                 <small th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="*{password}"></small>
             </div>
             <div class="center-button">
-                <button type="submit" class="btn btn-submit" >Register</button>
+                <button type="submit" class="btn btn-primary" >Register</button>
             </div>
         </form>
     </div>
