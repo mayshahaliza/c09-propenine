@@ -337,26 +337,59 @@ public class PesananController {
     }
 
     @GetMapping("/rekap-agent")
-    public String getOrderSummaryByAgent(@RequestParam(required = false) Integer bulan,
+    public String getOrderSummaryByAgent(
+            @RequestParam(required = false) Integer bulan,
             @RequestParam(required = false) Integer tahun,
+            @RequestParam(required = false) String agentName,
+            @RequestParam(required = false) String sortBy,
             Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         List<RekapAgent> agentSummary;
+
         if (bulan != null && tahun != null) {
-            agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+            if (agentName != null && !agentName.isEmpty()) {
+                agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+                agentSummary = agentSummary.stream()
+                        .filter(rekap_agent -> (rekap_agent.getUser().getNama_depan().toLowerCase() + " " + rekap_agent.getUser().getNama_belakang().toLowerCase())
+                        .contains(agentName.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+            }
         } else {
-            agentSummary = pesananService.getAllAgentSummaries();
+            if (agentName != null && !agentName.isEmpty()) {
+                agentSummary = pesananService.getAllAgentSummaries();
+                agentSummary = agentSummary.stream()
+                        .filter(rekap_agent -> (rekap_agent.getUser().getNama_depan().toLowerCase() + " " + rekap_agent.getUser().getNama_belakang().toLowerCase())
+                        .contains(agentName.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                agentSummary = pesananService.getAllAgentSummaries();
+            }
         }
 
-        if (agentSummary.isEmpty()) {
-            model.addAttribute("message", "Tidak ada pesanan.");
+        if (sortBy == null || sortBy.equals("mostItems")) {          
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity).reversed());
+        } else if (sortBy.equals("leastItems")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity));
+        } else if (sortBy.equals("highestPrice")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalPrice).reversed());
+        } else if (sortBy.equals("lowestPrice")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalPrice));
+        }
+
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-agent";
+        } else if (agentSummary.isEmpty()) {
+            model.addAttribute("message", "No orders found.");
+            return "laporan-agent";
+        } else {
+            model.addAttribute("agentSummary", agentSummary);
             return "laporan-agent";
         }
-
-        model.addAttribute("agentSummary", agentSummary);
-        return "laporan-agent";
     }
 
     @GetMapping("/rekap-penjualan-chart")
