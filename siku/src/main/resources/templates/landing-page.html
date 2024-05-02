@@ -480,6 +480,38 @@ footer {
        </div>
    </footer>
 
+   <div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" aria-labelledby="statusSuccessModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content" style="color: black;">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="statusSuccessModalLabel">Success</h5>
+               </div>
+               <div class="modal-body">
+                   User successfully logged in.
+               </div>
+               <div class="modal-footer">
+                   <span>Click anywhere to close</span>
+               </div>
+           </div>
+       </div>
+   </div>
+
+   <div class="modal fade" id="statusSuccessModalRegister" tabindex="-1" role="dialog" aria-labelledby="statusSuccessModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content" style="color: black;">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="statusSuccessModalLabel">Success</h5>
+               </div>
+               <div class="modal-body">
+                   Successfully registered an employee.
+               </div>
+               <div class="modal-footer">
+                   <span>Click anywhere to close</span>
+               </div>
+           </div>
+       </div>
+   </div>
+
 
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
        integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1"
@@ -487,6 +519,32 @@ footer {
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
        integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk"
        crossorigin="anonymous"></script>
+
+   <script>
+    $(document).ready(function() {
+        var url = window.location.href;
+        if (url.includes('loginUser')) {
+            $('#statusSuccessModal').modal('show');
+        }
+    });
+
+    $('#statusSuccessModal').on('hidden.bs.modal', function (e) {
+        console.log('Modal ditutup');
+    });
+    </script>
+
+   <script>
+    $(document).ready(function() {
+        var url = window.location.href;
+        if (url.includes('registerUser')) {
+            $('#statusSuccessModalRegister').modal('show');
+        }
+    });
+
+    $('#statusSuccessModal').on('hidden.bs.modal', function (e) {
+        console.log('Modal ditutup');
+    });
+    </script>
 </body>
 
 
