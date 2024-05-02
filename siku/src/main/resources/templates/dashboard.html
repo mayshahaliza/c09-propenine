@@ -15,37 +15,50 @@
 
     <style>
         .card {
-            max-width: 1100px; /* Maximum card width */
-            margin: 0 auto; /* Center the card horizontally */
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .center-button {
-            display: flex;
-            justify-content: center;
+         .navbar {
+            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
         }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
+
         .btn-submit {
             background-color: #5eac2a;
             color: #fff;
         }
+
         .btn-back,
         .btn-update,
         .btn-hapus {
             margin-right: 10px;
         }
+
         .btn-back {
             background-color: #6c757d;
         }
+
         .btn-update {
             background-color: #007bff;
         }
+
         .btn-hapus {
             background-color: #dc3545;
         }
-        .navbar {
-            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+        .center-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; /* Add space between the chart card and the button */
+            margin-bottom: 20px;
         }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+
         .left-top-corner {
             position: fixed;
             top: 90px;
@@ -53,24 +66,24 @@
         }
 
         .left-top-corner .btn-back {
-            background-color: #F3D266;; /* Background color */
-            color: #fff; /* Text color */
-            border: none; /* Remove border */
-            padding: 8px 12px; /* Button padding */
-            border-radius: 5px; /* Button corner shape */
-            text-decoration: none; /* Remove underline */
+            background-color: #F3D266;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
         }
-         body {
+
+        body {
             font-family: 'Poppins', sans-serif;
         }
 
         .container {
-        margin-top: 30px;
-    }
+            margin-top: 30px;
+        }
 
         .description-card-body {
             padding: 1.25rem;
-            /* Adjust padding as needed */
         }
 
         .btn-back {
@@ -79,26 +92,54 @@
         }
 
         .description-card .card-body {
-            padding: 0; /* Remove padding to prevent extra space */
+            padding: 0;
         }
 
         .text-center {
             text-align: center;
         }
 
-        /* Define different font sizes for h2 and h3 */
         .h2-custom {
-            font-size: 3rem; /* Adjust the font size as needed */
+            font-size: 3rem;
         }
 
         .h3-custom {
-            font-size: 1.5rem; /* Adjust the font size as needed */
+            font-size: 1.5rem;
         }
 
         .h4-custom {
-            font-size: 1rem; /* Adjust the font size as needed */
+            font-size: 1rem;
         }
 
+        .chart-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+       .chart-card {
+            width: 100%; /* Modify width to 100% */
+            max-width: 600px; /* Add max-width to limit width on larger screens */
+            margin: 0 auto; /* Center the chart card */
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chart-card h2 {
+            padding: 20px;
+            margin: 0;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .chart-card canvas {
+            width: 100%;
+            height: 300px;
+        }
         .left-top-corner {
             position: fixed;
             top: 90px;
@@ -113,80 +154,105 @@
             border-radius: 5px; /* Button corner shape */
             text-decoration: none; /* Remove underline */
         }
+
     </style>
-    <title>Bar Chart - Rekap Penjualan</title>
+    <title>Dashboard</title>
 </head>
-
-
 
 <body>
 
 <div class="text-center" th:if="${user != null && user.role == 'admin' || user.role == 'executive'}"> </div>
-<div th:switch="${user.role}">
-    <div th:case="'admin'">
-        <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
-    </div>
-    <div th:case="'executive'">
-        <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+<div th:if="${user != null}">
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'executive'">
+            <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
+        </div>
     </div>
 </div>
-
 <div class="left-top-corner">
-    <a type="button" class="btn btn-back btn-md" href="/pesanan/dashboard"><i class="fas fa-chevron-left"></i></a>
+    <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
 </div>
 
-<div class="text-center">
-    <h1>Daftar Penjualan</h1>
-</div>
 
-<!-- Container for the bar chart -->
-<div style="width: 800px; margin: auto;">
-    <!-- Dropdown menu for selecting the month -->
-    <label for="month">Select Month:</label>
-    <select id="month" required>
-        <option value="">Pilih Bulan</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
 
-    <!-- Dropdown menu for selecting the year -->
-    <label for="year">Select Year:</label>
-    <input type="number" name="tahun" id="year" required min="1">
-
-    <button onclick="filterData()">Filter</button>
-
+<!-- Top Sales Chart Card -->
+<div class="chart-card">
+    <h2>Top Sales</h2>
     <!-- Container for the bar chart -->
-    <div id="chartContainer" style="width: 800px; margin: auto;">
-        <!-- Canvas for the bar chart -->
-        <canvas id="barChart"></canvas>
-    </div>
+    <div style="width: 100%; margin: auto;">
+        <!-- Dropdown menu for selecting the month -->
+        <label for="month">Select Month:</label>
+        <select id="month" required>
+            <option value="">Pilih Bulan</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
 
-    <!-- Message to display when there is no product -->
-    <div id="noProductMessage" class="text-center" style="display: none;">
-        <div class="container">
-            <div class="description-card">
-                <div class="card-body description-card-body">
+        <!-- Dropdown menu for selecting the year -->
+        <label for="year">Insert Year:</label>
+        <input type="number" name="tahun" id="year" required min="1">
 
-                    <div class="text-center pt-3"> <!-- Adjust padding top as needed -->
-                        <h3 class="h3-custom">No Product</h3>
+        <button onclick="filterData()" type="submit" class="btn btn-primary">Filter</button>
+
+        <!-- Container for the bar chart -->
+        <div id="chartContainer" style="width: 100%; margin: auto;">
+            <!-- Canvas for the bar chart -->
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- Message to display when there is no product -->
+        <div id="noProductMessage" class="text-center" style="display: none;">
+            <div class="container">
+                <div class="description-card">
+                    <div class="card-body description-card-body">
+
+                        <div class="text-center pt-3">
+                            <h3 class="h3-custom">No Product</h3>
+                        </div>
+
+                        <div class="text-center m-3">
+                            <h3 class="h4-custom">There is no product sold</h3>
+                        </div>
+
                     </div>
-
-                    <div class="text-center m-3"> <!-- Adjust padding top as needed -->
-                        <h3 class="h4-custom">There is no product sold</h3>
-                    </div>
-
                 </div>
             </div>
+        </div>
+        <div class="center-button">
+            <a href="rekap-penjualan" class="btn btn-back">Laporan Penjualan</a>
+        </div>
+    </div>
+</div>
+
+<!-- Placeholder for other charts -->
+<div class="chart-container">
+    <div class="chart-card">
+        <h2>Other Chart 1</h2>
+        <canvas id="otherChart1"></canvas>
+        <!-- Add button for navigation -->
+        <div class="center-button">
+            <button class="btn btn-back">Go to Another Page</button>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h2>Other Chart 2</h2>
+        <canvas id="otherChart2"></canvas>
+        <!-- Add button for navigation -->
+        <div class="center-button">
+            <button class="btn btn-back">Go to Another Page</button>
         </div>
     </div>
 </div>
@@ -205,7 +271,6 @@
     var sortedSalesData = sortData(salesData.slice(0, 10)); // Sort and select top 10
     var productNames = sortedSalesData.map(entry => entry.product.namaProduct);
     var totalQuantities = sortedSalesData.map(entry => entry.totalQuantity);
-
 
     function showChartOrMessage() {
         var chartContainer = document.getElementById('chartContainer');
@@ -251,7 +316,7 @@
         var selectedYear = document.getElementById('year').value;
 
         // Perform AJAX request to fetch sales summary data for the selected month and year
-        fetch('/pesanan/rekap-penjualan-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
+        fetch('rekap-penjualan-chart-data-dashboard?bulan=' + selectedMonth + '&tahun=' + selectedYear)
             .then(response => response.json())
             .then(data => {
                 // Sort and select top 10 from the fetched data
@@ -274,17 +339,15 @@
     /*]]>*/
 </script>
 
-
-
-
-</body>
-
+<!-- Redirect if user doesn't have access -->
 <div th:unless="${user != null && (user.role == 'executive' || user.role =='admin') }">
     <script th:inline="javascript">
-            /*<![CDATA[*/
-            window.location.replace('/no-access');
-            /*]]>*/
-        </script>
+        /*<![CDATA[*/
+        window.location.replace('/no-access');
+        /*]]>*/
+    </script>
 </div>
+
+</body>
 
 </html>

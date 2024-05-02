@@ -245,6 +245,11 @@ public class PesananController {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
         List<RekapPenjualan> orderSummary;
         if (bulan != null && tahun != null) {
             orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
@@ -343,6 +348,41 @@ public class PesananController {
         return "rekap-penjualan-chart";
     }
 
+    // UNTUK DASHBOARD
+    @GetMapping("/dashboard")
+    public String getOrderSummaryChartDashboard(@RequestParam(required = false) Integer bulan,
+                                       @RequestParam(required = false) Integer tahun,
+                                       Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        // Fetch order summary data based on the provided month and year or use the current month and year by default
+        List<RekapPenjualan> orderSummary;
+        if (bulan != null && tahun != null) {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        } else {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(currentMonth, currentYear);
+        }
+
+        orderSummary.sort(Comparator.comparing(RekapPenjualan::getTotalQuantity).reversed());
+
+        List<RekapPenjualan> topProducts = orderSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        // Pass the order summary data and current month/year to the Thymeleaf template
+        model.addAttribute("orderSummary", topProducts);
+        model.addAttribute("currentMonth", currentMonth);
+        model.addAttribute("currentYear", currentYear);
+
+        return "dashboard";
+    }
+
     @GetMapping("/rekap-klien-chart")
     public String getKlienSummaryChart(@RequestParam(required = false) Integer bulan,
                                        @RequestParam(required = false) Integer tahun,
@@ -398,6 +438,18 @@ public class PesananController {
     @GetMapping("/rekap-penjualan-chart-data")
     @ResponseBody
     public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Fetch order summary data for the specified month and year
+        List<RekapPenjualan> orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        return orderSummary;
+    }
+
+    // UNTUK DASHBOARD
+    @GetMapping("/rekap-penjualan-chart-data-dashboard")
+    @ResponseBody
+    public List<RekapPenjualan> getOrderSummaryChartDataDashboard(@RequestParam int bulan, @RequestParam int tahun, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 

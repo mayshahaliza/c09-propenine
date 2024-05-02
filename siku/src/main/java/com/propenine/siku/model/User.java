@@ -59,7 +59,7 @@ public class User {
     private LocalDate tanggal_lahir;
 
     @NotBlank(message = "Tempat lahir harus diisi")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Tempat lahir harus berisi huruf saja")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Tempat lahir harus berisi huruf dan spasi saja")
     @Size(min = 1, max = 255, message = "Panjang tempat lahir antara 1-255 karakter")
     @Column(name = "tempat_lahir", nullable = false)
     private String tempat_lahir;
