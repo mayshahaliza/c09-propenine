@@ -81,9 +81,8 @@
                 <label for="user">Username Agent</label>
                 <select class="form-control" id="user" th:field="*{user}" required>
                     <option value="">-- Select Agent --</option>
-                    <option th:each="user : ${userList}" th:value="${user.id}"
-                        th:selected="${user.id == pesanan.user.id}"
-                        th:text="${user.username}"></option>
+                    <option th:each="user : ${userList}" th:if="${user.role == 'operational'}"
+                    th:value="${user.id}" th:text="${user.username}"></option>
                 </select>
             </div>
 

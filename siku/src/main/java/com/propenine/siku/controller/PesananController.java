@@ -58,46 +58,6 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
-    // @GetMapping("/list")
-    // public String listAllPesanan(
-    // @RequestParam(name = "searchInput", required = false) String searchInput,
-    // @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
-    // @RequestParam(name = "tanggalPemesanan", required = false) String
-    // tanggalPemesanan,
-    // Model model) {
-
-    // List<Pesanan> pesananList;
-
-    // if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
-    // && !statusPesanan.isEmpty())
-    // || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-    // pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
-    // tanggalPemesanan);
-    // } else {
-    // pesananList = pesananService.getAllPesanan();
-    // }
-
-    // pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
-    // Comparator.comparing(status -> {
-    // switch (status) {
-    // case "Ongoing":
-    // return 0;
-    // case "Complete":
-    // return 1;
-    // case "Canceled":
-    // return 2;
-    // default:
-    // return 3;
-    // }
-    // })));
-
-    // model.addAttribute("pesananList", pesananList);
-
-    // User loggedInUser = authenticationService.getLoggedInUser();
-    // model.addAttribute("user", loggedInUser);
-
-    // return "pesanan/list";
-    // }
 
     @GetMapping("/list")
     public String listAllPesanan(
