@@ -33,10 +33,10 @@
             margin-right: 10px;
         }
         .btn-back {
-            background-color: #6c757d;
+            background-color: #3c3f61;
         }
         .btn-update {
-            background-color: #007bff;
+            background-color: #3c3f61;
         }
         .btn-hapus {
             background-color: #dc3545;
@@ -51,8 +51,8 @@
         }
 
         .left-top-corner .btn-back {
-            background-color: #F3D266;; /* Background color */
-            color: #fff; /* Text color */
+            background-color: #eeeeef;; /* Background color */
+            color: #3c3f61; /* Text color */
             border: none; /* Remove border */
             padding: 8px 12px; /* Button padding */
             border-radius: 5px; /* Button corner shape */
@@ -82,7 +82,7 @@
                 <div class="card-body description-card-body">
 
                     <div class="card mt-5">
-                        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #F3D266;">
+                        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef;">
                             Client Detail
                         </div>
                         <div class="card-body">
@@ -107,10 +107,10 @@
                                     <label for="alamat-klien" class="form-label">Client Address:</label>
                                     <input type="text" class="form-control" id="alamat-klien" th:value="${klien.alamatKlien}" disabled />
                                 </div>
-                                <div class="text-center mt-4">
-                                    <a th:href="@{/klien/update/{id}(id=${klien.id})}" class="btn btn-update btn-md" style="background-color:#007bff">Update</a>
+                                 <div class="text-center mt-4">
+                                    <a th:href="@{/klien/update/{id}(id=${klien.id})}" class="btn btn-update btn-md" style="background-color:#3c3f61; color:#fff">Update</a>
                                     <a th:href="@{'/klien/delete/' + ${klien.id}}" class="btn btn-hapus btn-md" onclick="return confirmDelete()" style="background-color: #dc3545;"><i class="fas fa-trash-alt"></i> Delete</a>
-                                </div>                                                            
+                                </div>                                                           
                             </form>
                         </div>
                     </div>

@@ -30,7 +30,7 @@
         }
 
         .btn-add {
-            background-color: rgb(52, 123, 222);
+            background-color: #3c3f61;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -41,7 +41,17 @@
         }
 
         .btn-add:hover {
-            background-color: #007bff;
+            background-color: #3c3f61;
+        }
+
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
         }
 
         .pesanan-table th,
@@ -80,7 +90,7 @@
                     <form action="/search" method="GET" class="d-flex">
                         <input type="text" id="searchInput" name="query" class="form-control me-2" placeholder="Search by name..." />
                         <input type="text" id="searchInputRumahSakit" name="queryRumahSakit" class="form-control me-2" placeholder="Search by hospital..." />
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-search">Search</button>
                     </form>
                 </div>
                 <button class="btn btn-add" onclick="location.href='/klien/tambah'">Add Client</button>
@@ -106,7 +116,7 @@
                             <td class="email-klien" th:text="${klien.rumahSakit}"></td>
                             <td class="no-hp-klien" th:text="${klien.noHpKlien}"></td>
                             <td style="text-align: center;">
-                                <a type="button" class="btn btn-md btn-primary" th:href="@{'/klien/' + ${klien.id}}">Detail</a>
+                                <a type="button" class="btn btn-md btn-detail" th:href="@{'/klien/' + ${klien.id}}">Detail</a>
                             </td>
                         </tr>
                     </tbody>
