@@ -50,4 +50,8 @@ public class Pesanan {
 
     @Column(name = "tanggal_selesai", nullable = false)
     private LocalDate tanggalSelesai;
+
+    @Column(name = "jumlah_biaya_pesanan")
+    private Integer jumlahBiayaPesanan;
+
 }

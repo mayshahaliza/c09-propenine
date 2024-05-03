@@ -72,4 +72,17 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
             "AND p.statusPesanan = 'Complete' " +
             "GROUP BY p.user")
     List<RekapAgent> getAgentSummaryByMonthAndYear(@Param("bulan") int bulan, @Param("tahun") int tahun);
+    
+    @Query("SELECT p FROM Pesanan p " + "WHERE p.user.id = :userId " +
+        "AND EXTRACT(YEAR FROM p.tanggalPemesanan) = :tahun " +
+        "AND EXTRACT(MONTH FROM p.tanggalPemesanan) = :bulan")
+        List<Pesanan> findOrdersByUserIdAndMonthAndYear(@Param("userId") Long userId, 
+                                                        @Param("bulan") int bulan, 
+                                                        @Param("tahun") int tahun);
+ 
+   List<Pesanan> findOrdersByUserIdAndStatusPesanan(Long userId, String statusPesanan);
+    
+    List<Pesanan> findByUserId(Long userId);
+
+
 }

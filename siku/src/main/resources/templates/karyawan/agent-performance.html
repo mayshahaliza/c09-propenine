@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -44,6 +44,167 @@
             margin-top: 20px;
             float: right;
         }
+
+        .text-dark {
+            color: #000; /* Black color for Ongoing status */
+        }
+
+        .text-danger {
+            color: #ff0000; /* Red color for Canceled status */
+        }
+
+        .text-success {
+            color: #008000; /* Green color for Complete status */
+        }
+    </style>
+</head>
+
+<body>
+    <div th:switch="${user.role}">
+        <div th:case="'admin'">
+            <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
+        </div>
+        <div th:case="'operational'">
+            <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
+        </div>
+    </div>
+    <div class="container">
+        <h1 th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang + ' Performance'}"> 
+
+            <form class="form-inline filter-form" action="/karyawan/performance/{id}" method="get">
+                <input type="hidden" name="id" th:value="${karyawan.id}" />
+                <div class="form-group mx-sm-3 mb-2">
+                    <select class="form-control" id="bulan" name="bulan">
+                        <option value="">Month</option>
+                        <option th:each="month : ${#numbers.sequence(1,12)}" th:value="${month}"
+                            th:text="${month}"></option>
+                    </select>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="number" class="form-control" id="tahun" name="tahun" placeholder="Year">
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <select class="form-control" id="statusPesanan" name="statusPesanan">
+                        <option value="">Status Pesanan</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Complete">Complete</option>
+                        <option value="Canceled">Canceled</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Filter</button>
+            </form>
+
+        <div class="table-container">
+            <table class="table table-striped table-bordered pesanan-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Klien</th>
+                        <th>Nama Agent</th>
+                        <th>Status Pesanan</th>
+                        <th>Jumlah Pesanan</th>
+                        <th>Total Biaya Pesanan</th>
+                        <th>Tanggal Pemesanan</th>
+                        <th>Tanggal Selesai</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pesanan : ${pesananList}">
+                        <td th:text="${pesanan.id}">ID</td>
+                        <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td>
+                        <td th:text="${pesanan.user.username}">Nama Agent</td>
+                        <td>
+                            <span th:text="${pesanan.statusPesanan}"
+                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : (pesanan.statusPesanan == 'Complete' ? 'text-success' : 'text-dark')}"></span>
+                        </td>
+                        <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                        <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}"</td>
+                        <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
+                        <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
+                        <td>
+                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}"
+                                class="btn btn-primary btn-sm">Edit</a>
+                            <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
+                                <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
+                                    th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
+                            </th:block>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <a href="/pesanan/create" class="btn btn-success btn-create">Create New Pesanan</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Pesanan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+        }
+
+        .pesanan-table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .pesanan-table td,
+        .pesanan-table th {
+            text-align: center;
+        }
+
+        .btn-create {
+            margin-top: 20px;
+            float: right;
+        }
+
+        .text-dark {
+            color: #000; /* Black color for Ongoing status */
+        }
+
+        .text-danger {
+            color: #ff0000; /* Red color for Canceled status */
+        }
+
+        .text-success {
+            color: #008000; /* Green color for Complete status */
+        }
     </style>
 </head>
 
@@ -60,26 +221,31 @@
         <h1>List of Pesanan</h1>
 
         <!-- Filter Form -->
-        <form class="form-inline filter-form">
+        <form id="filterForm" class="form-inline filter-form" action="/karyawan/performance/{id}(id=${karyawan.id})" method="get">
+            <input type="hidden" name="id" th:value="${karyawan.id}" />
             <div class="form-group mx-sm-3 mb-2">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by Client or Agent">
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <select class="form-control" id="statusPesanan">
-                    <option value="">Status Pesanan</option>
-                    <option value="Ongoing">Ongoing</option>
-                    <option value="Complete">Complete</option>
-                    <option value="Canceled">Canceled</option>
+                <label for="bulan">Select Month:</label>
+                <select id="bulan" name="bulan" required>
+                    <option value="">Pilih Bulan</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
                 </select>
             </div>
             <div class="form-group mx-sm-3 mb-2">
-                <select class="form-control" id="tanggalPemesanan">
-                    <option value="">Date Range</option>
-                    <option value="recent">Recent 14 Days</option>
-                    <option value="old">Old 14 Days</option>
-                </select>
+                <label for="year">Select Year:</label>
+                <input type="number" name="tahun" id="year" required min="1">
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Filter</button>
+            <button type="button" id="filterBtn" class="btn btn-primary mb-2">Filter</button>
         </form>
 
         <!-- Pesanan Table -->
@@ -92,6 +258,7 @@
                         <th>Nama Agent</th>
                         <th>Status Pesanan</th>
                         <th>Jumlah Pesanan</th>
+                        <th>Total Biaya Pesanan</th>
                         <th>Tanggal Pemesanan</th>
                         <th>Tanggal Selesai</th>
                         <th>Actions</th>
@@ -105,13 +272,16 @@
                         <td th:text="${pesanan.user.username}">Nama Agent</td>
                         <td>
                             <span th:text="${pesanan.statusPesanan}"
-                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : ''}"></span>
+                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : (pesanan.statusPesanan == 'Complete' ? 'text-success' : 'text-dark')}"></span>
                         </td>
                         <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                        <!-- Format total biaya pesanan -->
+                        <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}"</td>
                         <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
                         <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
                         <td>
-                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}" class="btn btn-primary btn-sm">Edit</a>
+                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}"
+                                class="btn btn-primary btn-sm">Edit</a>
                             <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
                                 <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
                                     th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
@@ -119,6 +289,7 @@
                         </td>
                     </tr>
                 </tbody>
+
             </table>
         </div>
 
@@ -126,7 +297,32 @@
         <a href="/pesanan/create" class="btn btn-success btn-create">Create New Pesanan</a>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Fungsi untuk mengirimkan permintaan AJAX saat formulir disubmit
+            $('#filterForm').submit(function(event) {
+                event.preventDefault(); // Prevent default form submission
+                
+                var formData = $(this).serialize(); // Ambil data formulir
+            
+                $.ajax({
+                    url: '/karyawan/performance/${karyawan.id}', // Ganti dengan URL yang sesuai
+                    type: 'GET',
+                    data: formData, // Kirim data formulir
+                    success: function(data) {
+                        // Tanggapi dengan menampilkan data di halaman
+                        $('#resultContainer').html(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
