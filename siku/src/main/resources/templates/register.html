@@ -38,7 +38,7 @@
         }
 
         .left-top-corner .btn-back {
-            background-color: #F3D266;; /* Background color */
+            background-color: #3c3f61;; /* Background color */
             color: #fff; /* Text color */
             border: none; /* Remove border */
             padding: 8px 12px; /* Button padding */
@@ -48,6 +48,16 @@
 
         .navbar {
             margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+        }
+
+        .btn-submit {
+          background-color: #3c3f61; /* Change button color */
+          color: #fff;
+          font-weight: bold;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          border: none;
+          transition: background-color 0.3s ease;
         }
     </style>
 </head>
@@ -60,7 +70,7 @@
 
 <div class="text-center" th:if="${user.role == 'admin'}"> </div>
 <div class="card mt-5">
-    <div class="card-header text-center fw-bold" style="font-size: 24px">
+    <div class="card-header text-center fw-bold" style="background-color: #eeeeef; color: #3c3f61; font-size: 24px;">
         Register Employee
     </div>
     <div class="card-body">
@@ -132,7 +142,7 @@
                 <small th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="*{password}"></small>
             </div>
             <div class="center-button">
-                <button type="submit" class="btn btn-primary" >Register</button>
+                <button type="submit" class="btn-submit" >Register</button>
             </div>
         </form>
     </div>
