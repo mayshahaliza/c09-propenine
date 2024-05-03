@@ -146,9 +146,21 @@
     <!-- <nav th:replace="~{fragments/navbar :: navbar}"></nav> -->
     <div class="container">
         <!-- Product Display -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="kategori">Filter by Category:</label>
+                <select class="form-select" id="kategori" onchange="filterByCategory(this)">
+                    <option value="">All Categories</option>
+                    <th:block th:each="kategori : ${allKategori}">
+                        <option th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
+                    </th:block>                    
+                </select>
+            </div>
+        </div>
         <div class="row">
             <!-- Loop through each product and display it as a clickable card -->
             <div class="col-md-3" th:each="katalog : ${listKatalog}">
+            <!-- <div class="col-md-3" th:each="katalog : ${filteredProducts}"> -->
                 <div class="card">
                     <!-- Determine the appropriate URL based on user role -->
                     <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}" th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
@@ -174,14 +186,14 @@
                 </div>
             </div>
         </div>
-
+    
         <script th:inline="javascript">
             var currentUrl = /*[[@{/}]]*/ '';
             if (currentUrl === '/') {
                 document.querySelector('a.nav-link[href="/"]').classList.add('active');
             }
         </script>
-
+    
         <div th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
             <script th:inline="javascript">
                 /*<![CDATA[*/
@@ -189,8 +201,9 @@
                 /*]]>*/
             </script>
         </div>
-
+    
     </div>
+    
 
 </body>
 

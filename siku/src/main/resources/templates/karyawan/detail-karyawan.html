@@ -17,61 +17,80 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
         }
-
+    
         .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    margin-top: 50px;
-}
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: 50px auto 20px;
+        }
+    
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+    
+        .card-body {
+            padding: 20px;
+        }
+    
+        .form-label {
+            font-weight: 500;
+        }
+    
+        .btn-primary,
+        .btn-secondary {
+            padding: 10px 20px;
+        }
+    
+        .btn-primary:hover,
+        .btn-secondary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    
+        .navbar {
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+    
+        .form-group {
+            margin-bottom: 15px; 
+        }
+    
+        .form-group label {
+            margin-bottom: 5px;
+        }
+    
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -5px;
+            margin-left: -5px;
+        }
+    
+        .form-group {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+    
+        .id-field,
+        .address-field {
+            width: 100% - 44px;
+        }
 
-.card {
-    max-width: 60rem;
-    margin-bottom: 20px;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+        .id-field {
+        margin-bottom: 20px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
 
-.card-body {
-    padding: 20px;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
-.btn-primary,
-.btn-secondary {
-    padding: 10px 20px;
-}
-
-.btn-primary:hover,
-.btn-secondary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.left-top-corner {
-    position: fixed;
-    top: 90px;
-    left: 20px;
-}
-
-.left-top-corner .btn-back {
-    background-color: #F3D266;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    text-decoration: none;
-}
+    .address-field {
+        margin-bottom: 20px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
     
     </style>
 </head>
@@ -153,9 +172,12 @@
                             <input type="text" class="form-control" id="statusKaryawan" th:value="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}" readonly disabled>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div th:if="${karyawan.role == 'operational'}" class="text-right mb-3">
                         <a th:href="@{/karyawan/performance/{id}(id=${karyawan.id})}" class="btn btn-link">See Performance</a>
                     </div>     
+=======
+>>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
                     <div class="text-center">
                         <th:block th:if="${user.role == 'hr' || user.role == 'admin'}">
                             <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-primary">Edit</a>
@@ -199,7 +221,10 @@
     });
 </script>
 </body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
 <div th:unless="${user.role == 'hr' || user.role =='admin' || user.role =='executive'}">
     <script th:inline="javascript">
             /*<![CDATA[*/

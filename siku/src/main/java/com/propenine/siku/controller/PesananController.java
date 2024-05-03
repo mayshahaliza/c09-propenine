@@ -3,6 +3,7 @@ package com.propenine.siku.controller;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.propenine.siku.model.RekapPenjualan;
 import com.propenine.siku.model.RekapKlien;
@@ -69,7 +70,6 @@ public class PesananController {
             pesananList = pesananService.getAllPesanan();
         }
 
-        // Menggunakan Comparator untuk mengurutkan berdasarkan status pesanan
         pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
                 Comparator.comparing(status -> {
                     switch (status) {
@@ -80,7 +80,7 @@ public class PesananController {
                         case "Canceled":
                             return 2;
                         default:
-                            return 3; // default untuk kasus lainnya
+                            return 3;
                     }
                 })));
 
@@ -104,7 +104,7 @@ public class PesananController {
         model.addAttribute("klienList", klienList);
         model.addAttribute("userList", userList);
 
-        return "pesanan/create"; // HTML template for creating a new pesanan
+        return "pesanan/create";
     }
 
     @PostMapping("/create")
@@ -114,11 +114,9 @@ public class PesananController {
         User user = pesanan.getUser();
         int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
 
-        // Pastikan semua nilai yang diperlukan telah diisi dan valid
         if (user != null && klien != null && product != null && jumlahBarangPesanan > 0) {
             int stokSaatIni = product.getStok();
 
-            // Pastikan stok produk mencukupi
             if (stokSaatIni >= jumlahBarangPesanan) {
                 product.setStok(stokSaatIni - jumlahBarangPesanan);
                 if (product.getStok() > 0) {
@@ -126,9 +124,8 @@ public class PesananController {
                 } else {
                     product.setStatus(false);
                 }
-                productService.updateProduct(product); // Update stok di database
+                productService.updateProduct(product); 
 
-                // Simpan pesanan ke dalam database
                 pesananService.createPesanan(pesanan);
 
                 return "redirect:/pesanan/list";
@@ -159,7 +156,7 @@ public class PesananController {
         model.addAttribute("tanggalPemesanan", pesanan.getTanggalPemesanan().toString());
         model.addAttribute("tanggalSelesai", pesanan.getTanggalSelesai().toString());
 
-        return "pesanan/update"; // HTML template for updating an existing pesanana
+        return "pesanan/update"; 
     }
 
     // @PostMapping("/update/{id}")
@@ -260,6 +257,8 @@ public class PesananController {
             return "laporan-penjualan";
         }
 
+        orderSummary.sort(Comparator.comparing(RekapPenjualan::getTotalQuantity).reversed());
+
         model.addAttribute("orderSummary", orderSummary);
         return "laporan-penjualan";
     }
@@ -330,12 +329,17 @@ public class PesananController {
             orderSummary = pesananService.getOrderSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
+        orderSummary.sort(Comparator.comparing(RekapPenjualan::getTotalQuantity).reversed());
+
+        List<RekapPenjualan> topProducts = orderSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
         // Pass the order summary data and current month/year to the Thymeleaf template
-        model.addAttribute("orderSummary", orderSummary);
+        model.addAttribute("orderSummary", topProducts);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
-        // Return the name of the Thymeleaf template to render
         return "rekap-penjualan-chart";
     }
 
@@ -346,12 +350,10 @@ public class PesananController {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        // Get the current month and year
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonthValue();
         int currentYear = currentDate.getYear();
 
-        // Fetch order summary data based on the provided month and year or use the current month and year by default
         List<RekapKlien> klienSummary;
         if (bulan != null && tahun != null) {
             klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
@@ -359,12 +361,10 @@ public class PesananController {
             klienSummary = pesananService.getKlienSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
-        // Pass the order summary data and current month/year to the Thymeleaf template
         model.addAttribute("klienSummary", klienSummary);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
-        // Return the name of the Thymeleaf template to render
         return "rekap-klien-chart";
     }
 
@@ -375,12 +375,10 @@ public class PesananController {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        // Get the current month and year
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonthValue();
         int currentYear = currentDate.getYear();
 
-        // Fetch order summary data based on the provided month and year or use the current month and year by default
         List<RekapAgent> agentSummary;
         if (bulan != null && tahun != null) {
             agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
