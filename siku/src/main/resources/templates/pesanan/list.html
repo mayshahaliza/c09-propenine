@@ -44,6 +44,18 @@
             margin-top: 20px;
             float: right;
         }
+
+        .text-dark {
+            color: #000; /* Black color for Ongoing status */
+        }
+
+        .text-danger {
+            color: #ff0000; /* Red color for Canceled status */
+        }
+
+        .text-success {
+            color: #008000; /* Green color for Complete status */
+        }
     </style>
 </head>
 
@@ -62,7 +74,8 @@
         <!-- Filter Form -->
         <form class="form-inline filter-form" action="/pesanan/list" method="get">
             <div class="form-group mx-sm-3 mb-2">
-                <input type="text" class="form-control" id="searchInput" name="searchInput" placeholder="Search by Client or Agent">
+                <input type="text" class="form-control" id="searchInput" name="searchInput"
+                    placeholder="Search by Client or Agent">
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <select class="form-control" id="statusPesanan" name="statusPesanan">
@@ -92,6 +105,7 @@
                         <th>Nama Agent</th>
                         <th>Status Pesanan</th>
                         <th>Jumlah Pesanan</th>
+                        <th>Total Biaya Pesanan</th>
                         <th>Tanggal Pemesanan</th>
                         <th>Tanggal Selesai</th>
                         <th>Actions</th>
@@ -105,13 +119,16 @@
                         <td th:text="${pesanan.user.username}">Nama Agent</td>
                         <td>
                             <span th:text="${pesanan.statusPesanan}"
-                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : ''}"></span>
+                                th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : (pesanan.statusPesanan == 'Complete' ? 'text-success' : 'text-dark')}"></span>
                         </td>
                         <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                        <!-- Format total biaya pesanan -->
+                        <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}"</td>
                         <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
                         <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
                         <td>
-                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}" class="btn btn-primary btn-sm">Edit</a>
+                            <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}"
+                                class="btn btn-primary btn-sm">Edit</a>
                             <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
                                 <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
                                     th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
@@ -119,6 +136,7 @@
                         </td>
                     </tr>
                 </tbody>
+
             </table>
         </div>
 

@@ -14,14 +14,17 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa; /* Set a light background color */
+            background-color: #f8f9fa;
+            /* Set a light background color */
         }
 
         .container {
-            background-color: #ffffff; /* Set a white background for the container */
+            background-color: #ffffff;
+            /* Set a white background for the container */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the container */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* Add a subtle shadow to the container */
             margin-top: 20px;
         }
 
@@ -110,12 +113,22 @@
 
         .search-filter-container {
             border: 1px solid #ddd;
-            border-radius: 2px; /* Add a slight rounded corner for a softer look */
+            border-radius: 2px;
+            /* Add a slight rounded corner for a softer look */
             width: 1200px;
             margin-bottom: 15px;
             margin-left: 30px;
         }
 
+        /* Stylesheet here */
+        .filter-button {
+            margin-top: 32px;
+            /* Adjust the margin to align the button with search bar */
+            background-color: #007bff;
+            /* Change button color to blue */
+            color: #fff;
+            /* Change text color to white */
+        }
     </style>
     <title>View All Product</title>
 </head>
@@ -142,65 +155,81 @@
     </div>
 
     <div class="container">
-        <!-- Product Display -->
+        <!-- Filter Section -->
         <div class="row mb-3">
             <div class="col-md-4">
                 <label for="kategori">Filter by Category:</label>
-                <select class="form-select" id="kategori" onchange="filterByCategory(this)">
+                <select class="form-select" id="kategori">
                     <option value="">All Categories</option>
                     <th:block th:each="kategori : ${allKategori}">
                         <option th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
                     </th:block>                    
                 </select>
             </div>
+            <div class="col-md-4">
+                <label for="productName">Search by Product Name:</label>
+                <input type="text" id="productName" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary filter-button" onclick="filterByCategoryAndProductName()">Filter</button>
+            </div>
         </div>
+
+
+        <!-- Product Display -->
         <div class="row">
-            <!-- Loop through each product and display it as a clickable card -->
             <div class="col-md-3" th:each="katalog : ${listKatalog}">
-            <!-- <div class="col-md-3" th:each="katalog : ${filteredProducts}"> -->
                 <div class="card">
-                    <!-- Determine the appropriate URL based on user role -->
-                    <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}" th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
-                        <!-- Update th:src to use katalog.image -->
-                        <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}">
+                    <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}"
+                        th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
+                        <!-- <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}"> -->
                         <div class="card-content">
-                            <!-- Update th:text to use katalog.namaKatalog -->
                             <h4 th:text="${katalog.namaProduct}"></h4>
-                            <!-- Update th:text to use katalog.harga -->
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
                         </div>
                     </a>
-                    <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}" th:href="@{/katalog/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
-                        <!-- Update th:src to use katalog.image -->
+                    <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}"
+                        th:href="@{/katalog/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
                         <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}">
                         <div class="card-content">
-                            <!-- Update th:text to use katalog.namaKatalog -->
                             <h4 th:text="${katalog.namaProduct}"></h4>
-                            <!-- Update th:text to use katalog.harga -->
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
                         </div>
                     </a>
                 </div>
             </div>
         </div>
-    
-        <script th:inline="javascript">
-            var currentUrl = /*[[@{/}]]*/ '';
-            if (currentUrl === '/') {
-                document.querySelector('a.nav-link[href="/"]').classList.add('active');
-            }
-        </script>
-    
-        <div th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
-            <script th:inline="javascript">
-                /*<![CDATA[*/
-                window.location.replace('/no-access');
-                /*]]>*/
-            </script>
-        </div>
-    
     </div>
-    
+
+    <!-- JavaScript -->
+    <script>
+        function filterByCategoryAndProductName() {
+            var categoryId = document.getElementById("kategori").value;
+            var productName = document.getElementById("productName").value.trim();
+
+            var url = '/katalog/filter?';
+            if (categoryId !== "") {
+                url += 'kategoriId=' + categoryId;
+            }
+            if (productName !== "") {
+                url += (categoryId === "" ? "" : '&') + 'productName=' + productName;
+            }
+            window.location.href = url;
+        }
+    </script>
+
+
+    <div
+        th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+        </script>
+    </div>
+
+    </div>
+
 
 </body>
 
