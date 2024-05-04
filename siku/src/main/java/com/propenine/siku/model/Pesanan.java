@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -50,4 +51,8 @@ public class Pesanan {
 
     @Column(name = "tanggal_selesai", nullable = false)
     private LocalDate tanggalSelesai;
+
+    @Column(name = "jumlah_biaya_pesanan")
+    private Integer jumlahBiayaPesanan;
+
 }

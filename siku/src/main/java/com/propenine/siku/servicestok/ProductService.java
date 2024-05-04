@@ -27,8 +27,20 @@ public class ProductService {
     public Product getProductById(UUID idProduct) {
         return productDb.findById(idProduct).get();
     }
+    // public List<Product> getProductsByCategory(Long kategoriId) {
+    //     return productDb.findByKategoriId(kategoriId);
+    // }
     public List<Product> getProductsByCategory(Long kategoriId) {
         return productDb.findByKategoriId(kategoriId);
     }
     
+    public List<Product> getProductsByNameContaining(String namaProduk) {
+        return productDb.findByNamaProductContaining(namaProduk);
+    }
+
+    public List<Product> getProductsByCategoryAndNameContaining(Long kategoriId, String productName) {
+        return productDb.findByKategoriIdAndNamaProductContaining(kategoriId, productName);
+    }
+    
 }
+

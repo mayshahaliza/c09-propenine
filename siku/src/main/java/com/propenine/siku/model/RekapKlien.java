@@ -24,9 +24,13 @@ public class RekapKlien {
     @Column(name="total_quantity", nullable = false)
     private Integer totalQuantity;
 
+    @Column(name="total_price", nullable = false)
+    private Integer totalPrice;
+
     // Constructor
-    public RekapKlien(Klien klien, Long totalQuantity) {
+    public RekapKlien(Klien klien, Long totalQuantity, Long totalPrice) {
         this.klien = klien;
         this.totalQuantity = totalQuantity.intValue(); // Convert Long to Integer
+        this.totalPrice = totalPrice.intValue();
     }
 }

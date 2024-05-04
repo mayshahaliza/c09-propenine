@@ -22,9 +22,13 @@ public class RekapAgent {
     @Column(name="total_quantity", nullable = false)
     private Integer totalQuantity;
 
+    @Column(name="total_price", nullable = false)
+    private Integer totalPrice;
+
     // Constructor
-    public RekapAgent(User user, Long totalQuantity) {
+    public RekapAgent(User user, Long totalQuantity, Long totalPrice) {
         this.user = user;
         this.totalQuantity = totalQuantity.intValue(); // Convert Long to Integer
+        this.totalPrice = totalPrice.intValue();
     }
 }

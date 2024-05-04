@@ -14,6 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
+        .container-main {
+            width: 90%;
+            margin: 20px auto;
+        }
         .card {
             max-width: 1100px;
             margin: 0 auto;
@@ -27,7 +31,17 @@
         }
 
         .btn-submit {
-            background-color: #5eac2a;
+            background-color: #3c3f61; /* Change button color */
+            color: #fff;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit1 {
+            background-color: #3c3f61; /* Change button color */
             color: #fff;
         }
 
@@ -118,9 +132,19 @@
             flex-wrap: wrap;
         }
 
-       .chart-card {
+        .chart-card {
             width: 100%; /* Modify width to 100% */
             max-width: 600px; /* Add max-width to limit width on larger screens */
+            margin: 0 auto; /* Center the chart card */
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chart-card1 {
+            width: 100%; /* Modify width to 100% */
+            max-width: 650px; /* Add max-width to limit width on larger screens */
             margin: 0 auto; /* Center the chart card */
             margin-bottom: 20px;
             border: 1px solid #ccc;
@@ -147,7 +171,7 @@
         }
 
         .left-top-corner .btn-back {
-            background-color: #F3D266;; /* Background color */
+            background-color: #3c3f61;; /* Background color */
             color: #fff; /* Text color */
             border: none; /* Remove border */
             padding: 8px 12px; /* Button padding */
@@ -175,18 +199,15 @@
 <div class="left-top-corner">
     <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
 </div>
+<div class="container-main">
+<h2 class="text-center fw-bold" style="color: #3c3f61">Executive Dashboard</h2>
 
-
-
-<!-- Top Sales Chart Card -->
-<div class="chart-card">
-    <h2>Top Sales</h2>
-    <!-- Container for the bar chart -->
-    <div style="width: 100%; margin: auto;">
+<div class="chart-card1">
+    <form action="/pesanan/dashboard" method="get" style="margin: 10px;" class="d-flex justify-content-between align-items-center mb-3 gap-3">
         <!-- Dropdown menu for selecting the month -->
-        <label for="month">Select Month:</label>
-        <select id="month" required>
-            <option value="">Pilih Bulan</option>
+        Filter by:
+        <select id="bulan" name="bulan" class="form-control" required>
+            <option value="">Choose Month...</option>
             <option value="1">January</option>
             <option value="2">February</option>
             <option value="3">March</option>
@@ -202,11 +223,17 @@
         </select>
 
         <!-- Dropdown menu for selecting the year -->
-        <label for="year">Insert Year:</label>
-        <input type="number" name="tahun" id="year" required min="1">
+        <input type="number" name="tahun" id="tahun" class="form-control" required min="1" placeholder="Year...">
 
-        <button onclick="filterData()" type="submit" class="btn btn-primary">Filter</button>
+        <button type="submit" class="btn btn-submit1">Filter</button>
+    </form>
+</div>
 
+<!-- Top Sales Chart Card -->
+<div class="chart-card">
+    <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Sales</h2>
+    <div style="width: 100%; margin: auto;">
+    
         <!-- Container for the bar chart -->
         <div id="chartContainer" style="width: 100%; margin: auto;">
             <!-- Canvas for the bar chart -->
@@ -220,11 +247,11 @@
                     <div class="card-body description-card-body">
 
                         <div class="text-center pt-3">
-                            <h3 class="h3-custom">No Product</h3>
+                            <h3 class="h3-custom">No Products</h3>
                         </div>
 
                         <div class="text-center m-3">
-                            <h3 class="h4-custom">There is no product sold</h3>
+                            <h3 class="h4-custom">There are no orders this month.</h3>
                         </div>
 
                     </div>
@@ -232,7 +259,7 @@
             </div>
         </div>
         <div class="center-button">
-            <a href="rekap-penjualan" class="btn btn-back">Laporan Penjualan</a>
+            <a href="rekap-penjualan" class="btn btn-submit">Sales Recapitulation</a>
         </div>
     </div>
 </div>
@@ -240,19 +267,67 @@
 <!-- Placeholder for other charts -->
 <div class="chart-container">
     <div class="chart-card">
-        <h2>Other Chart 1</h2>
-        <canvas id="otherChart1"></canvas>
-        <!-- Add button for navigation -->
-        <div class="center-button">
-            <button class="btn btn-back">Go to Another Page</button>
+        <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Clients</h2>
+        <div style="width: 100%; margin: auto;">
+            <!-- Container for the bar chart -->
+            <div id="chartContainerK" style="width: 100%; margin: auto;">
+                <!-- Canvas for the bar chart -->
+                <canvas id="barChartK"></canvas>
+            </div>
+
+            <!-- Message to display when there is no product -->
+            <div id="noProductMessageK" class="text-center" style="display: none;">
+                <div class="container">
+                    <div class="description-card">
+                        <div class="card-body description-card-body">
+
+                            <div class="text-center pt-3">
+                                <h3 class="h3-custom">No Clients</h3>
+                            </div>
+
+                            <div class="text-center m-3">
+                                <h3 class="h4-custom">There are no orders this month.</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="center-button">
+                <a href="rekap-klien" class="btn btn-submit">Client Recapitulation</a>
+            </div>
         </div>
     </div>
     <div class="chart-card">
-        <h2>Other Chart 2</h2>
-        <canvas id="otherChart2"></canvas>
-        <!-- Add button for navigation -->
-        <div class="center-button">
-            <button class="btn btn-back">Go to Another Page</button>
+        <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Agents</h2>
+        <div style="width: 100%; margin: auto;">
+            <!-- Container for the bar chart -->
+            <div id="chartContainerA" style="width: 100%; margin: auto;">
+                <!-- Canvas for the bar chart -->
+                <canvas id="barChartA"></canvas>
+            </div>
+
+            <!-- Message to display when there is no product -->
+            <div id="noProductMessageA" class="text-center" style="display: none;">
+                <div class="container">
+                    <div class="description-card">
+                        <div class="card-body description-card-body">
+
+                            <div class="text-center pt-3">
+                                <h3 class="h3-custom">No Agents</h3>
+                            </div>
+
+                            <div class="text-center m-3">
+                                <h3 class="h4-custom">There are no orders this month.</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="center-button">
+                <a href="rekap-agent" class="btn btn-submit">Agent Recapitulation</a>
+            </div>
         </div>
     </div>
 </div>
@@ -261,6 +336,8 @@
     /*<![CDATA[*/
     // Get sales summary data passed from the backend
     var salesData = /*[[${orderSummary}]]*/ [];
+    var clientData = /*[[${klienSummary}]]*/ [];
+    var agentData = /*[[${agentSummary}]]*/ [];
 
     // Function to sort data by total quantity in descending order
     function sortData(data) {
@@ -269,8 +346,14 @@
 
     // Extract product names and total quantities from salesData
     var sortedSalesData = sortData(salesData.slice(0, 10)); // Sort and select top 10
+    var sortedClientData = sortData(clientData.slice(0, 10));
+    var sortedAgentData = sortData(agentData.slice(0, 10));
     var productNames = sortedSalesData.map(entry => entry.product.namaProduct);
+    var clientNames = sortedClientData.map(entry => entry.klien.namaKlien);
+    var agentNames = sortedAgentData.map(entry => entry.user.username);
     var totalQuantities = sortedSalesData.map(entry => entry.totalQuantity);
+    var totalQuantitiesK = sortedClientData.map(entry => entry.totalQuantity);
+    var totalQuantitiesA = sortedAgentData.map(entry => entry.totalQuantity);
 
     function showChartOrMessage() {
         var chartContainer = document.getElementById('chartContainer');
@@ -292,6 +375,82 @@
                     datasets: [{
                         label: 'Total Quantity',
                         data: totalQuantities, // Total quantities on Y-axis
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
+                        borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true // Start Y-axis from zero
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    }
+
+    function showChartOrMessageK() {
+        var chartContainer = document.getElementById('chartContainerK');
+        var noClientMessage = document.getElementById('noProductMessageK');
+
+        if (clientNames.length === 0) {
+            chartContainer.style.display = 'none';
+            noClientMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'block';
+            noClientMessage.style.display = 'none';
+
+            // Create a new Chart instance
+            var ctx = document.getElementById('barChartK').getContext('2d');
+            var barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: clientNames, // Product names on X-axis
+                    datasets: [{
+                        label: 'Total Quantity',
+                        data: totalQuantitiesK, // Total quantities on Y-axis
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
+                        borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true // Start Y-axis from zero
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    }
+
+    function showChartOrMessageA() {
+        var chartContainer = document.getElementById('chartContainerA');
+        var noAgentMessage = document.getElementById('noProductMessageA');
+
+        if (agentNames.length === 0) {
+            chartContainer.style.display = 'none';
+            noAgentMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'block';
+            noAgentMessage.style.display = 'none';
+
+            // Create a new Chart instance
+            var ctx = document.getElementById('barChartA').getContext('2d');
+            var barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: agentNames, // Product names on X-axis
+                    datasets: [{
+                        label: 'Total Quantity',
+                        data: totalQuantitiesA, // Total quantities on Y-axis
                         backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
                         borderColor: 'rgba(54, 162, 235, 1)', // Border color
                         borderWidth: 1
@@ -333,12 +492,36 @@
             });
     }
 
+    function filterDataK() {
+        var selectedMonth = document.getElementById('month').value;
+        var selectedYear = document.getElementById('year').value;
+
+        // Perform AJAX request to fetch sales summary data for the selected month and year
+        fetch('rekap-klien-chart-data-dashboard?bulan=' + selectedMonth + '&tahun=' + selectedYear)
+            .then(response => response.json())
+            .then(data => {
+                // Sort and select top 10 from the fetched data
+                var sortedData = sortData(data).slice(0, 10);
+                // Extract product names and total quantities from the fetched data
+                clientNames = sortedData.map(entry => entry.klien.namaKlien);
+                totalQuantitiesK = sortedData.map(entry => entry.totalQuantity);
+
+                // Update the chart or display the message
+                showChartOrMessageK();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
     // Automatically filter data for the current month when the page loads
     showChartOrMessage();
+    showChartOrMessageK();
+    showChartOrMessageA();
     defaultSelectedMonthYear();
     /*]]>*/
 </script>
-
+</div>
 <!-- Redirect if user doesn't have access -->
 <div th:unless="${user != null && (user.role == 'executive' || user.role =='admin') }">
     <script th:inline="javascript">

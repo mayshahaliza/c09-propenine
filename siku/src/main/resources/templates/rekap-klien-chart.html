@@ -21,29 +21,31 @@
 </div>
 <!-- Container for the bar chart -->
 <div style="width: 800px; margin: auto;">
-    <!-- Dropdown menu for selecting the month -->
-    <label for="month">Select Month:</label>
-    <select id="month" required>
-        <option value="">Pilih Bulan</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
+    <form action="/pesanan/rekap-klien-chart" method="get">
+        <!-- Dropdown menu for selecting the month -->
+        <label for="month">Select Month:</label>
+        <select id="bulan" name="bulan" required>
+            <option value="">Choose Month...</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
 
-    <!-- Dropdown menu for selecting the year -->
-    <label for="year">Select Year:</label>
-    <input type="number" name="tahun" id="year" required min="1">
+        <!-- Dropdown menu for selecting the year -->
+        <label for="year">Select Year:</label>
+        <input type="number" name="tahun" id="tahun" required min="1">
 
-    <button onclick="filterData()">Filter</button>
+        <button type="submit">Filter</button>
+    </form>
 
     <th:block th:if="${not #lists.isEmpty(klienSummary)}">
         <!-- Canvas for the bar chart -->
