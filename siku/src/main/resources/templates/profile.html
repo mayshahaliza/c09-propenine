@@ -17,9 +17,9 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        .container {
+        /* .container {
             padding-top: 50px;
-        }
+        } */
 
         .alert-container {
             margin-top: 20px;
@@ -81,6 +81,27 @@
             background-color: #5a6268;
             border-color: #5a6268;
         }
+
+        .layout_padding {
+            padding: 90px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 90px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 90px;
+        }
+
+        .layout_margin-top {
+            margin-top: 20px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 20px;
+        }
+
     </style>
 
 </head>
@@ -100,12 +121,12 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
-    <div class="container">
-        <div class="text-center">
-            <h2>Account Settings</h2>
-        </div>
-        <div class="row justify-content-center">
-            <div class="card" style="width: 30rem;">
+    <div class="container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+        <!-- <div class="row justify-content-center"> -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Account Settings</h2>
+                </div>
                 <div class="card-body">
                     <form>
                         <div class="mb-3">
@@ -132,14 +153,14 @@
                             <label for="role" class="form-label">Role:</label>
                             <input type="text" class="form-control" id="role" th:value="${user.role}" disabled>
                         </div>
-                        <div class="text-center">
-                            <a th:href="@{/edit-profile}" class="btn btn-primary">Edit</a>
+                        <div class="text-left">
+                            <a th:href="@{/edit-profile}" class="btn btn-primary" style="background-color: #3c3f61; color: #ffffff;">Edit</a>
                             <a href="/" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
     <div class="modal fade" id="passwordSuccessModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog">

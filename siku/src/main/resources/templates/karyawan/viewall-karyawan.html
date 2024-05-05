@@ -3,24 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-<<<<<<< HEAD
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<<<<<<< HEAD
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Karyawan List</title>
-=======
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Employees List</title>
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -28,7 +20,6 @@
             margin: 0;
             padding: 0;
         }
-<<<<<<< HEAD
         
         .card-container {
             margin: auto;
@@ -36,32 +27,27 @@
             padding: 20px;
         }
 
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
         .card-body {
             padding: 20px;
         }
 
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         h2 {
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 30px;
-            color: #000000;
+            color: #3c3f61;
         }
-<<<<<<< HEAD
         
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         .search-bar-container {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
         }
-<<<<<<< HEAD
         
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         .search-bar {
             width: 300px;
             padding: 8px;
@@ -69,22 +55,19 @@
             border: 1px solid #ced4da;
             margin-right: 10px;
         }
-<<<<<<< HEAD
         
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
-        .table-container {
-            display: flex;
-            justify-content: center;
+        .table-responsive-container {
+            overflow-x: auto; /* Enable horizontal scrolling on small screens */
         }
-<<<<<<< HEAD
+
+        .table-responsive-container table {
+            width: 100%; /* Table fills the container width */
+            min-width: 100%; /* Minimum width of the table */
+        }
+
         
         table {
             width: 100%;
-=======
-        table {
-            width: 80%;
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
             border-collapse: collapse;
             margin-bottom: 20px;
             background-color: #fff;
@@ -92,49 +75,53 @@
             border-radius: 0.25rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-<<<<<<< HEAD
         
         th,
         td {
-=======
-        th, td {
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #dee2e6;
         }
-<<<<<<< HEAD
         
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         th {
             background-color: #f2f2f2;
             color: #212529;
             font-weight: bold;
         }
-<<<<<<< HEAD
         
         td:last-child {
             text-align: center;
         }
         
-=======
-        td:last-child {
-            text-align: center;
-        }
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         a {
             text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
+            color: #3c3f61;
+            /* font-weight: bold; */
         }
-<<<<<<< HEAD
         
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
         a:hover {
             color: #0056b3;
             text-decoration: underline;
+        }
+
+        .layout_padding {
+            padding: 90px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 90px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 90px;
+        }
+
+        .layout_margin-top {
+            margin-top: 20px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -151,122 +138,78 @@
         </div>
     </div>
 
-<<<<<<< HEAD
-    <div class="card-container">
+    <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
         <div class="card">
-            <div class="card-body">
+            <div class="card-header text-center">
                 <h2>Employees List</h2>
-                <div class="row justify-content-center align-items-center mb-4">
+            </div>
+            <div class="card-body">
+                <div class="row align-items-start mb-4">
+                    <!-- Search Form -->
                     <div class="col-md-6">
                         <form th:action="@{/search-karyawan}" method="get">
-                            <div class="input-group">
-                                <input type="text" class="form-control search-bar" name="name" placeholder="Search by name...">
-                                <button type="submit" class="btn btn-primary">Search</button>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Search:</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control search-bar" name="name" id="name" placeholder="Search by name...">
+                                    <button type="submit" class="btn btn-primary" style="background-color: #3c3f61; color: #ffffff; margin-left: -1px;">Search</button>
+                                </div>
                             </div>
                         </form>
                     </div>
+                    <!-- Filter Form -->
                     <div class="col-md-6">
                         <form th:action="@{/karyawan/viewall}" method="get">
-                            <div class="input-group">
-                                <select class="form-select" id="formRole" name="role">
-                                    <option value="">All Roles</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="operational">Operational</option>
-                                    <option value="hr">HR</option>
-                                    <option value="executive">Executive</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary ms-2">Filter by Role</button>
+                            <div class="mb-3">
+                                <label for="formRole" class="form-label">Filter:</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="formRole" name="role">
+                                        <option value="">All Roles</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="operational">Operational</option>
+                                        <option value="hr">HR</option>
+                                        <option value="executive">Executive</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary" style="background-color: #3c3f61; color: #ffffff;">Filter by Role</button>
+                                </div>
                             </div>
                         </form>
                     </div>
-                </div>    
-                <div class="table-container">
-                    <table id="employeeTable" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Employee ID</th>
-                                <th>Employee Name</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Detail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="karyawan, index : ${listKaryawan}" th:id="'row-' + ${index}">
-                                <td th:text="${index.index + 1}"></td>
-                                <td th:text="${karyawan.id}"></td>
-                                <td th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang}"></td>
-                                <td th:text="${karyawan.role}"></td>
-                                <td th:text="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
-                                <td><a th:href="@{/karyawan/{id}(id=${karyawan.id})}">Detail</a></td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(listKaryawan)}">
-                                <td colspan="6" class="text-center">No employees found.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive-container">
+                        <table id="employeeTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Employee ID</th>
+                                    <th>Employee Name</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="karyawan, index : ${listKaryawan}" th:id="'row-' + ${index}">
+                                    <td th:text="${index.index + 1}"></td>
+                                    <td th:text="${karyawan.id}"></td>
+                                    <td th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang}"></td>
+                                    <td th:text="${karyawan.role}"></td>
+                                    <td th:text="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
+                                    <td><a th:href="@{/karyawan/{id}(id=${karyawan.id})}">Detail</a></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(listKaryawan)}">
+                                    <td colspan="6" class="text-center">No employees found.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-=======
-    <div style="margin: auto; width: 80%;">
-        <h2>Employees List</h2>
-        <div class="row justify-content-center align-items-center mb-4">
-            <div class="col-md-6">
-                <form th:action="@{/search-karyawan}" method="get">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="name" placeholder="Search by name...">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <form th:action="@{/karyawan/viewall}" method="get">
-                    <div class="input-group">
-                        <select class="form-select" id="formRole" name="role">
-                            <option value="">All Roles</option>
-                            <option value="admin">Admin</option>
-                            <option value="operational">Operational</option>
-                            <option value="hr">HR</option>
-                            <option value="executive">Executive</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary ms-2">Filter by Role</button>
-                    </div>
-                </form>
-            </div>
-        </div>    
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Employee ID</th>
-                        <th>Employee Name</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Detail</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="karyawan, index : ${listKaryawan}" th:id="'row-' + ${index}">
-                        <td th:text="${index.index + 1}"></td>
-                        <td th:text="${karyawan.id}"></td>
-                        <td th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang}"></td>
-                        <td th:text="${karyawan.role}"></td>
-                        <td th:text="${karyawan.status_karyawan ? 'Aktif' : 'Tidak Aktif'}"></td>
-                        <td><a th:href="@{/karyawan/{id}(id=${karyawan.id})}">Detail</a></td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(listKaryawan)}">
-                        <td colspan="6" class="text-center">No employees found.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
     <div th:if="${successMessage}" class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -286,7 +229,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
 
-<<<<<<< HEAD
     <script>
         $(document).ready(function() {
             $('#employeeTable').DataTable({
@@ -295,8 +237,6 @@
         });
     </script>
 
-=======
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
     <script th:if="${successMessage}">
         $(document).ready(function() {
             $('#deleteSuccessModal').modal('show');
@@ -310,8 +250,5 @@
             /*]]>*/
     </script>
 </div>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> c06e1a5c62c1ad54fc30c2d3893e72c9942186ce
+
