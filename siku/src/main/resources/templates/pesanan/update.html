@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Pesanan</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Custom CSS styles */
         body {
             background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
         }
 
         .container {
@@ -23,25 +26,49 @@
         }
 
         .card-header {
-            background-color: #007bff;
-            color: white;
+            background-color: #eeeeef;
+            color: #3c3f61;
             border-radius: 15px 15px 0 0;
+            font-size: 24px;
+            text-align: center;
         }
 
-        .btn-add {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: white;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
 
-        .btn-add:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
+
+        .btn-submit {
+            background-color: #3c3f61;
+            color: #fff;
+            width: 100%;
         }
 
-        .btn-add:focus {
-            background-color: #218838;
-            border-color: #1e7e34;
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        /* New style for the Add button */
+        .input-group-append .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        /* Hover effect for the Add button */
+        .input-group-append .btn-add:hover {
+            background-color: #3c3f61;
+            color: #fff;
         }
     </style>
 </head>
@@ -55,90 +82,104 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
+    <div class="left-top-corner">
+        <a type="button" class="btn btn-back btn-md" href="/pesanan/list"><i class="fas fa-chevron-left"></i></a>
+    </div>
 
     <div class="container mt-3 text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
-        <h1>Edit Pesanan</h1>
-        <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
-            <p th:text="${warningMessage}"></p>
-        </div>
-        <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}" method="post">
-            <div class="form-group">
-                <label for="klien">Nama Klien</label>
-                <div class="input-group">
-                    <select class="form-control" id="klien" th:field="*{klien}" required>
-                        <option value="">-- Select Klien --</option>
-                        <option th:each="klien : ${klienList}" th:value="${klien.id}"
-                            th:selected="${klien.id == pesanan.klien.id}"
-                            th:text="${klien.namaKlien}"></option>
-                    </select>
-                    <div class="input-group-append">
-                        <a href="/klien/tambah" class="btn btn-add">+</a>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            Update Pesanan
+                        </div>
+                        <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
+                            <p th:text="${warningMessage}"></p>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}"
+                                method="post">
+                                <div class="form-group">
+                                    <label for="klien">Client Name</label>
+                                    <div class="input-group">
+                                        <select class="form-control" id="klien" th:field="*{klien}" required>
+                                            <option value="">-- Select Klien --</option>
+                                            <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                                                th:selected="${klien.id == pesanan.klien.id}"
+                                                th:text="${klien.namaKlien}"></option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <a href="/klien/tambah" class="btn btn-add"><i class="fas fa-plus"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user">Username Agent</label>
+                                    <select class="form-control" id="user" th:field="*{user}" required>
+                                        <option value="">-- Select Agent --</option>
+                                        <option th:each="user : ${userList}" th:if="${user.role == 'operational'}"
+                                            th:value="${user.id}" th:text="${user.username}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product">Order Product</label>
+                                    <select class="form-control" id="product" th:field="*{product}" required>
+                                        <option value="">-- Select Product --</option>
+                                        <option th:each="product : ${productList}" th:value="${product.idProduct}"
+                                            th:selected="${product.idProduct == pesanan.product.idProduct}"
+                                            th:text="${product.namaProduct}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="jumlahBarangPesanan">Number of Ordered Items</label>
+                                    <input type="number" class="form-control" id="jumlahBarangPesanan"
+                                        th:field="*{jumlahBarangPesanan}" placeholder="Enter quantity" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="statusPesanan">Order Status</label>
+                                    <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
+                                        <option value="">-- Select Status --</option>
+                                        <option value="Ongoing" text="Ongoing">Ongoing</option>
+                                        <option value="Complete" text="Complete">Complete</option>
+                                        <option value="Canceled" text="Canceled">Canceled</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi
+                                            Perubahan</b></h6>
+                                    <label for="tanggalPemesanan">Start Order </label>
+                                    <input type="date" class="form-control" id="tanggalPemesanan"
+                                        name="tanggalPemesanan" th:field="*{tanggalPemesanan}"
+                                        th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
+
+                                    <label for="tanggalSelesai">Complete Order</label>
+                                    <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
+                                        th:field="*{tanggalSelesai}"
+                                        th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
+                                </div>
+
+                                <button type="submit" class="btn-submit">Update</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label for="user">Username Agent</label>
-                <select class="form-control" id="user" th:field="*{user}" required>
-                    <option value="">-- Select Agent --</option>
-                    <option th:each="user : ${userList}" th:value="${user.id}"
-                        th:selected="${user.id == pesanan.user.id}"
-                        th:text="${user.username}"></option>
-                </select>
-            </div>
+                        <div th:unless="${user.role == 'operational' || user.role =='admin'}">
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                window.location.replace('/no-access');
+                                /*]]>*/
+                            </script>
+                        </div>
 
-            <div class="form-group">
-                <label for="product">Pesanan</label>
-                <select class="form-control" id="product" th:field="*{product}" required>
-                    <option value="">-- Select Product --</option>
-                    <option th:each="product : ${productList}" th:value="${product.idProduct}"
-                        th:selected="${product.idProduct == pesanan.product.idProduct}"
-                        th:text="${product.namaProduct}"></option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="jumlahBarangPesanan">Jumlah Barang Pesanan</label>
-                <input type="number" class="form-control" id="jumlahBarangPesanan" th:field="*{jumlahBarangPesanan}"
-                    placeholder="Enter quantity" required>
-            </div>
-
-            <div class="form-group">
-                <label for="statusPesanan">Status Pesanan</label>
-                <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
-                    <option value="">-- Select Status --</option>
-                    <option value="Ongoing" text="Ongoing">Ongoing</option>
-                    <option value="Complete" text="Complete">Complete</option>
-                    <option value="Canceled" text="Canceled">Canceled</option>
-                </select>
-            </div>
-
-
-                <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi Perubahan</b></h6>
-                <label for="tanggalPemesanan">Tanggal Pemesanan </label>
-                <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan"
-                       th:field="*{tanggalPemesanan}" th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
-
-
-                <label for="tanggalSelesai">Tanggal Selesai</label>
-                <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
-                       th:field="*{tanggalSelesai}" th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
-
-            <button type="submit" class="btn btn-success">Update</button>
-        </form>
-    </div>
-
-    <div th:unless="${user.role == 'operational' || user.role =='admin'}">
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            window.location.replace('/no-access');
-            /*]]>*/
-        </script>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

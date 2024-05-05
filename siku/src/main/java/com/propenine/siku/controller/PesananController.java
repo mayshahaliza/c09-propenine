@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.propenine.siku.model.RekapPenjualan;
-import com.propenine.siku.model.RekapKlien;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.propenine.siku.model.Klien;
@@ -26,8 +23,8 @@ import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapAgent;
 import com.propenine.siku.model.RekapKlien;
 import com.propenine.siku.model.RekapPenjualan;
-import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.model.User;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
 import com.propenine.siku.service.UserServiceImpl;
@@ -61,46 +58,6 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
-    // @GetMapping("/list")
-    // public String listAllPesanan(
-    // @RequestParam(name = "searchInput", required = false) String searchInput,
-    // @RequestParam(name = "statusPesanan", required = false) String statusPesanan,
-    // @RequestParam(name = "tanggalPemesanan", required = false) String
-    // tanggalPemesanan,
-    // Model model) {
-
-    // List<Pesanan> pesananList;
-
-    // if ((searchInput != null && !searchInput.isEmpty()) || (statusPesanan != null
-    // && !statusPesanan.isEmpty())
-    // || (tanggalPemesanan != null && !tanggalPemesanan.isEmpty())) {
-    // pesananList = pesananService.findWithFilters(searchInput, statusPesanan,
-    // tanggalPemesanan);
-    // } else {
-    // pesananList = pesananService.getAllPesanan();
-    // }
-
-    // pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
-    // Comparator.comparing(status -> {
-    // switch (status) {
-    // case "Ongoing":
-    // return 0;
-    // case "Complete":
-    // return 1;
-    // case "Canceled":
-    // return 2;
-    // default:
-    // return 3;
-    // }
-    // })));
-
-    // model.addAttribute("pesananList", pesananList);
-
-    // User loggedInUser = authenticationService.getLoggedInUser();
-    // model.addAttribute("user", loggedInUser);
-
-    // return "pesanan/list";
-    // }
 
     @GetMapping("/list")
     public String listAllPesanan(
@@ -445,7 +402,8 @@ public class PesananController {
         int currentMonth = currentDate.getMonthValue();
         int currentYear = currentDate.getYear();
 
-        // Fetch order summary data based on the provided month and year or use the current month and year by default
+        // Fetch order summary data based on the provided month and year or use the
+        // current month and year by default
         List<RekapPenjualan> orderSummary;
         if (bulan != null && tahun != null) {
             orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
@@ -585,7 +543,8 @@ public class PesananController {
 
     @GetMapping("/rekap-penjualan-chart-data")
     @ResponseBody
-    public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+    public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 

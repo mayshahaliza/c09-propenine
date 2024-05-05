@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Pesanan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+    <!-- Your custom CSS -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,10 +18,7 @@
 
         .container {
             margin-top: 50px;
-        }
-
-        .table-container {
-            margin-top: 20px;
+            max-width: 85%; /* Menyesuaikan lebar maksimum */
         }
 
         h1 {
@@ -31,13 +32,15 @@
         }
 
         .pesanan-table th {
-            background-color: #343a40;
-            color: white;
+            background-color: #ffffff; /* Mengubah latar belakang ke putih */
+            color: #343a40; /* Mengubah warna teks */
+            text-align: center;
         }
 
         .pesanan-table td,
         .pesanan-table th {
             text-align: center;
+            vertical-align: middle;
         }
 
         .btn-create {
@@ -53,6 +56,33 @@
             color: #ff0000; /* Red color for Canceled status */
         }
 
+        .btn-submit {
+            background-color: #3c3f61;
+            color: #fff;
+            width: auto;
+            padding: 5px 10px; /* Sesuaikan padding tombol */
+            font-size: 14px; /* Sesuaikan ukuran teks */
+        }
+
+        .btn-submit:hover {
+            background-color: #2e314a;
+        }
+        .add-product-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0e131a;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+      }
+
         .text-success {
             color: #008000; /* Green color for Complete status */
         }
@@ -60,6 +90,8 @@
 </head>
 
 <body>
+
+    <!-- Navbar -->
     <div th:switch="${user.role}">
         <div th:case="'admin'">
             <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
@@ -68,8 +100,14 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
+
+    <!-- Content -->
     <div class="container">
-        <h1>List of Pesanan</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>List of Orders</h1>
+            </div>
+        </div>
 
         <!-- Filter Form -->
         <form class="form-inline filter-form" action="/pesanan/list" method="get">
@@ -79,7 +117,7 @@
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <select class="form-control" id="statusPesanan" name="statusPesanan">
-                    <option value="">Status Pesanan</option>
+                    <option value="">Order Status</option>
                     <option value="Ongoing">Ongoing</option>
                     <option value="Complete">Complete</option>
                     <option value="Canceled">Canceled</option>
@@ -92,22 +130,22 @@
                     <option value="old">Old 14 Days</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Filter</button>
+            <button type="submit" class="btn btn-submit">Filter</button>
         </form>
 
         <!-- Pesanan Table -->
-        <div class="table-container">
-            <table class="table table-striped table-bordered pesanan-table">
+        <div class="table-responsive">
+            <table id="myTable" class="table table-striped table-bordered pesanan-table">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nama Klien</th>
-                        <th>Nama Agent</th>
-                        <th>Status Pesanan</th>
-                        <th>Jumlah Pesanan</th>
-                        <th>Total Biaya Pesanan</th>
-                        <th>Tanggal Pemesanan</th>
-                        <th>Tanggal Selesai</th>
+                        <th>Client Name</th>
+                        <th>Username Agent</th>
+                        <th>Order Status</th>
+                        <th>Product</th>
+                        <th>Total Order Cost</th>
+                        <th>Start Order</th>
+                        <th>Complete Order</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -115,20 +153,20 @@
                     <!-- Data Rows -->
                     <tr th:each="pesanan : ${pesananList}">
                         <td th:text="${pesanan.id}">ID</td>
-                        <td th:text="${pesanan.klien.namaKlien}">Nama Klien</td>
-                        <td th:text="${pesanan.user.username}">Nama Agent</td>
+                        <td th:text="${pesanan.klien.namaKlien}">Client Name</td>
+                        <td th:text="${pesanan.user.username}">Username Agent</td>
                         <td>
                             <span th:text="${pesanan.statusPesanan}"
                                 th:class="${pesanan.statusPesanan == 'Canceled' ? 'text-danger' : (pesanan.statusPesanan == 'Complete' ? 'text-success' : 'text-dark')}"></span>
                         </td>
-                        <td th:text="${pesanan.jumlahBarangPesanan}">Jumlah Pesanan</td>
+                        <td th:text="${pesanan.product.namaProduct}">Product</td>
                         <!-- Format total biaya pesanan -->
                         <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}"</td>
-                        <td th:text="${pesanan.tanggalPemesanan}">Tanggal Pemesanan</td>
-                        <td th:text="${pesanan.tanggalSelesai}">Tanggal Selesai</td>
+                        <td th:text="${pesanan.tanggalPemesanan}">Start Order</td>
+                        <td th:text="${pesanan.tanggalSelesai}">TComplete Order</td>
                         <td>
                             <a th:href="@{/pesanan/update/{id}(id=${pesanan.id})}"
-                                class="btn btn-primary btn-sm">Edit</a>
+                                class="btn btn-submit">Edit</a>
                             <th:block th:if="${pesanan.statusPesanan != 'Ongoing'}">
                                 <a th:href="@{/pesanan/delete/{id}(id=${pesanan.id})}" class="btn btn-danger btn-sm"
                                     th:onclick="'return confirm(\'Are you sure?\')'">Delete</a>
@@ -139,14 +177,20 @@
 
             </table>
         </div>
-
-        <!-- Create Pesanan Button -->
-        <a href="/pesanan/create" class="btn btn-success btn-create">Create New Pesanan</a>
     </div>
+    <div>
+        <button class="add-product-btn" onclick="location.href='/pesanan/create'" style="font-size: larger;">+</button>
+      </div>
 
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- DataTables JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+        });
+    </script>
 </body>
 
 </html>
