@@ -1,26 +1,77 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
 <head>
     <meta charset="UTF-8" />
-     <title>500</title>
+    <title>500</title>
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
-    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>   
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+        margin-top: 30px;
+    }
+
+    .description-card-body {
+        padding: 1.25rem;
+        /* Adjust padding as needed */
+    }
+
+    .btn-back {
+        background-color: #0d1013;
+        color: #fff;
+    }
+
+    .description-card .card-body {
+        padding: 0; /* Remove padding to prevent extra space */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    /* Define different font sizes for h2 and h3 */
+    .h2-custom {
+        font-size: 3rem; /* Adjust the font size as needed */
+    }
+
+    .h3-custom {
+        font-size: 1.5rem; /* Adjust the font size as needed */
+    }
+
+    .h4-custom {
+        font-size: 1rem; /* Adjust the font size as needed */
+    }
+</style>
 
 <body>
 <div class="container">
-    <div class="card m-4 p-4">
-        <div class="card-body">
-            <div class="text-center">
-                <h2>Terjadi kesalahan pada sisi server, silahkan hubungi administrator</h2>
+    <div class="description-card">
+        <div class="card-body description-card-body">
+            <div class="text-center pt-5">
+                <h2 class="mb-4 h2-custom">Oops!</h2>
             </div>
+
+            <div class="text-center pt-3"> <!-- Adjust padding top as needed -->
+                <h3 class="h3-custom">Page Not Found</h3>
+            </div>
+
+            <div class="text-center m-3"> <!-- Adjust padding top as needed -->
+                <h3 class="h4-custom">The page you're looking for doesn't seem to be here</h3>
+            </div>
+
             <div class="text-center m-3">
-                <a type="button" class="btn btn-md btn-primary" href="/">Home</a>
+                <a type="button" class="btn btn-back btn-md" href="/">Home</a>
             </div>
         </div>
     </div>
 </div>
 </body>
 
-</html> -->
+</html>

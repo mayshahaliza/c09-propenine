@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
-        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
-    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         .card {
-            max-width: 1100px; /* Lebar maksimal card */
-            margin: 0 auto; /* Pusatkan card secara horizontal */
+            max-width: 1100px; /* Maximum card width */
+            margin: 0 auto; /* Center the card horizontally */
         }
         .center-button {
             display: flex;
@@ -24,8 +23,21 @@
             margin-bottom: 1.5rem;
         }
         .btn-submit {
-            background-color: #0d1013;
+            background-color: #3c3f61;
             color: #fff;
+        }
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+        .left-top-corner .btn-back {
+            background-color: #3c3f61 ;; /* Background color */
+            color: #eeeeef; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
         }
     </style>
 </head>
@@ -39,79 +51,134 @@
         </div>
     </div>
     <div th:if="${user.role == 'operational' || user.role =='admin'}">
+
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
+        </div>
+
         <div class="card mt-5">
-            <div class="card-header text-center fw-bold" style="font-size: 24px;">
-                Update Klien
+            <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef;">
+                Update Client
             </div>
             <div class="card-body">
                 <form th:action="@{/klien/update/{id}(id=${klien.id})}" th:object="${klienDTO}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <input type="hidden" th:value="${klien.id}" th:field="*{id}" />
                     <div class="form-group">
-                        <label for="nama-klien" class="form-label">Nama Klien:</label>
+                        <label for="nama-klien" class="form-label">Client Name:</label>
                         <input type="text" class="form-control" id="nama-klien" th:value="${klien.namaKlien}" th:field="*{namaKlien}"/>
                         <small id="nama-klien-error" class="text-danger"></small>
                     </div>
                     <div class="form-group">
-                        <label for="email-klien" class="form-label">Email Klien:</label>
+                        <label for="rumah-sakit" class="form-label">Hospital:</label>
+                        <input type="text" class="form-control" id="rumah-sakit" th:field="*{rumahSakit}"/>
+                        <small id="rumah-sakit-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-klien" class="form-label">Client Email:</label>
                         <input type="text" class="form-control" id="email-klien" th:value="${klien.emailKlien}" th:field="*{emailKlien}"/>
                         <small id="email-klien-error" class="text-danger"></small>
                     </div>
                     <div class="form-group">
-                        <label for="nohp-klien" class="form-label">Nomor Handphone Klien:</label>
+                        <label for="nohp-klien" class="form-label">Client Phone Number:</label>
                         <input type="number" class="form-control" id="nohp-klien" th:value="${klien.noHpKlien}" th:field="*{noHpKlien}"/>
                         <small id="nohp-klien-error" class="text-danger"></small>
                     </div>
                     <div class="form-group">
-                        <label for="alamat-klien" class="form-label">Alamat Klien:</label>
+                        <label for="alamat-klien" class="form-label">Client Address:</label>
                         <input type="text" class="form-control" id="alamat-klien" th:value="${klien.alamatKlien}" th:field="*{alamatKlien}"/>
                         <small id="alamat-klien-error" class="text-danger"></small>
                     </div>
                     <div class="center-button">
-                        <button class="btn btn-submit" type="submit">Update</button>
+                        <button class="btn btn-submit" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
+
+<!-- Modal Pop-up untuk Klien -->
+<div class="modal fade" id="klienSuccessModal" tabindex="-1" role="dialog" aria-labelledby="klienSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="klienSuccessModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+                Client successfully updated.
+            </div>
+            <div class="modal-footer">
+                <span class="click-anywhere-text">Click anywhere to close</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Script untuk menampilkan modal saat klien berhasil diupdate -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+        /* Cek apakah klien baru saja diupdate */
+        var klienUpdated = [[${klienUpdated}]];
+        if (klienUpdated) {
+            /* Jika ya, tampilkan modal */
+            $('#klienSuccessModal').modal('show');
+        }
+
+        // Tambahkan event listener untuk menutup modal saat klik di mana saja
+        $('#klienSuccessModal').click(function(e) {
+            if (e.target === this) {
+                $(this).modal('hide');
+                window.location.href = '/klien'; // Redirect ke halaman /klien
+            }
+        });
+    });
+</script>
+
         
 
 <script>
     function validateForm() {
         var namaKlien = document.getElementById("nama-klien").value;
+        var rumahSakit = document.getElementById("rumah-sakit").value;
         var emailKlien = document.getElementById("email-klien").value;
         var noHpKlien = document.getElementById("nohp-klien").value;
         var alamatKlien = document.getElementById("alamat-klien").value;
 
         var namaKlienError = document.getElementById("nama-klien-error");
+        var rumahSakitError = document.getElementById("rumah-sakit-error");
         var emailKlienError = document.getElementById("email-klien-error");
         var noHpKlienError = document.getElementById("nohp-klien-error");
         var alamatKlienError = document.getElementById("alamat-klien-error");
 
         if (namaKlien.trim() === "") {
-            namaKlienError.innerText = "Nama Klien tidak boleh kosong";
+            namaKlienError.innerText = "Client Name cannot be empty";
             return false;
         } else {
             namaKlienError.innerText = "";
         }
-        if (emailKlien.trim() === "") {
-            emailKlienError.innerText = "Email Klien tidak boleh kosong";
+        if (rumahSakit.trim() === "") {
+            rumahSakitError.innerText = "Hospital cannot be empty";
             return false;
-        } else if (!emailKlien.includes("@") || !emailKlien.includes(".com")) {
-            emailKlienError.innerText = "Email Klien tidak valid (contoh: example@example.com)";
+        } else {
+            rumahSakitError.innerText = "";
+        }
+        if (emailKlien.trim() === "") {
+            emailKlienError.innerText = "Client Email cannot be empty";
+            return false;
+        } else if (!emailKlien.includes("@")) {
+            emailKlienError.innerText = "Invalid Client Email (e.g., example@example.com)";
             return false;
         } else {
             emailKlienError.innerText = "";
         }
         if (noHpKlien.trim() === "") {
-            noHpKlienError.innerText = "Nomor Handphone Klien tidak boleh kosong";
+            noHpKlienError.innerText = "Client Phone Number cannot be empty";
             return false;
         } else if (isNaN(noHpKlien)) {
-            noHpKlienError.innerText = "Nomor Handphone Klien harus berupa angka";
+            noHpKlienError.innerText = "Client Phone Number must be a number";
             return false;
         } else {
             noHpKlienError.innerText = "";
         }
         if (alamatKlien.trim() === "") {
-            alamatKlienError.innerText = "Alamat Klien tidak boleh kosong";
+            alamatKlienError.innerText = "Client Address cannot be empty";
             return false;
         } else {
             alamatKlienError.innerText = "";

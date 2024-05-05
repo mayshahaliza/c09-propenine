@@ -85,7 +85,6 @@ public class UserController {
                return "register";
            }
 
-
            User user = authenticationService.getLoggedInUser();
            model.addAttribute("user", user);
            userService.registerUser(userRegister);

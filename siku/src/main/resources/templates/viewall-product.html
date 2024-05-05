@@ -5,20 +5,71 @@
   <meta charset="UTF-8" />
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
-  <title>View All Product</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View All Products</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
   <style>
-    table {
-        counter-reset: section;
-    }
-        
-    .count:before {
-        counter-increment: section;
-        content: counter(section);
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
 
-		#myButton {
-			display: none;
-		}
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #3c3f61;
+        }
+
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .pesanan-table th,
+        .pesanan-table td {
+            vertical-align: middle;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+            }
+        }    
   </style>
 </head>
 
@@ -30,48 +81,60 @@
     <div th:case="'operational'">
         <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
     </div>
-  <div class="container">
-    <div class="text-center" th:if="${user.role == 'operational' || user.role == 'admin'}">
-    <div class="text-center pt-5">
-      <h2>Products Stock</h2>
-    </div>
-    <div class="text-center m-3">
-      <a type="button" class="btn btn-md btn-primary" href="/product/tambah">Add Product</a>
-    </div>
-    <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">ID</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Category</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Price</th>
-            <th scope="col">Status</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody th:each="product: ${listProduct}">
-          <tr>
-            <th scope="row" id="counting" class="count">
-            </th>
-            <td th:text="${product.idProduct}"></td>
-            <td th:text="${product.namaProduct}"></td>
-            <td th:text="${product.kategori.namaKategori}"></td>
-            <td th:text="${product.stok}"></td>
-            <td th:text="${product.harga}"></td>
-            <td th:text="${product.status} ? 'Tersedia' : 'Habis'"></td>
-            <td><a type="button" class="btn btn-md btn-primary" th:href="@{/product/update/} + ${product.idProduct}">Edit Stock</a></td>
-          </tr>
-        </tbody>      
-    </table>
   </div>
-    <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
-      <script th:inline="javascript">
-         /*<![CDATA[*/
-         window.location.replace('/no-access');
-         /*]]>*/
-     </script>
+  <div th:if="${user.role == 'operational' || user.role == 'admin'}">
+  <div class="container">
+    <div class="card">
+    <h2 class="mb-4 text-center">Products Stock</h2>
+    <div style="text-align: right;">
+      <a type="button" class="btn btn-add mb-3" href="/product/tambah">Add Product</a>
     </div>
+    <div class="table-responsive">
+      <table id="myTable" class="table table-striped table-bordered pesanan-table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">ID</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Category</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${listProduct.isEmpty()}">
+              <td colspan="5" class="text-center">No products.</td>
+            </tr>
+            <tr th:each="product, iterStat : ${listProduct}" th:if="${not listProduct.isEmpty()}">
+              <td th:text="${iterStat.count}"></td>
+              <td th:text="${product.idProduct}"></td>
+              <td th:text="${product.namaProduct}"></td>
+              <td th:text="${product.kategori.namaKategori}"></td>
+              <td th:text="${product.stok}"></td>
+              <td th:text="'Rp' + ${#numbers.formatDecimal(product.harga, 0, 'COMMA', 0, 'POINT')}"></td>
+              <td th:text="${product.status} ? 'Tersedia' : 'Habis'"></td>
+              <td style="text-align: center;">
+                <a type="button" class="btn btn-md btn-detail" th:href="@{/product/update/} + ${product.idProduct}">Edit Stock</a>
+              </td>
+            </tr>
+          </tbody>      
+      </table>
+    </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+    });
+  </script>
+  <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      window.location.replace('/no-access');
+      /*]]>*/
+    </script>
+  </div>
 </body>
 </html>

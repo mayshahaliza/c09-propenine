@@ -2,14 +2,125 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
-    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        .card {
+            max-width: 1100px; /* Maximum card width */
+            margin: 0 auto; /* Center the card horizontally */
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .btn-submit {
+            background-color: #5eac2a;
+            color: #fff;
+        }
+        .btn-back,
+        .btn-update,
+        .btn-hapus {
+            margin-right: 10px;
+        }
+        .btn-back {
+            background-color: #6c757d;
+        }
+        .btn-update {
+            background-color: #007bff;
+        }
+        .btn-hapus {
+            background-color: #dc3545;
+        }
+        .navbar {
+            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+        }
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #F3D266;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
+         body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+        margin-top: 30px;
+    }
+
+        .description-card-body {
+            padding: 1.25rem;
+            /* Adjust padding as needed */
+        }
+
+        .btn-back {
+            background-color: #0d1013;
+            color: #fff;
+        }
+
+        .description-card .card-body {
+            padding: 0; /* Remove padding to prevent extra space */
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Define different font sizes for h2 and h3 */
+        .h2-custom {
+            font-size: 3rem; /* Adjust the font size as needed */
+        }
+
+        .h3-custom {
+            font-size: 1.5rem; /* Adjust the font size as needed */
+        }
+
+        .h4-custom {
+            font-size: 1rem; /* Adjust the font size as needed */
+        }
+
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #F3D266;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
     <title>Bar Chart - Rekap Penjualan</title>
 </head>
 
+
+
 <body>
+
 <div class="text-center" th:if="${user != null && user.role == 'admin' || user.role == 'executive'}"> </div>
 <div th:switch="${user.role}">
     <div th:case="'admin'">
@@ -18,6 +129,10 @@
     <div th:case="'executive'">
         <nav th:replace="~{fragments/executive_navbar :: executive_navbar}"></nav>
     </div>
+</div>
+
+<div class="left-top-corner">
+    <a type="button" class="btn btn-back btn-md" href="/pesanan/dashboard"><i class="fas fa-chevron-left"></i></a>
 </div>
 
 <div class="text-center">
@@ -50,67 +165,118 @@
 
     <button onclick="filterData()">Filter</button>
 
-    <!-- Canvas for the bar chart -->
-    <canvas id="barChart"></canvas>
+    <!-- Container for the bar chart -->
+    <div id="chartContainer" style="width: 800px; margin: auto;">
+        <!-- Canvas for the bar chart -->
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Message to display when there is no product -->
+    <div id="noProductMessage" class="text-center" style="display: none;">
+        <div class="container">
+            <div class="description-card">
+                <div class="card-body description-card-body">
+
+                    <div class="text-center pt-3"> <!-- Adjust padding top as needed -->
+                        <h3 class="h3-custom">No Product</h3>
+                    </div>
+
+                    <div class="text-center m-3"> <!-- Adjust padding top as needed -->
+                        <h3 class="h4-custom">There is no product sold</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script th:inline="javascript">
-        /*<![CDATA[*/
-        // Get sales summary data passed from the backend
-        var salesData = /*[[${orderSummary}]]*/ [];
+    /*<![CDATA[*/
+    // Get sales summary data passed from the backend
+    var salesData = /*[[${orderSummary}]]*/ [];
 
-        // Extract product names and total quantities from salesData
-        var productNames = salesData.map(entry => entry.product.namaProduct);
-        var totalQuantities = salesData.map(entry => entry.totalQuantity);
+    // Function to sort data by total quantity in descending order
+    function sortData(data) {
+        return data.sort((a, b) => b.totalQuantity - a.totalQuantity);
+    }
 
-        // Function to filter data based on selected month and year
-        function filterData() {
-            var selectedMonth = document.getElementById('month').value;
-            var selectedYear = document.getElementById('year').value;
-            // Perform AJAX request to fetch sales summary data for the selected month and year
-            fetch('/pesanan/rekap-penjualan-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
-                .then(response => response.json())
-                .then(data => {
-                    // Extract product names and total quantities from the fetched data
-                    var productNames = data.map(entry => entry.product.namaProduct);
-                    var totalQuantities = data.map(entry => entry.totalQuantity);
+    // Extract product names and total quantities from salesData
+    var sortedSalesData = sortData(salesData.slice(0, 10)); // Sort and select top 10
+    var productNames = sortedSalesData.map(entry => entry.product.namaProduct);
+    var totalQuantities = sortedSalesData.map(entry => entry.totalQuantity);
 
-                    // Update the chart with the new data
-                    barChart.data.labels = productNames;
-                    barChart.data.datasets[0].data = totalQuantities;
-                    barChart.update();
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        }
 
-        // Create a new Chart instance
-        var ctx = document.getElementById('barChart').getContext('2d');
-        var barChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: productNames, // Product names on X-axis
-                datasets: [{
-                    label: 'Total Quantity',
-                    data: totalQuantities, // Total quantities on Y-axis
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
-                    borderColor: 'rgba(54, 162, 235, 1)', // Border color
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true // Start Y-axis from zero
-                        }
+    function showChartOrMessage() {
+        var chartContainer = document.getElementById('chartContainer');
+        var noProductMessage = document.getElementById('noProductMessage');
+
+        if (productNames.length === 0) {
+            chartContainer.style.display = 'none';
+            noProductMessage.style.display = 'block';
+        } else {
+            chartContainer.style.display = 'block';
+            noProductMessage.style.display = 'none';
+
+            // Create a new Chart instance
+            var ctx = document.getElementById('barChart').getContext('2d');
+            var barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: productNames, // Product names on X-axis
+                    datasets: [{
+                        label: 'Total Quantity',
+                        data: totalQuantities, // Total quantities on Y-axis
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color for bars
+                        borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                        borderWidth: 1
                     }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true // Start Y-axis from zero
+                            }
+                        }]
+                    }
                 }
-            }
-        });
-        /*]]>*/
-    </script>
+            });
+        }
+    }
+
+    // Function to filter data based on selected month and year
+    function filterData() {
+        var selectedMonth = document.getElementById('month').value;
+        var selectedYear = document.getElementById('year').value;
+
+        // Perform AJAX request to fetch sales summary data for the selected month and year
+        fetch('/pesanan/rekap-penjualan-chart-data?bulan=' + selectedMonth + '&tahun=' + selectedYear)
+            .then(response => response.json())
+            .then(data => {
+                // Sort and select top 10 from the fetched data
+                var sortedData = sortData(data).slice(0, 10);
+                // Extract product names and total quantities from the fetched data
+                productNames = sortedData.map(entry => entry.product.namaProduct);
+                totalQuantities = sortedData.map(entry => entry.totalQuantity);
+
+                // Update the chart or display the message
+                showChartOrMessage();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    // Automatically filter data for the current month when the page loads
+    showChartOrMessage();
+    defaultSelectedMonthYear();
+    /*]]>*/
+</script>
+
+
+
+
 </body>
 
 <div th:unless="${user != null && (user.role == 'executive' || user.role =='admin') }">

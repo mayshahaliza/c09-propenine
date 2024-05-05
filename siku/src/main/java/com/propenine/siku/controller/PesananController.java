@@ -1,26 +1,32 @@
 package com.propenine.siku.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.propenine.siku.model.RekapPenjualan;
-import com.propenine.siku.model.RekapKlien;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapAgent;
-import com.propenine.siku.modelstok.Product;
+import com.propenine.siku.model.RekapKlien;
+import com.propenine.siku.model.RekapPenjualan;
 import com.propenine.siku.model.User;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
-import com.propenine.siku.service.UserService;
 import com.propenine.siku.service.UserServiceImpl;
 import com.propenine.siku.service.klien.KlienService;
 import com.propenine.siku.servicestok.ProductService;
@@ -52,6 +58,7 @@ public class PesananController {
         return "redirect:/pesanan/list";
     }
 
+
     @GetMapping("/list")
     public String listAllPesanan(
             @RequestParam(name = "searchInput", required = false) String searchInput,
@@ -69,6 +76,12 @@ public class PesananController {
         } else {
             pesananList = pesananService.getAllPesanan();
         }
+
+        pesananList.forEach(pesanan -> {
+            int totalCost = pesanan.getProduct().getHarga() * pesanan.getJumlahBarangPesanan();
+            pesanan.setJumlahBiayaPesanan(totalCost);
+        });
+        
 
         pesananList.sort(Comparator.comparing(Pesanan::getStatusPesanan,
                 Comparator.comparing(status -> {
@@ -124,7 +137,8 @@ public class PesananController {
                 } else {
                     product.setStatus(false);
                 }
-                productService.updateProduct(product); 
+                pesanan.setJumlahBiayaPesanan(jumlahBarangPesanan * product.getHarga());
+                productService.updateProduct(product);
 
                 pesananService.createPesanan(pesanan);
 
@@ -156,7 +170,7 @@ public class PesananController {
         model.addAttribute("tanggalPemesanan", pesanan.getTanggalPemesanan().toString());
         model.addAttribute("tanggalSelesai", pesanan.getTanggalSelesai().toString());
 
-        return "pesanan/update"; 
+        return "pesanan/update";
     }
 
     // @PostMapping("/update/{id}")
@@ -240,10 +254,15 @@ public class PesananController {
 
     @GetMapping("/rekap-penjualan")
     public String getOrderSummary(@RequestParam(required = false) Integer bulan,
-                                  @RequestParam(required = false) Integer tahun,
-                                  Model model) {
+            @RequestParam(required = false) Integer tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
+
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
 
         List<RekapPenjualan> orderSummary;
         if (bulan != null && tahun != null) {
@@ -264,55 +283,117 @@ public class PesananController {
     }
 
     @GetMapping("/rekap-klien")
-    public String getOrderSummaryByKlien(@RequestParam(required = false) Integer bulan,
-                                  @RequestParam(required = false) Integer tahun,
-                                  Model model) {
+    public String getOrderSummaryByKlien(
+            @RequestParam(required = false) Integer bulan,
+            @RequestParam(required = false) Integer tahun,
+            @RequestParam(required = false) String clientName,
+            @RequestParam(required = false) String sortBy,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         List<RekapKlien> klienSummary;
+
         if (bulan != null && tahun != null) {
-            klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+            if (clientName != null && !clientName.isEmpty()) {
+                klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+                klienSummary = klienSummary.stream().filter(rekap_klien -> rekap_klien.getKlien().getNamaKlien().toLowerCase().contains(clientName))
+                        .collect(Collectors.toList());
+            } else {
+                klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+            }
         } else {
-            klienSummary = pesananService.getAllKlienSummaries();
+            if (clientName != null && !clientName.isEmpty()) {
+                klienSummary = pesananService.getAllKlienSummaries();
+                klienSummary = klienSummary.stream().filter(rekap_klien -> rekap_klien.getKlien().getNamaKlien().toLowerCase().contains(clientName.toLowerCase()))
+                    .collect(Collectors.toList());
+            } else {
+                klienSummary = pesananService.getAllKlienSummaries();
+            }
         }
 
-        if (klienSummary.isEmpty()) {
-            model.addAttribute("message", "Tidak ada pesanan.");
+        if (sortBy == null || sortBy.equals("mostItems")) {          
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity).reversed());
+        } else if (sortBy.equals("leastItems")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity));
+        } else if (sortBy.equals("highestPrice")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalPrice).reversed());
+        } else if (sortBy.equals("lowestPrice")) {
+            klienSummary.sort(Comparator.comparing(RekapKlien::getTotalPrice));
+        }
+
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-klien";
+        } else if (klienSummary.isEmpty()) {
+            model.addAttribute("message", "No orders found.");
+            return "laporan-klien";
+        } else {
+            model.addAttribute("klienSummary", klienSummary);
             return "laporan-klien";
         }
-
-        model.addAttribute("klienSummary", klienSummary);
-        return "laporan-klien";
     }
 
     @GetMapping("/rekap-agent")
-    public String getOrderSummaryByAgent(@RequestParam(required = false) Integer bulan,
-                                  @RequestParam(required = false) Integer tahun,
-                                  Model model) {
+    public String getOrderSummaryByAgent(
+            @RequestParam(required = false) Integer bulan,
+            @RequestParam(required = false) Integer tahun,
+            @RequestParam(required = false) String agentName,
+            @RequestParam(required = false) String sortBy,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         List<RekapAgent> agentSummary;
+
         if (bulan != null && tahun != null) {
-            agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+            if (agentName != null && !agentName.isEmpty()) {
+                agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+                agentSummary = agentSummary.stream()
+                        .filter(rekap_agent -> (rekap_agent.getUser().getNama_depan().toLowerCase() + " " + rekap_agent.getUser().getNama_belakang().toLowerCase())
+                        .contains(agentName.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+            }
         } else {
-            agentSummary = pesananService.getAllAgentSummaries();
+            if (agentName != null && !agentName.isEmpty()) {
+                agentSummary = pesananService.getAllAgentSummaries();
+                agentSummary = agentSummary.stream()
+                        .filter(rekap_agent -> (rekap_agent.getUser().getNama_depan().toLowerCase() + " " + rekap_agent.getUser().getNama_belakang().toLowerCase())
+                        .contains(agentName.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                agentSummary = pesananService.getAllAgentSummaries();
+            }
         }
 
-        if (agentSummary.isEmpty()) {
-            model.addAttribute("message", "Tidak ada pesanan.");
+        if (sortBy == null || sortBy.equals("mostItems")) {          
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity).reversed());
+        } else if (sortBy.equals("leastItems")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity));
+        } else if (sortBy.equals("highestPrice")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalPrice).reversed());
+        } else if (sortBy.equals("lowestPrice")) {
+            agentSummary.sort(Comparator.comparing(RekapAgent::getTotalPrice));
+        }
+
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-agent";
+        } else if (agentSummary.isEmpty()) {
+            model.addAttribute("message", "No orders found.");
+            return "laporan-agent";
+        } else {
+            model.addAttribute("agentSummary", agentSummary);
             return "laporan-agent";
         }
-
-        model.addAttribute("agentSummary", agentSummary);
-        return "laporan-agent";
     }
 
     @GetMapping("/rekap-penjualan-chart")
     public String getOrderSummaryChart(@RequestParam(required = false) Integer bulan,
-                                       @RequestParam(required = false) Integer tahun,
-                                       Model model) {
+            @RequestParam(required = false) Integer tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
@@ -321,7 +402,8 @@ public class PesananController {
         int currentMonth = currentDate.getMonthValue();
         int currentYear = currentDate.getYear();
 
-        // Fetch order summary data based on the provided month and year or use the current month and year by default
+        // Fetch order summary data based on the provided month and year or use the
+        // current month and year by default
         List<RekapPenjualan> orderSummary;
         if (bulan != null && tahun != null) {
             orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
@@ -343,10 +425,62 @@ public class PesananController {
         return "rekap-penjualan-chart";
     }
 
-    @GetMapping("/rekap-klien-chart")
-    public String getKlienSummaryChart(@RequestParam(required = false) Integer bulan,
+    // UNTUK DASHBOARD
+    @GetMapping("/dashboard")
+    public String getOrderSummaryChartDashboard(@RequestParam(required = false) Integer bulan,
                                        @RequestParam(required = false) Integer tahun,
                                        Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Get the current month and year
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        // Fetch order summary data based on the provided month and year or use the current month and year by default
+        List<RekapPenjualan> orderSummary;
+        List<RekapKlien> klienSummary;
+        List<RekapAgent> agentSummary;
+
+        if (bulan != null && tahun != null) {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+            klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+            agentSummary = pesananService.getAgentSummaryByMonthAndYear(bulan, tahun);
+        } else {
+            orderSummary = pesananService.getOrderSummaryByMonthAndYear(currentMonth, currentYear);
+            klienSummary = pesananService.getKlienSummaryByMonthAndYear(currentMonth, currentYear);
+            agentSummary = pesananService.getAgentSummaryByMonthAndYear(currentMonth, currentYear);
+        }
+
+        orderSummary.sort(Comparator.comparing(RekapPenjualan::getTotalQuantity).reversed());
+        klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity).reversed());
+        agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity).reversed());
+
+        List<RekapPenjualan> topProducts = orderSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        List<RekapKlien> topClients = klienSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        List<RekapAgent> topAgents = agentSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        // Pass the order summary data and current month/year to the Thymeleaf template
+        model.addAttribute("orderSummary", topProducts);
+        model.addAttribute("klienSummary", topClients);
+        model.addAttribute("agentSummary", topAgents);
+        model.addAttribute("currentMonth", currentMonth);
+        model.addAttribute("currentYear", currentYear);
+
+        return "dashboard";
+    }
+
+    @GetMapping("/rekap-klien-chart")
+    public String getKlienSummaryChart(@RequestParam(required = false) Integer bulan,
+            @RequestParam(required = false) Integer tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
@@ -361,7 +495,13 @@ public class PesananController {
             klienSummary = pesananService.getKlienSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
-        model.addAttribute("klienSummary", klienSummary);
+        klienSummary.sort(Comparator.comparing(RekapKlien::getTotalQuantity).reversed());
+
+        List<RekapKlien> topClients = klienSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        model.addAttribute("klienSummary", topClients);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
@@ -370,8 +510,8 @@ public class PesananController {
 
     @GetMapping("/rekap-agent-chart")
     public String getAgentSummaryChart(@RequestParam(required = false) Integer bulan,
-                                       @RequestParam(required = false) Integer tahun,
-                                       Model model) {
+            @RequestParam(required = false) Integer tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
@@ -386,8 +526,14 @@ public class PesananController {
             agentSummary = pesananService.getAgentSummaryByMonthAndYear(currentMonth, currentYear);
         }
 
+        agentSummary.sort(Comparator.comparing(RekapAgent::getTotalQuantity).reversed());
+
+        List<RekapAgent> topAgents = agentSummary.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
         // Pass the order summary data and current month/year to the Thymeleaf template
-        model.addAttribute("agentSummary", agentSummary);
+        model.addAttribute("agentSummary", topAgents);
         model.addAttribute("currentMonth", currentMonth);
         model.addAttribute("currentYear", currentYear);
 
@@ -397,13 +543,37 @@ public class PesananController {
 
     @GetMapping("/rekap-penjualan-chart-data")
     @ResponseBody
-    public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+    public List<RekapPenjualan> getOrderSummaryChartData(@RequestParam int bulan, @RequestParam int tahun,
+            Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
         // Fetch order summary data for the specified month and year
         List<RekapPenjualan> orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
         return orderSummary;
+    }
+
+    // UNTUK DASHBOARD
+    @GetMapping("/rekap-penjualan-chart-data-dashboard")
+    @ResponseBody
+    public List<RekapPenjualan> getOrderSummaryChartDataDashboard(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Fetch order summary data for the specified month and year
+        List<RekapPenjualan> orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+        return orderSummary;
+    }
+
+    @GetMapping("/rekap-klien-chart-data-dashboard")
+    @ResponseBody
+    public List<RekapKlien> getKlienSummaryChartDataDashboard(@RequestParam int bulan, @RequestParam int tahun, Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
+        // Fetch order summary data for the specified month and year
+        List<RekapKlien> klienSummary = pesananService.getKlienSummaryByMonthAndYear(bulan, tahun);
+        return klienSummary;
     }
 
     @GetMapping("/rekap-klien-chart-data")

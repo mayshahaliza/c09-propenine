@@ -19,6 +19,7 @@ import com.propenine.siku.dto.katalog.request.CreateKatalogRequestDTO;
 import com.propenine.siku.model.User;
 import com.propenine.siku.model.katalog.Katalog;
 import com.propenine.siku.model.katalog.Kategori;
+import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.katalog.KatalogService;
 import com.propenine.siku.service.katalog.KategoriService;
@@ -134,6 +135,7 @@ public class KatalogController {
         return "katalog/view-katalog-notlogin";
     }
 
+
     // VIEW DETAIL KATALOG LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/login/{id}")
     public String detailKatalogLogin(@PathVariable("id") UUID id, Model model) {
@@ -158,9 +160,25 @@ public class KatalogController {
         return "katalog/viewall-katalog";
     }
 
-    @GetMapping("/katalog/filter/{kategoriId}")
-    public String filterByCategory(@PathVariable("kategoriId") Long kategoriId, Model model) {
-        var filteredProducts = productService.getProductsByCategory(kategoriId);
+    @GetMapping("/katalog/filter")
+    public String filterByCategoryAndProductName(@RequestParam(value = "kategoriId", required = false) Long kategoriId,
+            @RequestParam(value = "productName", required = false) String productName,
+            Model model) {
+        List<Product> filteredProducts;
+
+        if (kategoriId != null && productName != null && !productName.isEmpty()) {
+            filteredProducts = productService.getProductsByCategoryAndNameContaining(kategoriId, productName);
+        }
+        else if (kategoriId != null) {
+            filteredProducts = productService.getProductsByCategory(kategoriId);
+        }
+        else if (productName != null && !productName.isEmpty()) {
+            filteredProducts = productService.getProductsByNameContaining(productName);
+        }
+        else {
+            filteredProducts = productService.getAllProduct();
+        }
+
         model.addAttribute("listKatalog", filteredProducts);
 
         var allKategori = kategoriService.getAllKategori();
@@ -237,3 +255,4 @@ public class KatalogController {
     }
 
 }
+
