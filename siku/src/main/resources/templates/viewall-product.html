@@ -70,6 +70,21 @@
                 width: 95%;
             }
         }    
+
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #3c3f61;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
   </style>
 </head>
 
@@ -83,6 +98,9 @@
     </div>
   </div>
   <div th:if="${user.role == 'operational' || user.role == 'admin'}">
+  <div class="left-top-corner">
+    <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
+  </div>
   <div class="container">
     <div class="card">
     <h2 class="mb-4 text-center">Products Stock</h2>

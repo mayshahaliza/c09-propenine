@@ -10,6 +10,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
     <style>
@@ -65,6 +67,21 @@
                 width: 95%;
             }
         }
+
+        .left-top-corner {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+        }
+        
+        .left-top-corner .btn-back {
+            background-color: #3c3f61;; /* Background color */
+            color: #fff; /* Text color */
+            border: none; /* Remove border */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+        }
     </style>
 </head>
 
@@ -82,10 +99,11 @@
       </div>
   </div>  
   <div th:if="${user.role == 'operational' || user.role =='admin'}">
+    
     <!-- Content -->
     <div class="container">
         <div class="card">
-            <h2 class="mb-4 text-center">CLIENT LIST</h2>
+            <h2 class="mb-4 text-center">Client List</h2>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="search-box">
                     <form action="/search" method="GET" class="d-flex">

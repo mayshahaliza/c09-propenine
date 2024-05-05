@@ -39,9 +39,13 @@
 
 
         .btn-submit {
-            background-color: #3c3f61;
+            background-color: #3c3f61; /* Change button color */
             color: #fff;
-            width: 100%;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            transition: background-color 0.3s ease;
         }
 
         .left-top-corner {
@@ -91,7 +95,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
                             Update Pesanan
                         </div>
                         <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
@@ -164,7 +168,7 @@
                                         th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
                                 </div>
 
-                                <button type="submit" class="btn-submit">Update</button>
+                                <button type="submit" class="btn-submit">Save</button>
                             </form>
                         </div>
                     </div>
