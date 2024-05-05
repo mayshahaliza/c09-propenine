@@ -191,11 +191,9 @@ public class KaryawanController {
             System.out.println(pesanan);
 
         }        
-
             
         System.out.println("\nNumber of orders found: " + pesananList.size()); // Print the number of orders found
 
-        
         return "karyawan/agent-performance";
     }
 
