@@ -45,7 +45,7 @@ public class ProductController {
     private ProductMapper productMapper;
 
     @GetMapping("stok")
-    public String listGudang(Model model){
+    public String listProduct(Model model){
         var listProduct = productService.getAllProduct();
         model.addAttribute("listProduct", listProduct);
 
@@ -71,7 +71,13 @@ public class ProductController {
     }
 
     @PostMapping("product/tambah")
-    public String addProduct(@Valid @ModelAttribute CreateProductRequestDTO productDTO, Model model){
+    public String addProduct(@Valid @ModelAttribute("productDTO") CreateProductRequestDTO productDTO,
+            BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            // Jika terdapat kesalahan validasi, kembali ke halaman formulir
+            return "form-tambah-product";
+        }
+        
         if (productDTO.getStok() > 0) {
             productDTO.setStatus(true);
         } else {
@@ -81,13 +87,13 @@ public class ProductController {
 
         productService.createProduct(product);
 
-        model.addAttribute("product", productDTO);
+        model.addAttribute("productAdded", true);
 
         // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        return "success-create-product";
+        return "form-tambah-product";
     }
 
     @GetMapping("product/update/{idProduct}")
@@ -97,8 +103,6 @@ public class ProductController {
         var allKategori = kategoriService.getAllKategori();
 
         model.addAttribute("productDTO", productDTO);
-
-
         model.addAttribute("allKategori", allKategori);
 
         // Autentikasi
@@ -109,7 +113,7 @@ public class ProductController {
     }
 
     @PostMapping("product/update/{idProduct}")
-    public String updateProductPost(@PathVariable("idProduct") UUID idProduct, @Valid @ModelAttribute UpdateProductRequestDTO productDTO, Model model) {
+    public String updateProductPost(@PathVariable("idProduct") UUID idProduct, @Valid @ModelAttribute("productDTO") UpdateProductRequestDTO productDTO, Model model) {
         if (productDTO.getStok() > 0) {
             productDTO.setStatus(true);
         } else {
@@ -119,12 +123,12 @@ public class ProductController {
         var product = productService.updateProduct(productFromDto);
 
         model.addAttribute("idProduct", product.getIdProduct());
-
+        model.addAttribute("productUpdated", true);
         // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        return "success-update-product";
+        return "form-update-product";
     }
 }
 

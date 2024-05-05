@@ -108,4 +108,17 @@ public class PesananService {
         }
     }
 
+    public List<Pesanan> findOrdersByUserIdAndMonthAndYear(Long userId, int bulan, int tahun) {
+        return pesananRepository.findOrdersByUserIdAndMonthAndYear(userId, bulan, tahun);
+    }
+
+    public List<Pesanan> getPesananByUserIdAndStatus(Long userId, String statusPesanan) {
+        return pesananRepository.findOrdersByUserIdAndStatusPesanan(userId, statusPesanan);
+    }
+
+    public List<Pesanan> getPesananByUserId(Long userId) {
+        return pesananRepository.findByUserId(userId);
+    }
+
+
 }

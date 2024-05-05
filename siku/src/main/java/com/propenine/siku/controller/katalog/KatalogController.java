@@ -135,6 +135,7 @@ public class KatalogController {
         return "katalog/view-katalog-notlogin";
     }
 
+
     // VIEW DETAIL KATALOG LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/login/{id}")
     public String detailKatalogLogin(@PathVariable("id") UUID id, Model model) {
