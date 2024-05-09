@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
     <style>
@@ -32,7 +33,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
-
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
         .btn-add {
             background-color: #3c3f61;
             color: #fff;
@@ -57,7 +61,10 @@
             background-color: #3c3f61;
             color: #fff;
         }
-
+        .pesanan-table th {
+            background-color: #3c3f61;
+            color: #FFFFFF;
+        }
         .pesanan-table th,
         .pesanan-table td {
             vertical-align: middle;
@@ -71,7 +78,7 @@
 
         .left-top-corner {
             position: fixed;
-            top: 90px;
+            top: 130px;
             left: 20px;
         }
         
@@ -100,24 +107,30 @@
       </div>
   </div>  
   <div th:if="${user.role == 'operational' || user.role =='admin'}">
-    
+
+    <div class="left-top-corner">
+        <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
+    </div>
+
     <!-- Content -->
     <div class="container">
         <div class="card">
-            <h2 class="mb-4 text-center">Client List</h2>
+            <div class="card-header text-center">
+                <h2>Client List</h2>
+            </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="search-box">
+                <div class="mt-4 search-box">
                     <form action="/search" method="GET" class="d-flex">
                         <input type="text" id="searchInput" name="query" class="form-control me-2" placeholder="Search by name..." />
                         <input type="text" id="searchInputRumahSakit" name="queryRumahSakit" class="form-control me-2" placeholder="Search by hospital..." />
                         <button type="submit" class="btn btn-search">Search</button>
                     </form>
                 </div>
-                <button class="btn btn-add" onclick="location.href='/klien/tambah'">Add Client</button>
+                <button class="btn mt-4 btn-add" onclick="location.href='/klien/tambah'">Add Client</button>
             </div>
             <div class="table-responsive">
                 <table id="myTable" class="table table-striped table-bordered pesanan-table">
-                    <thead class="thead-dark">
+                    <thead class = "card-header text-center fw-bold" style="background-color: #3c3f61; color: #FFFFFF;" >
                         <tr>
                             <th scope="col">No</th>
                             <th scope="col">Client Name</th>
@@ -146,6 +159,9 @@
     </div>
   </div>
     <script>
+         // Suppress DataTables warnings
+        $.fn.dataTable.ext.errMode = 'none';
+
         $(document).ready(function() {
             $('#myTable').DataTable();
         });
