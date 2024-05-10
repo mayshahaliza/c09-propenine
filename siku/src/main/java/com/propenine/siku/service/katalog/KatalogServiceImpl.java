@@ -8,6 +8,7 @@ import javax.xml.catalog.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.katalog.Katalog;
 import com.propenine.siku.repository.katalog.KatalogDb;
 
@@ -30,6 +31,7 @@ public class KatalogServiceImpl implements KatalogService {
     public Katalog getKatalogById(UUID id) {
         return katalogDb.findById(id).orElse(null);
     }
-    
-    
 }
+    
+    
+

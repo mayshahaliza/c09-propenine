@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.xml.catalog.Catalog;
 
+import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.katalog.Katalog;
 
 public interface KatalogService {

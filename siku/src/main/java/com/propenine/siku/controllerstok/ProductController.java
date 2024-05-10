@@ -3,7 +3,7 @@ import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.katalog.KategoriService;
 import com.propenine.siku.servicestok.ProductService;
-
+import org.springframework.util.StringUtils;
 import jakarta.validation.Valid;
 
 import com.propenine.siku.dtostok.request.CreateProductRequestDTO;
@@ -12,6 +12,8 @@ import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.dtostok.ProductMapper;
 import com.propenine.siku.repositorystok.ProductDb;
 import java.util.UUID;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class ProductController {
@@ -70,7 +73,7 @@ public class ProductController {
         return "form-tambah-product";
     }
 
-    @PostMapping("product/tambah")
+     @PostMapping("product/tambah")
     public String addProduct(@Valid @ModelAttribute("productDTO") CreateProductRequestDTO productDTO,
             BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()) {
@@ -95,6 +98,7 @@ public class ProductController {
 
         return "form-tambah-product";
     }
+    
 
     @GetMapping("product/update/{idProduct}")
     public String formUpdateProduct(@PathVariable("idProduct") UUID idProduct, Model model) {
