@@ -82,7 +82,7 @@
     </div>
     
     <div class="container">
-        <div th:if="${user.role == 'operational' || user.role =='admin'}">
+        <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}">
             <div class="description-card">
                 <div class="card-body description-card-body">
 
@@ -160,13 +160,12 @@
 
 <!-- BATASS-->
 
-        <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
-            <script th:inline="javascript">
-               /*<![CDATA[*/
-               window.location.replace('/no-access');
-               /*]]>*/
-           </script>
-        </div>
+    <div th:unless="${user != null && (user.role == 'operational' || user.role =='admin')}">
+        <script th:inline="javascript">
+                /*<![CDATA[*/
+                window.location.replace('/no-access');
+                /*]]>*/
+        </script>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>

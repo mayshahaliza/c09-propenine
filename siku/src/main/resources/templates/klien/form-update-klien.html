@@ -60,7 +60,7 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
-    <div th:if="${user.role == 'operational' || user.role =='admin'}">
+    <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}">
 
         <div class="left-top-corner">
             <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
@@ -200,7 +200,7 @@
 
 
 
-<div th:unless="${user.role == 'operational' || user.role =='admin'}">
+<div th:unless="${user != null && (user.role == 'operational' || user.role =='admin')}">
     <script th:inline="javascript">
             /*<![CDATA[*/
             window.location.replace('/no-access');
