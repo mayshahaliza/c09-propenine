@@ -1,17 +1,13 @@
 package com.propenine.siku.controller;
 
-
 import com.propenine.siku.model.User;
 import com.propenine.siku.repository.UserRepository;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.UserService;
 
-
 import jakarta.validation.Valid;
 
-
 import java.util.stream.Collectors;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -30,75 +26,64 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-
-
 @Controller
 public class UserController {
-   @Autowired
-   private UserService userService;
+    @Autowired
+    private UserService userService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
 
-   @Autowired
-   private AuthenticationService authenticationService;
+    @Autowired
+    UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-   @Autowired
-   UserRepository userRepository;
+    @GetMapping("/register")
+    public String register(Model model) {
+        User userRegister = new User();
+        model.addAttribute("userRegister", userRegister);
 
+        User user = authenticationService.getLoggedInUser();
+        model.addAttribute("user", user);
+        return "register";
+    }
 
-   @Autowired
-   private PasswordEncoder passwordEncoder;
+    @PostMapping("/registerUser")
+    public String registerUser(@ModelAttribute("userRegister") @Valid User userRegister, BindingResult bindingResult,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userRegister", userRegister);
+            model.addAttribute("errors", bindingResult.getAllErrors());
 
+            User user = authenticationService.getLoggedInUser();
+            model.addAttribute("user", user);
+            return "register";
+        }
 
-   @GetMapping("/register")
-   public String register(Model model){
-       User userRegister = new User();
-       model.addAttribute("userRegister", userRegister);
+        if (userService.existsByUsername(userRegister.getUsername())
+                || userService.existsByEmail(userRegister.getEmail())) {
+            // Handle duplicate username or email
+            model.addAttribute("duplicateError", "Username atau email sudah terdaftar.");
+            User user = authenticationService.getLoggedInUser();
+            model.addAttribute("userRegister", userRegister);
+            model.addAttribute("user", user);
+            return "register";
+        }
 
+        User user = authenticationService.getLoggedInUser();
+        model.addAttribute("user", user);
+        userService.registerUser(userRegister);
+        return "landing-page";
+    }
 
-       User user = authenticationService.getLoggedInUser();
-       model.addAttribute("user", user);
-       return "register";
-   }
-
-
-   @PostMapping("/registerUser")
-       public String registerUser(@ModelAttribute("userRegister") @Valid User userRegister, BindingResult bindingResult, Model model){
-           if (bindingResult.hasErrors()) {
-               model.addAttribute("userRegister", userRegister);
-               model.addAttribute("errors", bindingResult.getAllErrors());
-
-
-               User user = authenticationService.getLoggedInUser();
-               model.addAttribute("user", user);
-               return "register";
-           }
-
-
-           if (userService.existsByUsername(userRegister.getUsername()) || userService.existsByEmail(userRegister.getEmail())) {
-               // Handle duplicate username or email
-               model.addAttribute("duplicateError", "Username atau email sudah terdaftar.");
-               User user = authenticationService.getLoggedInUser();
-               model.addAttribute("userRegister", userRegister);
-               model.addAttribute("user", user);
-               return "register";
-           }
-
-           User user = authenticationService.getLoggedInUser();
-           model.addAttribute("user", user);
-           userService.registerUser(userRegister);
-           return "landing-page";
-       }
-
-
-   @GetMapping("/login")
-   public String login(Model model){
-       User user = new User();
-       model.addAttribute("user", user);
-       return "login";
-   }
-
+    @GetMapping("/login")
+    public String login(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
+        return "login";
+    }
 
     @PostMapping("/loginUser")
     public String loginUser(@ModelAttribute("user") User user, Model model) {
@@ -121,83 +106,77 @@ public class UserController {
         }
     }
 
-
-   @PostMapping("/logout")
-   public String logout() {
-       authenticationService.removeLoggedInUser();
-       return "redirect:/login";
-   }
-
-
-   @GetMapping("/no-access")
-   public String showNoAccessPage() {
-       return "no-access";
-   }
-
-
-   @GetMapping("/ex-hr-only")
-   public String hr(Model model) {
-       User loggedInUser = authenticationService.getLoggedInUser();
-       model.addAttribute("user", loggedInUser);
-       return "ex-hr-only";
-   }
-
-
-   @GetMapping("/view-profile")
-   public String viewProfile(Model model) {
-       User loggedInUser = authenticationService.getLoggedInUser();
-       System.out.println(loggedInUser);
-
-
-       model.addAttribute("user", loggedInUser);
-       return "profile";
-   }
-
-
-   @GetMapping("/edit-profile")
-   public String editProfile(Model model) {
-       User loggedInUser = authenticationService.getLoggedInUser();
-       if (loggedInUser == null) {
-           return "redirect:/login";
-       }
-
-       model.addAttribute("user", loggedInUser);
-       return "edit-profile";
-   }
-
-    @PostMapping("/success-edit-profile")
-    public String updatedProfile(@Valid @ModelAttribute("user") User updatedUser,
-                            BindingResult bindingResult,
-                            Model model) {
-    User loggedInUser = authenticationService.getLoggedInUser();
-    if (loggedInUser == null) {
+    @PostMapping("/logout")
+    public String logout() {
+        authenticationService.removeLoggedInUser();
         return "redirect:/login";
     }
 
-    if (bindingResult.hasErrors()) {
+    @GetMapping("/no-access")
+    public String showNoAccessPage() {
+        return "no-access";
+    }
+
+    @GetMapping("/ex-hr-only")
+    public String hr(Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+        return "ex-hr-only";
+    }
+
+    @GetMapping("/view-profile")
+    public String viewProfile(Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        System.out.println(loggedInUser);
+
+        model.addAttribute("user", loggedInUser);
+        return "profile";
+    }
+
+    @GetMapping("/edit-profile")
+    public String editProfile(Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", loggedInUser);
         return "edit-profile";
     }
 
-    Long userId = loggedInUser.getId();
-    if (userService.existsOtherUserWithSameUsername(userId, updatedUser.getUsername())) {
-        model.addAttribute("duplicateError", "Username sudah digunakan oleh pengguna lain.");
-        return "edit-profile";
-    }
+    @PostMapping("/success-edit-profile")
+    public String updatedProfile(@Valid @ModelAttribute("user") User updatedUser,
+            BindingResult bindingResult,
+            Model model) {
+        User loggedInUser = authenticationService.getLoggedInUser();
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
 
-    if (userService.existsOtherUserWithSameEmail(userId, updatedUser.getEmail())) {
-        model.addAttribute("duplicateError", "Email sudah digunakan oleh pengguna lain.");
-        return "edit-profile";
-    }
+        if (bindingResult.hasErrors()) {
+            return "edit-profile";
+        }
 
-    loggedInUser.setUsername(updatedUser.getUsername());
-    loggedInUser.setEmail(updatedUser.getEmail());
-    loggedInUser.setNomor_hp(updatedUser.getNomor_hp());
+        Long userId = loggedInUser.getId();
+        if (userService.existsOtherUserWithSameUsername(userId, updatedUser.getUsername())) {
+            model.addAttribute("duplicateError", "Username sudah digunakan oleh pengguna lain.");
+            return "edit-profile";
+        }
 
-    userService.editUserProfile(loggedInUser);
+        if (userService.existsOtherUserWithSameEmail(userId, updatedUser.getEmail())) {
+            model.addAttribute("duplicateError", "Email sudah digunakan oleh pengguna lain.");
+            return "edit-profile";
+        }
 
-    model.addAttribute("success", true);
+        loggedInUser.setUsername(updatedUser.getUsername());
+        loggedInUser.setEmail(updatedUser.getEmail());
+        loggedInUser.setNomor_hp(updatedUser.getNomor_hp());
 
-    return "redirect:/view-profile?success=profile";
+        userService.editUserProfile(loggedInUser);
+
+        model.addAttribute("success", true);
+
+        return "redirect:/view-profile?success=profile";
     }
 
     @GetMapping("/change-password")
@@ -210,13 +189,12 @@ public class UserController {
         return "form-edit-password";
     }
 
-
     @PostMapping("/success-change-password")
     public String changePassword(@Valid @ModelAttribute("user") User loggedInUser,
-                                @RequestParam String currentPassword,
-                                @RequestParam String newPassword,
-                                @RequestParam String confirmPassword,
-                                Model model) {
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            Model model) {
 
         User userFromDatabase = userRepository.findByUsername(loggedInUser.getUsername());
 
@@ -262,8 +240,5 @@ public class UserController {
 
         return "redirect:/view-profile?success=password";
     }
-
-
-
 
 }

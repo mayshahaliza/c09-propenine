@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>View All Catalog</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -125,7 +126,7 @@
         .filter-button {
             margin-top: 32px;
             /* Adjust the margin to align the button with search bar */
-            background-color:  #3c3f61;
+            background-color: #3c3f61;
             /* Change button color to blue */
             color: #fff;
             /* Change text color to white */
@@ -163,7 +164,7 @@
                     <option value="">All Categories</option>
                     <th:block th:each="kategori : ${allKategori}">
                         <option th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
-                    </th:block>                    
+                    </th:block>
                 </select>
             </div>
             <div class="col-md-4">
@@ -183,13 +184,14 @@
                     <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
                         <div class="card-content">
+                            <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
                         </div>
                     </a>
                     <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
-                        <img alt="" th:src="*{'data:/image/jpg;base64,' + katalog.image}">
+                        <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
                         <div class="card-content">
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
@@ -197,34 +199,34 @@
                     </a>
                 </div>
             </div>
-    </div>
+        </div>
 
-    <!-- JavaScript -->
-    <script>
-        function filterByCategoryAndProductName() {
-            var categoryId = document.getElementById("kategori").value;
-            var productName = document.getElementById("productName").value.trim();
+        <!-- JavaScript -->
+        <script>
+            function filterByCategoryAndProductName() {
+                var categoryId = document.getElementById("kategori").value;
+                var productName = document.getElementById("productName").value.trim();
 
-            var url = '/katalog/filter?';
-            if (categoryId !== "") {
-                url += 'kategoriId=' + categoryId;
+                var url = '/katalog/filter?';
+                if (categoryId !== "") {
+                    url += 'kategoriId=' + categoryId;
+                }
+                if (productName !== "") {
+                    url += (categoryId === "" ? "" : '&') + 'productName=' + productName;
+                }
+                window.location.href = url;
             }
-            if (productName !== "") {
-                url += (categoryId === "" ? "" : '&') + 'productName=' + productName;
-            }
-            window.location.href = url;
-        }
-    </script>
-
-
-    <div
-        th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
-        <script th:inline="javascript">
-            /*<![CDATA[*/
-            window.location.replace('/no-access');
-            /*]]>*/
         </script>
-    </div>
+
+
+        <div
+            th:unless="${user == null || user.role == 'hr' || user.role == 'executive' || user.role == 'operational' || user.role =='admin'}">
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                window.location.replace('/no-access');
+                /*]]>*/
+            </script>
+        </div>
 
     </div>
 

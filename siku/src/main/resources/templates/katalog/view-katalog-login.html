@@ -7,8 +7,8 @@
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
     <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <!-- Include Bootstrap Icons CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
@@ -77,7 +77,8 @@
         }
 
         .description-card .card-body {
-            padding: 0; /* Remove padding to prevent extra space */
+            padding: 0;
+            /* Remove padding to prevent extra space */
         }
 
         .stok-details {
@@ -98,42 +99,41 @@
     </div>
     <div class="container">
         <div class="text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
-        <div class="description-card">
-            <div class="card-body description-card-body">
-                <div class="text-center pt-5">
-                    <h2 class="mb-4">Katalog Detail</h2>
-                </div>
+            <div class="description-card">
+                <div class="card-body description-card-body">
+                    <div class="text-center pt-5">
+                        <h2 class="mb-4">Katalog Detail</h2>
+                    </div>
 
-                <div class="row">
-                    <!-- Image Column -->
-                    <div class="col-md-6">
-                        <div class="image-card">
-                            <img class="card-img-top" alt="Katalog Image"
-                                th:src="'data:/image/jpg;base64,' + ${katalog.image}">
+                    <div class="row">
+                        <!-- Image Column -->
+                        <div class="col-md-6">
+                            <div class="image-card">
+                                <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
+                            </div>
                         </div>
-                    </div>
-                    <!-- Description Column -->
-                    <div class="col-md-6">
-                        <h4 class="card-title" th:text="${katalog.namaProduct}"></h4>
-                        <p class="card-text" th:text="'ID: ' + ${katalog.idProduct}"></p>
-                        <p class="card-text" th:text="'Deskripsi: ' + ${katalog.deskripsi}"></p>            
-                       <p class="card-text" th:text="'Harga: Rp ' + ${katalog.harga}"></p>
-                        <p class="card-text" th:text="'kategori: ' + ${katalog.kategori.namaKategori}"></p>
-                    </div>
-                    <div class="text-center m-3">
-                        <a type="button" class="btn btn-back btn-md" href="/katalog">Semua Katalog</a>
+                        <!-- Description Column -->
+                        <div class="col-md-6">
+                            <h4 class="card-title" th:text="${katalog.namaProduct}"></h4>
+                            <p class="card-text" th:text="'ID: ' + ${katalog.idProduct}"></p>
+                            <p class="card-text" th:text="'Deskripsi: ' + ${katalog.deskripsi}"></p>
+                            <p class="card-text" th:text="'Harga: Rp ' + ${katalog.harga}"></p>
+                            <p class="card-text" th:text="'kategori: ' + ${katalog.kategori.namaKategori}"></p>
+                        </div>
+                        <div class="text-center m-3">
+                            <a type="button" class="btn btn-back btn-md" href="/katalog">Semua Katalog</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-       
+
+
 </body>
 <div th:if="${user == null || user.role == 'hr' || user.role =='executive'}">
     <script th:inline="javascript">
         /*<![CDATA[*/
-        window.onload = function() {
+        window.onload = function () {
             var katalogId = /*[[${katalog.id}]]*/ null;
             if (katalogId != null) {
                 window.location.replace('/katalog/' + katalogId);
@@ -142,4 +142,5 @@
         /*]]>*/
     </script>
 </div>
+
 </html>

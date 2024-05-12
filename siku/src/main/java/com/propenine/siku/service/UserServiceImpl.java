@@ -16,13 +16,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public void registerUser(User user){
+    public void registerUser(User user) {
 
         userRepository.save(user);
     }
 
     @Override
-    public void editUserProfile(User user){
+    public void editUserProfile(User user) {
         userRepository.save(user);
     }
 
@@ -35,16 +35,15 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean existsOtherUserWithSameUsername(Long userId, String username) {
-    return userRepository.existsByUsernameAndIdNot(username, userId);
+        return userRepository.existsByUsernameAndIdNot(username, userId);
     }
 
     public boolean existsOtherUserWithSameEmail(Long userId, String email) {
         return userRepository.existsByEmailAndIdNot(email, userId);
     }
-    
-    public List<User> getAllUsers(){
+
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
 }
-

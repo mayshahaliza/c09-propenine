@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
+
 <head>
     <title>Update Product</title>
     <object th:insert="~{fragments/common :: css}" th:remove="tag"></object>
@@ -21,18 +22,24 @@
         }
 
         .card {
-            max-width: 1100px; /* Maximum card width */
-            margin: 0 auto; /* Center the card horizontally */
+            max-width: 1100px;
+            /* Maximum card width */
+            margin: 0 auto;
+            /* Center the card horizontally */
         }
+
         .center-button {
             display: flex;
             justify-content: center;
         }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
+
         .btn-submit {
-            background-color: #3c3f61; /* Change button color */
+            background-color: #3c3f61;
+            /* Change button color */
             color: #fff;
             font-weight: bold;
             padding: 0.75rem 1.5rem;
@@ -40,6 +47,7 @@
             border: none;
             transition: background-color 0.3s ease;
         }
+
         .left-top-corner {
             position: fixed;
             top: 90px;
@@ -47,15 +55,23 @@
         }
 
         .left-top-corner .btn-back {
-            background-color: #3c3f61;; /* Background color */
-            color: #fff; /* Text color */
-            border: none; /* Remove border */
-            padding: 8px 12px; /* Button padding */
-            border-radius: 5px; /* Button corner shape */
-            text-decoration: none; /* Remove underline */
+            background-color: #3c3f61;
+            ;
+            /* Background color */
+            color: #fff;
+            /* Text color */
+            border: none;
+            /* Remove border */
+            padding: 8px 12px;
+            /* Button padding */
+            border-radius: 5px;
+            /* Button corner shape */
+            text-decoration: none;
+            /* Remove underline */
         }
     </style>
 </head>
+
 <body>
     <div th:switch="${user.role}">
         <div th:case="'admin'">
@@ -66,161 +82,173 @@
         </div>
     </div>
     <div th:if="${user.role == 'operational' || user.role == 'admin'}">
-    <div class="left-top-corner">
-        <a type="button" class="btn btn-back btn-md" href="/stok"><i class="fas fa-chevron-left"></i></a>
-    </div>
-    <div class="card mt-5">
-        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
-            Update Product
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/stok"><i class="fas fa-chevron-left"></i></a>
         </div>
-        <div class="card-body">
-            <form th:action="@{'/product/update/'} + ${productDTO.idProduct}" th:object="${productDTO}" method="POST" onsubmit="return validateForm()">
-                <div class="form-group">
-                    <label for="id" class="form-label">ID</label>
-                    <input required class="form-control" type="text" name="idProduct" th:value="*{idProduct}" readonly />
-                </div>
-                <div class="form-group">
-                    <label for="nama-product" class="form-label">Product Name</label>
-                    <input class="form-control" type="text" name="namaProduct" th:value="*{namaProduct}" id="nama-product"/>
-                    <small id="nama-product-error" class="text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label for="deskripsi" class="form-label">Description</label>
-                    <input class="form-control" type="text" name="deskripsi" th:value="*{deskripsi}" id="deskripsi"/>
-                    <small id="deskripsi-error" class="text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label for="kategori" class="form-label">Category</label>
-                    <select th:field="*{kategori}" class="form-control" id="kategori">
-                        <option value="">Choose category...</option>
-                        <option th:each="kategori : ${allKategori}" th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
-                    </select>
-                    <small id="kategori-error" class="text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label for="image" class="form-label">Product Image</label>
-                    <input type="file" name="image" th:value="*{image}" class="form-control" id="image"/>
-                    <small id="image-error" class="text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label for="stok" class="form-label">Stock</label>
-                    <input class="form-control" type="number" name="stok" th:value="*{stok}" id="stok"/>
-                    <small id="stok-error" class="text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label for="harga" class="form-label">Price</label>
-                    <input class="form-control" type="number" name="harga" th:value="*{harga}" id="harga"/>
-                    <small id="harga-error" class="text-danger"></small>
-                </div>
-                <div class="center-button">
-                    <button class="btn btn-submit" type="submit">Save</button>
-                </div>
-            </form>
+        <div class="card mt-5">
+            <div class="card-header text-center fw-bold"
+                style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
+                Update Product
+            </div>
+            <div class="card-body">
+                <form th:action="@{'/product/update/'} + ${productDTO.idProduct}" th:object="${productDTO}"
+                    method="POST" onsubmit="return validateForm()" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="id" class="form-label">ID</label>
+                        <input required class="form-control" type="text" name="idProduct" th:value="*{idProduct}"
+                            readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="nama-product" class="form-label">Product Name</label>
+                        <input class="form-control" type="text" name="namaProduct" th:value="*{namaProduct}"
+                            id="nama-product" />
+                        <small id="nama-product-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="deskripsi" class="form-label">Description</label>
+                        <input class="form-control" type="text" name="deskripsi" th:value="*{deskripsi}"
+                            id="deskripsi" />
+                        <small id="deskripsi-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="kategori" class="form-label">Category</label>
+                        <select th:field="*{kategori}" class="form-control" id="kategori">
+                            <option value="">Choose category...</option>
+                            <option th:each="kategori : ${allKategori}" th:value="${kategori.id}"
+                                th:text="${kategori.namaKategori}"></option>
+                        </select>
+                        <small id="kategori-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="image" class="form-label">Product Image</label>
+                        <input type="file" name="imageFile" class="form-control" id="image" />
+                        <small id="image-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="stok" class="form-label">Stock</label>
+                        <input class="form-control" type="number" name="stok" th:value="*{stok}" id="stok" />
+                        <small id="stok-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="harga" class="form-label">Price</label>
+                        <input class="form-control" type="number" name="harga" th:value="*{harga}" id="harga" />
+                        <small id="harga-error" class="text-danger"></small>
+                    </div>
+                    <div class="center-button">
+                        <button class="btn btn-submit" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- Modal Pop-up untuk Product -->
-    <div class="modal fade" id="productSuccessModal" tabindex="-1" role="dialog" aria-labelledby="productSuccessModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="productSuccessModalLabel">Success</h5>
-                </div>
-                <div class="modal-body">
-                    Product successfully updated.
-                </div>
-                <div class="modal-footer">
-                    <span class="click-anywhere-text">Click anywhere to close</span>
+        <!-- Modal Pop-up untuk Product -->
+        <div class="modal fade" id="productSuccessModal" tabindex="-1" role="dialog"
+            aria-labelledby="productSuccessModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productSuccessModalLabel">Success</h5>
+                    </div>
+                    <div class="modal-body">
+                        Product successfully updated.
+                    </div>
+                    <div class="modal-footer">
+                        <span class="click-anywhere-text">Click anywhere to close</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script th:inline="javascript">
-        $(document).ready(function() {
-            /* Cek apakah product baru saja diperbarui */
-            var productUpdated = [[${productUpdated}]];
-            if (productUpdated) {
-                /* Jika ya, tampilkan modal */
-                $('#productSuccessModal').modal('show');
-            }
-    
-            // Tambahkan event listener untuk menutup modal saat klik di mana saja
-            $('#productSuccessModal').click(function(e) {
-                if (e.target === this) {
-                    $(this).modal('hide');
-                    window.location.href = '/stok'; // Redirect ke halaman /stok
-                }
-            });
-        });
-    </script>
-    <script>
-        function validateForm() {
-            var namaProduct = document.getElementById("nama-product").value;
-            var kategori = document.getElementById("kategori").value;
-            var deskripsi = document.getElementById("deskripsi").value;
-            var image = document.getElementById("image").value;
-            var stok = document.getElementById("stok").value;
-            var harga = document.getElementById("harga").value;
-    
-            var namaProductError = document.getElementById("nama-product-error");
-            var kategoriError = document.getElementById("kategori-error");
-            var deskripsiError = document.getElementById("deskripsi-error");
-            var imageError = document.getElementById("image-error");
-            var stokError = document.getElementById("stok-error");
-            var hargaError = document.getElementById("harga-error");
-    
-            if (namaProduct.trim() === "") {
-                namaProductError.innerText = "Product name cannot be empty";
-                return false;
-            } else {
-                namaProductError.innerText = "";
-            }
-            if (deskripsi.trim() === "") {
-                deskripsiError.innerText = "Description cannot be empty";
-                return false;
-            } else  {
-                deskripsiError.innerText = "";
-            }
-            if (kategori.trim() === "") {
-                kategoriError.innerText = "Category cannot be empty";
-                return false;
-            } else {
-                kategoriError.innerText = "";
-            }
-            if (image.trim() === "") {
-                imageError.innerText = "Image cannot be empty";
-                return false;
-            } else {
-                imageError.innerText = "";
-            }
-            if (stok.trim() === "") {
-                stokError.innerText = "Stock cannot be empty";
-                return false;
-            } else if (isNaN(stok)) {
-                stokError.innerText = "Stock must be a number";
-                return false;
-            } else {
-                stokError.innerText = "";
-            }
-            if (harga.trim() === "") {
-                hargaError.innerText = "Price cannot be empty";
-                return false;
-            } else if (isNaN(harga)) {
-                hargaError.innerText = "Price must be a number";
-                return false;
-            } else {
-                hargaError.innerText = "";
-            }
-            return true;
-        }
-    </script>
-    <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
         <script th:inline="javascript">
-            /*<![CDATA[*/
-            window.location.replace('/no-access');
-            /*]]>*/
+            $(document).ready(function () {
+                /* Cek apakah product baru saja diperbarui */
+                var productUpdated = [[${ productUpdated }]];
+                if (productUpdated) {
+                    /* Jika ya, tampilkan modal */
+                    $('#productSuccessModal').modal('show');
+                }
+
+                // Tambahkan event listener untuk menutup modal saat klik di mana saja
+                $('#productSuccessModal').click(function (e) {
+                    if (e.target === this) {
+                        $(this).modal('hide');
+                        window.location.href = '/stok'; // Redirect ke halaman /stok
+                    }
+                });
+            });
         </script>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>      
+        <script>
+            function validateForm() {
+                var namaProduct = document.getElementById("nama-product").value;
+                var kategori = document.getElementById("kategori").value;
+                var deskripsi = document.getElementById("deskripsi").value;
+                var image = document.getElementById("image").value;
+                var stok = document.getElementById("stok").value;
+                var harga = document.getElementById("harga").value;
+
+                var namaProductError = document.getElementById("nama-product-error");
+                var kategoriError = document.getElementById("kategori-error");
+                var deskripsiError = document.getElementById("deskripsi-error");
+                var imageError = document.getElementById("image-error");
+                var stokError = document.getElementById("stok-error");
+                var hargaError = document.getElementById("harga-error");
+
+                if (namaProduct.trim() === "") {
+                    namaProductError.innerText = "Product name cannot be empty";
+                    return false;
+                } else {
+                    namaProductError.innerText = "";
+                }
+                if (deskripsi.trim() === "") {
+                    deskripsiError.innerText = "Description cannot be empty";
+                    return false;
+                } else {
+                    deskripsiError.innerText = "";
+                }
+                if (kategori.trim() === "") {
+                    kategoriError.innerText = "Category cannot be empty";
+                    return false;
+                } else {
+                    kategoriError.innerText = "";
+                }
+                if (image.trim() === "") {
+                    imageError.innerText = "Image cannot be empty";
+                    return false;
+                } else {
+                    imageError.innerText = "";
+                }
+                if (stok.trim() === "") {
+                    stokError.innerText = "Stock cannot be empty";
+                    return false;
+                } else if (isNaN(stok)) {
+                    stokError.innerText = "Stock must be a number";
+                    return false;
+                } else {
+                    stokError.innerText = "";
+                }
+                if (harga.trim() === "") {
+                    hargaError.innerText = "Price cannot be empty";
+                    return false;
+                } else if (isNaN(harga)) {
+                    hargaError.innerText = "Price must be a number";
+                    return false;
+                } else {
+                    hargaError.innerText = "";
+                }
+                return true;
+            }
+        </script>
+        <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                window.location.replace('/no-access');
+                /*]]>*/
+            </script>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+            integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk"
+            crossorigin="anonymous"></script>
 </body>
+
 </html>

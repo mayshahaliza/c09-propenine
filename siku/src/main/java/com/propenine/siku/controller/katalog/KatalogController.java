@@ -15,7 +15,7 @@ import com.propenine.siku.service.katalog.KatalogService;
 import com.propenine.siku.service.katalog.KategoriService;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
 
 @Controller
 public class KatalogController {
@@ -37,7 +37,6 @@ public class KatalogController {
     @Autowired
     private ProductService productService;
 
-
     // VIEW DETAIL KATALOG NOT LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/{id}")
     public String detailKatalogNotLogin(@PathVariable("id") UUID id, Model model) {
@@ -46,7 +45,6 @@ public class KatalogController {
         model.addAttribute("katalog", katalog);
         return "katalog/view-katalog-notlogin";
     }
-
 
     // VIEW DETAIL KATALOG LOGIN CONNECT TO PRODUCT
     @GetMapping("/katalog/login/{id}")
@@ -81,7 +79,7 @@ public class KatalogController {
             @RequestParam(value = "productName", required = false) String productName,
             Model model) {
         List<Product> filteredProducts;
-    
+
         if (kategoriId != null && productName != null && !productName.isEmpty()) {
             filteredProducts = productService.getProductsByCategoryAndNameContaining(kategoriId, productName);
         } else if (kategoriId != null) {
@@ -91,20 +89,19 @@ public class KatalogController {
         } else {
             filteredProducts = productService.getAllProduct();
         }
-    
+
         model.addAttribute("listKatalog", filteredProducts);
-    
+
         // Tambahkan semua kategori ke model
         List<Kategori> allKategori = kategoriService.getAllKategori();
         model.addAttribute("allKategori", allKategori);
-    
+
         // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         if (loggedInUser != null) {
             model.addAttribute("user", loggedInUser);
         }
-    
-        return "katalog/viewall-katalog";
-    } 
-}
 
+        return "katalog/viewall-katalog";
+    }
+}

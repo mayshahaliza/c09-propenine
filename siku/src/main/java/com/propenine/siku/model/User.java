@@ -42,7 +42,6 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-
     @NotNull(message = "Nomor hp harus diisi")
     @Pattern(regexp = "\\d+", message = "Nomor hp harus berisi angka saja")
     @Column(name = "nomor_hp", nullable = false)
@@ -86,4 +85,3 @@ public class User {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = Boolean.FALSE;
 }
-

@@ -11,8 +11,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -21,13 +24,21 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.propenine.siku.service.katalog.KategoriService;
+import com.propenine.siku.model.User;
 import com.propenine.siku.model.katalog.Kategori;
 
 @SpringBootApplication
-public class SikuApplication {
+public class SikuApplication implements WebMvcConfigurer {
 
     @Autowired
     private KategoriService kategoriService;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(SikuApplication.class, args);
@@ -40,10 +51,10 @@ public class SikuApplication {
             if (kategoriService.countData() == 0) {
                 // Kategori manual yang akan disimpan
                 String[] manualKategori = {
-                    "Surgery",
-                    "Urologi",
-                    "Anesthesia",
-                    "Obstetrics & Gynecology"
+                        "Surgery",
+                        "Urologi",
+                        "Anesthesia",
+                        "Obstetrics & Gynecology"
                 };
 
                 // Simpan setiap kategori ke dalam database
