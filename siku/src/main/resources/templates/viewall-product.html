@@ -131,8 +131,7 @@
             <thead class="card-header text-center fw-bold" style="background-color: #3c3f61; color: #FFFFFF;">
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">ID</th>
-                <th scope="col">Product Name</th>
+                <th scope="col">Name</th>
                 <th scope="col">Category</th>
                 <th scope="col">Stock</th>
                 <th scope="col">Price</th>
@@ -142,11 +141,10 @@
             </thead>
             <tbody>
               <tr th:if="${listProduct.isEmpty()}">
-                <td colspan="5" class="text-center">No products.</td>
+                <td colspan="7" class="text-center">No products.</td>
               </tr>
               <tr th:each="product, iterStat : ${listProduct}" th:if="${not listProduct.isEmpty()}">
                 <td th:text="${iterStat.count}"></td>
-                <td th:text="${product.idProduct}"></td>
                 <td th:text="${product.namaProduct}"></td>
                 <td th:text="${product.kategori.namaKategori}"></td>
                 <td th:text="${product.stok}"></td>
@@ -154,7 +152,7 @@
                 <td th:text="${product.status} ? 'Tersedia' : 'Habis'"></td>
                 <td style="text-align: center;">
                   <a type="button" class="btn btn-md btn-detail"
-                    th:href="@{/product/update/} + ${product.idProduct}">Edit Stock</a>
+                    th:href="@{/product/update/} + ${product.idProduct}"><i class="fas fa-edit"></i></a>
                 </td>
               </tr>
             </tbody>
