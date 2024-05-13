@@ -162,7 +162,7 @@
             <div class="col-md-8"> -->
                 <div class="card">
                     <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
-                        Create New Pesanan
+                        Create New Order
                     </div>
                     <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
                         <p th:text="${warningMessage}"></p>
@@ -204,7 +204,7 @@
                             <div class="form-group">
                                 <label for="jumlahBarangPesanan">Number of Ordered Items<span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="jumlahBarangPesanan"
-                                    th:field="*{jumlahBarangPesanan}" placeholder="Enter jumlah barang pesanan"
+                                    th:field="*{jumlahBarangPesanan}" placeholder="Enter number of ordered items"
                                     required>
                             </div>
 

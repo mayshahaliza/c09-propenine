@@ -161,7 +161,7 @@
         <div class="card">
             <div class="card-header text-center fw-bold"
                 style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
-                Update Pesanan
+                Update Order
             </div>
             <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
                 <p th:text="${warningMessage}"></p>
@@ -218,8 +218,7 @@
                     </div>
 
                     <div class="form-group">
-                        <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi
-                                Perubahan</b></h6>
+                        <h6><b>Please fill in the Order Date and Completion Date again if there are any changes.</b></h6>
                         <label for="tanggalPemesanan">Start Order<span class="text-danger">*</span> </label>
                         <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan"
                             th:field="*{tanggalPemesanan}"

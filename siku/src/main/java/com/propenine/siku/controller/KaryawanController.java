@@ -119,7 +119,7 @@ public class KaryawanController {
     public String updateKaryawan(@PathVariable("id") Long id, @ModelAttribute("user") User karyawan, RedirectAttributes redirectAttributes) {
         karyawan.setId(id);
         karyawanService.editKaryawan(karyawan);
-        redirectAttributes.addAttribute("success", "status");
+        redirectAttributes.addFlashAttribute("successMessage", "Employee status edited successfully");
         return "redirect:/karyawan/{id}";
     }
 
@@ -208,7 +208,7 @@ public class KaryawanController {
             
         System.out.println("\nNumber of orders found: " + pesananList.size()); // Print the number of orders found
 
-        
+
         return "karyawan/agent-performance";
     }
 

@@ -281,6 +281,30 @@
     </div>
 </div>
 
+<!-- tambah ini -->
+<div th:if="${successMessage}" class="modal fade" id="successModalEditStatus" tabindex="-1" role="dialog" aria-labelledby="successModalLabelEditStatus" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="color: black;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabelEditStatus">Success</h5>
+            </div>
+            <div class="modal-body">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div class="modal-footer">
+                <span>Click anywhere to close</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:if="${successMessage}">
+    $(document).ready(function() {
+        $('#successModalEditStatus').modal('show');
+    });
+</script>
+
+<!-- sampe  sini -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-4+qn4Xqf8T5ywBgeA2zKkqG0TVveK/JJfDwrOQ1QhoKqIbcoO8eP1iFs2x7p8jq1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+UAQlFeJK6ZKN1L4y47pDf8xF9+Qz9v5CGI9xgndbcgyksW2JWBUX2+nXk" crossorigin="anonymous"></script>
