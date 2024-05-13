@@ -46,11 +46,6 @@ public class UserController {
    @Autowired
    UserRepository userRepository;
 
-
-   @Autowired
-   private PasswordEncoder passwordEncoder;
-
-
    @GetMapping("/register")
    public String register(Model model){
        User userRegister = new User();
