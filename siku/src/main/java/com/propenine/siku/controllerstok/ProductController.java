@@ -125,7 +125,7 @@ public class ProductController {
             // Handle IOException properly, such as logging or informing the user
         }
 
-        return "form-tambah-product";
+        return "viewall-product";
     }
 
     @GetMapping("product/update/{idProduct}")
@@ -147,26 +147,31 @@ public class ProductController {
     @PostMapping("product/update/{idProduct}")
     public String updateProductPost(@PathVariable("idProduct") UUID idProduct,
             @Valid @ModelAttribute("productDTO") UpdateProductRequestDTO productDTO, Model model,
-            @RequestParam("imageFile") MultipartFile imageFile) {
+            @RequestParam(required = false) MultipartFile imageFile) {
         if (productDTO.getStok() > 0) {
             productDTO.setStatus(true);
         } else {
             productDTO.setStatus(false);
         }
         try {
-            byte[] bytes = imageFile.getBytes();
-            String name = System.currentTimeMillis() + imageFile.getOriginalFilename();
-            Path path = Paths.get(uploadDir).resolve(name); // Resolve path within uploadDir
-            Files.createDirectories(path.getParent()); // Create parent directories if they don't exist
-            Files.write(path, bytes);
+            if (imageFile != null && !imageFile.isEmpty()) {
+                byte[] bytes = imageFile.getBytes();
+                String name = System.currentTimeMillis() + imageFile.getOriginalFilename();
+                Path path = Paths.get(uploadDir).resolve(name); // Resolve path within uploadDir
+                Files.createDirectories(path.getParent()); // Create parent directories if they don't exist
+                Files.write(path, bytes);
 
-            if (productDTO.getStok() > 0) {
-                productDTO.setStatus(true);
+                if (productDTO.getStok() > 0) {
+                    productDTO.setStatus(true);
+                } else {
+                    productDTO.setStatus(false);
+                }
+                System.out.println("berhasil menambahkan product");
+                productDTO.setImage(name);
             } else {
-                productDTO.setStatus(false);
+                Product existingProduct = productService.getProductById(idProduct);
+                productDTO.setImage(existingProduct.getImage());
             }
-            System.out.println("berhasil menambahkan product");
-            productDTO.setImage(name);
             var productFromDto = productMapper.updateProductRequestDTOToProduct(productDTO);
             var product = productService.updateProduct(productFromDto);
             model.addAttribute("idProduct", product.getIdProduct());
