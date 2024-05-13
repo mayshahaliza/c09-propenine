@@ -40,12 +40,6 @@
             color: #3c3f61;
         }
 
-        .h2 {
-            text-align: center;
-            color: #3c3f61;
-            font-weight: bold !important;
-        }
-
         .card-body {
             padding: 20px;
         }
@@ -137,7 +131,6 @@
             background-color: #f8f9fa; 
             color: #eeeeef; 
         }
-
     </style>
 </head>
 
@@ -162,7 +155,7 @@
             <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
         </div>
         <div class="card">
-            <div class="card-header text-center">
+            <div class="card-header text-center fw-bold">
                 <h2>Client List</h2>
             </div>
             <div class="card-body">
@@ -182,7 +175,7 @@
                         <button type="submit" class="btn btn-search me-2 mt-4">Search</button>
                     </div>
                     <!-- Add Client Button -->
-                    <button class="btn mt-4 btn-add">Add Client</button>
+                    <button th:href="@{/klien/tambah}" class="btn mt-4 btn-add">Add Client</button>
                 </div>
                              
                 
