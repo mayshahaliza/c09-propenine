@@ -125,7 +125,7 @@ public class ProductController {
             // Handle IOException properly, such as logging or informing the user
         }
 
-        return "form-tambah-product";
+        return "viewall-product";
     }
 
     @GetMapping("product/update/{idProduct}")
