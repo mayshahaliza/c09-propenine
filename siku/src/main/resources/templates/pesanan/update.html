@@ -13,26 +13,29 @@
     <style>
         /* Custom CSS styles */
         body {
-            background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
 
-        .container {
-            margin-top: 50px;
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
         }
 
         .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
             background-color: #eeeeef;
             color: #3c3f61;
-            border-radius: 15px 15px 0 0;
-            font-size: 24px;
-            text-align: center;
+        }
+
+        .card-body {
+            padding: 20px;
         }
 
         .form-group {
@@ -40,29 +43,80 @@
         }
 
 
-        .btn-submit {
-            background-color: #3c3f61; /* Change button color */
+        /* .btn-submit {
+            background-color: #3c3f61;
             color: #fff;
             font-weight: bold;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             border: none;
             transition: background-color 0.3s ease;
+        } */
+
+        .btn-submit {
+            background-color: #3c3f61;
+            color: #ffffff;
+            border-color: #3c3f61;
+            padding: 10px 30px;
+            margin-right: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #525663;
+            color: #ffffff; 
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 10px 30px;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
         }
 
         .left-top-corner {
-            position: fixed;
-            top: 130px;
-            left: 20px;
+            position: absolute;
+            top: 12%;
+            left: 5%;
         }
 
+
         .left-top-corner .btn-back {
-            background-color: #3c3f61;
-            color: #fff;
-            border: none;
+            background-color: #f8f9fa;
+            color: #3c3f61;
             padding: 8px 12px;
             border-radius: 5px;
             text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa;
+            color: #eeeeef;
         }
 
         /* New style for the Add button */
@@ -76,6 +130,11 @@
             background-color: #3c3f61;
             color: #fff;
         }
+        .h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -88,104 +147,142 @@
             <nav th:replace="~{fragments/operational_navbar :: operational_navbar}"></nav>
         </div>
     </div>
-    <div class="left-top-corner">
-        <a type="button" class="btn btn-back btn-md" href="/pesanan/list"><i class="fas fa-chevron-left"></i></a>
-    </div>
 
-    <div class="container mt-3 text-center" th:if="${user.role == 'operational' || user.role =='admin'}">
-        <div class="container mt-5">
+    <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}"> </div>
+
+
+    <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/pesanan/list"><i class="fas fa-chevron-left"></i></a>
+        </div>
+        <!-- <div class="card-container">
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
-                            Update Pesanan
-                        </div>
-                        <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
-                            <p th:text="${warningMessage}"></p>
-                        </div>
-                        <div class="card-body">
-                            <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}"
-                                method="post">
-                                <div class="form-group">
-                                    <label for="klien">Client Name</label>
-                                    <div class="input-group">
-                                        <select class="form-control" id="klien" th:field="*{klien}" required>
-                                            <option value="">-- Select Klien --</option>
-                                            <option th:each="klien : ${klienList}" th:value="${klien.id}"
-                                                th:selected="${klien.id == pesanan.klien.id}"
-                                                th:text="${klien.namaKlien}"></option>
-                                        </select>
-                                        <div class="input-group-append">
-                                            <a href="/klien/tambah" class="btn btn-add"><i class="fas fa-plus"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="user">Username Agent</label>
-                                    <select class="form-control" id="user" th:field="*{user}" required>
-                                        <option value="">-- Select Agent --</option>
-                                        <option th:each="user : ${userList}" th:if="${user.role == 'operational'}"
-                                            th:value="${user.id}" th:text="${user.username}"></option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="product">Order Product</label>
-                                    <select class="form-control" id="product" th:field="*{product}" required>
-                                        <option value="">-- Select Product --</option>
-                                        <option th:each="product : ${productList}" th:value="${product.idProduct}"
-                                            th:selected="${product.idProduct == pesanan.product.idProduct}"
-                                            th:text="${product.namaProduct}"></option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="jumlahBarangPesanan">Number of Ordered Items</label>
-                                    <input type="number" class="form-control" id="jumlahBarangPesanan"
-                                        th:field="*{jumlahBarangPesanan}" placeholder="Enter quantity" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="statusPesanan">Order Status</label>
-                                    <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
-                                        <option value="">-- Select Status --</option>
-                                        <option value="Ongoing" text="Ongoing">Ongoing</option>
-                                        <option value="Complete" text="Complete">Complete</option>
-                                        <option value="Canceled" text="Canceled">Canceled</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi
-                                            Perubahan</b></h6>
-                                    <label for="tanggalPemesanan">Start Order </label>
-                                    <input type="date" class="form-control" id="tanggalPemesanan"
-                                        name="tanggalPemesanan" th:field="*{tanggalPemesanan}"
-                                        th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
-
-                                    <label for="tanggalSelesai">Complete Order</label>
-                                    <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
-                                        th:field="*{tanggalSelesai}"
-                                        th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
-                                </div>
-
-                                <button type="submit" class="btn-submit">Save</button>
-                            </form>
+                <div class="col-md-8"> -->
+        <div class="card">
+            <div class="card-header text-center fw-bold"
+                style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
+                Update Pesanan
+            </div>
+            <div th:if="${warningMessage}" class="alert alert-warning" role="alert">
+                <p th:text="${warningMessage}"></p>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/pesanan/update/{id}(id=${pesanan.id})}" th:object="${pesanan}" method="post">
+                    <div class="form-group">
+                        <label for="klien">Client Name<span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <select class="form-control" id="klien" th:field="*{klien}" required>
+                                <option value="">-- Select Klien --</option>
+                                <option th:each="klien : ${klienList}" th:value="${klien.id}"
+                                    th:selected="${klien.id == pesanan.klien.id}" th:text="${klien.namaKlien}"></option>
+                            </select>
+                            <div class="input-group-append">
+                                <a href="/klien/tambah" class="btn btn-add"><i class="fas fa-plus"></i></a>
+                            </div>
                         </div>
                     </div>
 
-                        <div th:unless="${user.role == 'operational' || user.role =='admin'}">
-                            <script th:inline="javascript">
-                                /*<![CDATA[*/
-                                window.location.replace('/no-access');
-                                /*]]>*/
-                            </script>
-                        </div>
+                    <div class="form-group">
+                        <label for="user">Username Agent<span class="text-danger">*</span></label>
+                        <select class="form-control" id="user" th:field="*{user}" required>
+                            <option value="">-- Select Agent --</option>
+                            <option th:each="user : ${userList}" th:if="${user.role == 'operational'}"
+                                th:value="${user.id}" th:text="${user.username}"></option>
+                        </select>
+                    </div>
 
-                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                    <div class="form-group">
+                        <label for="product">Order Product<span class="text-danger">*</span></label>
+                        <select class="form-control" id="product" th:field="*{product}" required>
+                            <option value="">-- Select Product --</option>
+                            <option th:each="product : ${productList}" th:value="${product.idProduct}"
+                                th:selected="${product.idProduct == pesanan.product.idProduct}"
+                                th:text="${product.namaProduct}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jumlahBarangPesanan">Number of Ordered Items<span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="jumlahBarangPesanan"
+                            th:field="*{jumlahBarangPesanan}" placeholder="Enter quantity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="statusPesanan">Order Status<span class="text-danger">*</span></label>
+                        <select class="form-control" id="statusPesanan" th:field="*{statusPesanan}">
+                            <option value="">-- Select Status --</option>
+                            <option value="Ongoing" text="Ongoing">Ongoing</option>
+                            <option value="Complete" text="Complete">Complete</option>
+                            <option value="Canceled" text="Canceled">Canceled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <h6><b>Silahkan isi kembali Tanggal Pemesanan dan Tanggal Selesai jika terjadi
+                                Perubahan</b></h6>
+                        <label for="tanggalPemesanan">Start Order<span class="text-danger">*</span> </label>
+                        <input type="date" class="form-control" id="tanggalPemesanan" name="tanggalPemesanan"
+                            th:field="*{tanggalPemesanan}"
+                            th:value="${pesanan.tanggalPemesanan != null ? pesanan.tanggalPemesanan : ''}">
+
+                        <label for="tanggalSelesai">Complete Order<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="tanggalSelesai" name="tanggalSelesai"
+                            th:field="*{tanggalSelesai}"
+                            th:value="${pesanan.tanggalSelesai != null ? pesanan.tanggalSelesai : ''}">
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-submit">Submit</button>
+                        <a href="/pesanan/list" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Pop-up untuk Klien -->
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" role="dialog" aria-labelledby="orderSuccessModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderSuccessModalLabel">Success</h5>
+                </div>
+                <div class="modal-body">
+                    Order successfully updated.
+                </div>
+                <div class="modal-footer">
+                    <span class="click-anywhere-text">Click anywhere to close</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var orderUpdated = [[${ orderUpdated }]];
+            if (orderUpdated) {
+                $('#orderSuccessModal').modal('show');
+            }
+
+            $('#orderSuccessModal').click(function (e) {
+                if (e.target === this) {
+                    $(this).modal('hide');
+                    window.location.href = '/pesanan/list';
+                }
+            });
+        });
+    </script>
+
+
+    <div th:unless="${user != null && (user.role == 'operational' || user.role =='admin')}">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            window.location.replace('/no-access');
+            /*]]>*/
+        </script>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

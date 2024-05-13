@@ -47,13 +47,17 @@ public class KaryawanServiceImpl implements KaryawanService{
 
     @Override
     public List<User> searchByName(String name) {
-        // Call the repository method with a custom query using the LIKE clause
         return karyawanRepository.findByNamaContainingIgnoreCase(name);
     }
 
     @Override
     public void deleteKaryawan(User karyawan) {
         karyawanRepository.delete(karyawan);
+    }
+
+    @Override 
+    public List<User> searchByNameAndRole(String name, String role) {
+        return karyawanRepository.findByNamaContainingIgnoreCaseAndRoleContainingIgnoreCase(name, role);
     }
 
 }

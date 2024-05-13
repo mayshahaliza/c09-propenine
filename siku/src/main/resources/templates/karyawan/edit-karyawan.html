@@ -16,41 +16,50 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #D4D5D9;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
-
-        /* .container {
-            padding-top: 50px;
-        } */
-
-        h2 {
-            text-align: center;
-            color: #3c3f61;
+        
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
         }
 
         .card {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
         .card-body {
-            padding: 30px;
+            padding: 20px;
         }
 
-        .form-label {
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold;
+        }
+
+        /* .form-label {
             font-weight: 500;
-        }
-
+        } */
         .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #3c3f61;
+            color: #ffffff;
+            border-color: #3c3f61;
             padding: 10px 30px;
             margin-right: 10px;
         }
 
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            padding: 10px 30px;
+        .btn-success:hover {
+            background-color: #212529; /* Darker shade of the original background color */
+            color: #ffffff; /* White text color */
         }
 
         .btn-secondary {
@@ -58,6 +67,22 @@
             border-color: #6c757d;
             padding: 10px 30px;
             margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+
+
+        .btn-danger {
+            padding: 10px 30px;
+            margin-left: 10px;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc3545; /* Darker shade of the original background color */
+            color: #ffffff; /* White text color */
         }
 
         /* Additional styling */
@@ -79,49 +104,59 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 576px) {
+        /* @media (max-width: 576px) {
             .card {
                 width: 100%;
             }
-        }
+        } */
 
         .layout_padding {
-            padding: 90px 0;
+            padding: 30px 0;
         }
 
         .layout_padding-top {
-            padding-top: 90px;
+            padding-top: 30px;
         }
 
         .layout_padding-bottom {
-            padding-bottom: 90px;
+            padding-bottom: 30px;
         }
 
         .layout_margin-top {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .layout_margin-bottom {
-            margin-bottom: 20px;
-        }
-        .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
+            margin-bottom: 5px;
         }
 
+        .left-top-corner {
+            position: absolute;
+            top: 12%; /* Adjust based on your layout */
+            left: 5%; /* Adjust based on your layout */
+            /* z-index: 1000; Ensure it appears above other elements */
+        }
+
+
         .left-top-corner .btn-back {
-            background-color: #3c3f61 ;; /* Background color */
-            color: #eeeeef; /* Text color */
-            border: none; /* Remove border */
+            background-color: #f8f9fa; /* Background color */
+            color: #3c3f61; /* Text color */
             padding: 8px 12px; /* Button padding */
             border-radius: 5px; /* Button corner shape */
             text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for background color and text color */
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; /* Background color on hover */
+            color: #eeeeef; /* Text color on hover */
         }
     </style>
 </head>
 
 <body>
+    <div th:if="${user != null && (user.role == 'hr' || user.role =='admin')}"></div>
+
 <div th:switch="${user.role}">
     <div th:case="'hr'">
         <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
@@ -133,11 +168,12 @@
         <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
     </div>
 </div>
-<div class="left-top-corner">
-    <a type="button" class="btn btn-back btn-md" href="/karyawan/viewall"><i class="fas fa-chevron-left"></i></a>
-</div>
-<div class="container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+
+<div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
     <!-- <div class="row justify-content-center"> -->
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/karyawan/viewall"><i class="fas fa-chevron-left"></i></a>
+        </div>
         <div class="card">
             <div class="card-header text-center">
                 <h2>Edit Employee</h2>
@@ -193,20 +229,20 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+                        <label for="tanggalLahir" class="form-label">Birth Date</label>
                         <input type="text" class="form-control" id="tanggalLahir" th:value="${karyawan.tanggal_lahir}" readonly disabled>
                         <input type="hidden" th:field="*{tanggal_lahir}" />
                     </div>
                     <div class="mb-3">
-                        <label for="tempatLahir" class="form-label">Tempat Lahir</label>
+                        <label for="tempatLahir" class="form-label">Birth Place</label>
                         <input type="text" class="form-control" id="tempatLahir" th:value="${karyawan.tempat_lahir}" readonly disabled>
                         <input type="hidden" th:field="*{tempat_lahir}" />
                     </div>
                     <div class="mb-3">
-                        <label for="formStatusKaryawan" class="form-label">Status Karyawan</label>
+                        <label for="formStatusKaryawan" class="form-label">Employee Status<span class="text-danger">*</span></label>
                         <select class="form-select" id="formStatusKaryawan" name="status_karyawan">
-                            <option value="0" th:selected="${karyawan.status_karyawan == false}">Tidak Aktif</option>
-                            <option value="1" th:selected="${karyawan.status_karyawan == true}">Aktif</option>
+                            <option value="0" th:selected="${karyawan.status_karyawan == false}">Non-Active</option>
+                            <option value="1" th:selected="${karyawan.status_karyawan == true}">Active</option>
                         </select>
                         
                     </div>
@@ -214,7 +250,7 @@
                     <input type="hidden" th:field="*{password}" />
 
                     <div class="text-right">
-                        <button type="submit" class="btn btn-success" style="background-color: #3c3f61; color: #ffffff;">Submit</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
                         <a th:href="@{'/karyawan/delete/' + ${karyawan.id}}"
                         th:if="${karyawan.status_karyawan == false}"
                         class="btn btn-danger delete-btn"
@@ -238,7 +274,7 @@
         }
     }
 </script>
-<div th:unless="${user.role == 'hr' || user.role =='admin'}">
+<div th:unless="${user != null && (user.role == 'hr' || user.role =='admin')}">
     <script th:inline="javascript">
             /*<![CDATA[*/
             window.location.replace('/no-access');

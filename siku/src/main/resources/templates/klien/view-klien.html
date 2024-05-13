@@ -16,11 +16,30 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
+
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
+
         .card {
-            max-width: 1100px; /* Maximum card width */
-            margin: 0 auto; /* Center the card horizontally */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
         }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
         .center-button {
             display: flex;
             justify-content: center;
@@ -32,36 +51,86 @@
             background-color: #5eac2a;
             color: #fff;
         }
+
         .btn-back,
         .btn-update,
         .btn-hapus {
             margin-right: 10px;
         }
+
         .btn-back {
             background-color: #3c3f61;
         }
+
+        /* .btn-update {
+            background-color: #3c3f61;
+        } */
+
         .btn-update {
             background-color: #3c3f61;
+            color: #ffffff;
+            border-color: #3c3f61;
+            padding: 10px 30px;
+            margin-right: 10px;
         }
+
+        .btn-update:hover {
+            background-color: #525663;
+            color: #ffffff; 
+        }
+
         .btn-hapus {
             background-color: #dc3545;
+            color: #ffffff;
         }
-        .navbar {
-            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+
+        /* .navbar {
+            margin-bottom: 20px; 
+        } */
+
+        .layout_padding {
+            padding: 30px 0;
         }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
         .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
+            position: absolute;
+            top: 12%;
+            left: 5%;
         }
 
         .left-top-corner .btn-back {
-            background-color: #3c3f61 ;; /* Background color */
-            color: #eeeeef; /* Text color */
-            border: none; /* Remove border */
-            padding: 8px 12px; /* Button padding */
-            border-radius: 5px; /* Button corner shape */
-            text-decoration: none; /* Remove underline */
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
+        }
+        .h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -77,16 +146,17 @@
             </div>
         </div>
     </div>
-    <div class="left-top-corner">
-        <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
-    </div>
-    
-    <div class="container">
-        <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}">
-            <div class="description-card">
-                <div class="card-body description-card-body">
+    <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}">
 
-                    <div class="card mt-5">
+    
+    <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
+        </div>
+            <!-- <div class="description-card">
+                <div class="card-body description-card-body"> -->
+
+                    <div class="card">
                         <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
                             Client Detail
                         </div>
@@ -112,15 +182,15 @@
                                     <label for="alamat-klien" class="form-label">Client Address:</label>
                                     <input type="text" class="form-control" id="alamat-klien" th:value="${klien.alamatKlien}" disabled />
                                 </div>
-                                 <div class="text-center mt-4">
+                                 <div class="text-right">
                                     <a th:href="@{/klien/update/{id}(id=${klien.id})}" class="btn btn-update btn-md" style="background-color:#3c3f61; color:#fff">Update</a>
-                                    <a th:href="@{'/klien/delete/' + ${klien.id}}" class="btn btn-hapus btn-md" onclick="return confirmDelete()" style="background-color: #dc3545;"><i class="fas fa-trash-alt"></i> Delete</a>
+                                    <a th:href="@{'/klien/delete/' + ${klien.id}}" class="btn btn-hapus btn-md" onclick="return confirmDelete()" style="background-color: #dc3545;">Delete</a>
                                 </div>                                                           
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
+                <!-- </div>
+            </div> -->
         </div>
 
 

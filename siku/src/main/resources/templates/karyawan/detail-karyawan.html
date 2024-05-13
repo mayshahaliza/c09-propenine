@@ -3,59 +3,84 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
     <title>Employee Details</title>
     <style>
         body {
-            background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
+            padding: 0;
         }
-    
-        /* .container {
-            padding: 0 15px;
-            max-width: 1200px;
-            margin: 50px auto 20px;
-        } */
+        
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
 
         .h2 {
             text-align: center;
             color: #3c3f61;
+            font-weight: bold;
         }
-    
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-    
-        .card-body {
-            padding: 20px;
-        }
+
     
         .form-label {
             font-weight: 500;
         }
     
-        .btn-primary,
+        .btn-edit {
+            background-color: #3c3f61;
+            color: #ffffff;
+            border-color: #3c3f61;
+            padding: 10px 30px;
+            margin-right: 10px;
+        }
+
+        .btn-edit:hover {
+            background-color: #212529; /* Darker shade of the original background color */
+            color: #ffffff; /* White text color */
+        }
+
         .btn-secondary {
-            padding: 10px 20px;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 10px 30px;
+            margin-left: 10px;
         }
-    
-        .btn-primary:hover,
+
         .btn-secondary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+            background-color: #5a6268;
+            border-color: #5a6268;
         }
     
-        .navbar {
+        /* .navbar {
             margin-bottom: 0;
             margin-top: 0;
         }
@@ -63,11 +88,35 @@
         .form-group {
             margin-bottom: 15px; 
         }
-    
+        */
+
+        .form-group {
+            margin-bottom: 15px; 
+        }
+
         .form-group label {
             margin-bottom: 5px;
         }
-    
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /*
+
         .form-row {
             display: flex;
             flex-wrap: wrap;
@@ -80,34 +129,14 @@
             max-width: 50%;
             padding-right: 5px;
             padding-left: 5px;
-        }
+        } */
     
-        .id-field,
+        /* .id-field,
         .address-field {
             width: 100% - 44px;
-        }
+        } */
 
-        .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
-        }
 
-        .left-top-corner .btn-back {
-            background-color: #3c3f61 ;; /* Background color */
-            color: #eeeeef; /* Text color */
-            border: none; /* Remove border */
-            padding: 8px 12px; /* Button padding */
-            border-radius: 5px; /* Button corner shape */
-            text-decoration: none; /* Remove underline */
-        }
-
-.card {
-    max-width: 60rem;
-    margin-bottom: 20px;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
     .address-field {
         margin-bottom: 20px;
@@ -115,31 +144,55 @@
         padding-left: 15px;
     }
 
-
     .layout_padding {
-            padding: 90px 0;
+            padding: 30px 0;
         }
 
         .layout_padding-top {
-            padding-top: 90px;
+            padding-top: 30px;
         }
 
         .layout_padding-bottom {
-            padding-bottom: 90px;
+            padding-bottom: 30px;
         }
 
         .layout_margin-top {
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .layout_margin-bottom {
-            margin-bottom: 20px;
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 12%; /* Adjust based on your layout */
+            left: 5%; /* Adjust based on your layout */
+            /* z-index: 1000; Ensure it appears above other elements */
+        }
+
+
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px;
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s; 
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
         }
     
     </style>
 </head>
 
 <body>
+
+<div th:if="${user != null && (user.role == 'hr' || user.role =='admin')}"></div>
+
 <div th:switch="${user.role}">
     <div th:case="'hr'">
         <nav th:replace="~{fragments/hr_navbar :: hr_navbar}"></nav>
@@ -151,10 +204,12 @@
         <nav th:replace="~{fragments/admin_navbar :: admin_navbar}"></nav>
     </div>
 </div>
-<div class="left-top-corner">
-    <a type="button" class="btn btn-back btn-md" href="/karyawan/viewall"><i class="fas fa-chevron-left"></i></a>
-</div>
-<div class="container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+
+
+<div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+    <div class="left-top-corner">
+        <a type="button" class="btn btn-back btn-md" href="/karyawan/viewall"><i class="fas fa-chevron-left"></i></a>
+    </div>
     <div class="card">
         <div class="card-header text-center">
             <h2 th:text="${karyawan.nama_depan + ' ' + karyawan.nama_belakang + ' Details'}"></h2>
@@ -193,8 +248,8 @@
 
                 <div class="form-group">
                     <label for="birthdate" class="form-label">Birthdate:</label>
-                    <input type="text" class="form-control" id="birthdate" th:value="${karyawan.tanggal_lahir}" disabled>
-                </div>
+                    <input type="text" class="form-control" id="birthdate" th:value="${#dates.format(#dates.create(karyawan.tanggal_lahir.year, karyawan.tanggal_lahir.monthValue, karyawan.tanggal_lahir.dayOfMonth), 'dd-MM-yyyy')}" disabled>
+                </div>                
 
                 <div class="form-group">
                     <label for="birthplace" class="form-label">Birthplace:</label>
@@ -217,7 +272,7 @@
 
                 <div class="text-right">
                     <th:block th:if="${user.role == 'hr' || user.role == 'admin'}">
-                        <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-primary" style="background-color: #3c3f61; color: #ffffff;">Edit</a>
+                        <a th:href="@{/karyawan/edit/{id}(id=${karyawan.id})}" class="btn btn-edit" style="background-color: #3c3f61; color: #ffffff;">Edit</a>
                     </th:block>
                     <a th:href="@{/karyawan/viewall}" class="btn btn-secondary">Cancel</a>
                 </div>
@@ -243,7 +298,7 @@
 </script>
 </body>
 
-<div th:unless="${user.role == 'hr' || user.role =='admin' || user.role =='executive'}">
+<div th:unless="${user != null && (user.role == 'hr' || user.role =='admin')}">
     <script th:inline="javascript">
             /*<![CDATA[*/
             window.location.replace('/no-access');

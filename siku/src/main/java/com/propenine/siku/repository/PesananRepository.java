@@ -82,7 +82,15 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
  
    List<Pesanan> findOrdersByUserIdAndStatusPesanan(Long userId, String statusPesanan);
     
-    List<Pesanan> findByUserId(Long userId);
+   List<Pesanan> findByUserId(Long userId);
 
-
+   @Query ("SELECT p FROM Pesanan p WHERE " +
+                "(:userId IS NULL OR p.user.id = :userId) AND " +
+                "(:bulan IS NULL OR :tahun IS NULL OR " +
+                "(MONTH(p.tanggalPemesanan) = :bulan AND YEAR(p.tanggalPemesanan) = :tahun)) AND " +
+                "(:statusPesanan IS NULL OR p.statusPesanan = :statusPesanan)")
+        List<Pesanan> findByUserIdAndMonthAndYearAndStatus(@Param("userId") Long userId,
+                                                                @Param("bulan") int bulan,
+                                                                @Param("tahun") int tahun,
+                                                                @Param("statusPesanan") String statusPesanan);
 }

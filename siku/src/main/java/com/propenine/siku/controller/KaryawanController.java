@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class KaryawanController {
 
     // VIEW ALL DATA KARYAWAN & SEARCH BY FILTER ROLE
     @GetMapping("/karyawan/viewall")
-    public String listKaryawan(@RequestParam(name = "role", required = false) String role, Model model) {
+    public String listKaryawan(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "role", required = false) String role, Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
 
         if (loggedInUser == null) {
@@ -47,11 +48,20 @@ public class KaryawanController {
 
         List<User> listKaryawan;
 
-        if (role != null && !role.isEmpty()) {
+        if (name != null && !name.isEmpty() && role != null && !role.isEmpty()) {
+            listKaryawan = karyawanService.searchByNameAndRole(name, role);
+        }
+        else if (name != null && !name.isEmpty()){
+            listKaryawan = karyawanService.searchByName(name);
+        }
+        else if (role != null && !role.isEmpty()) {
             listKaryawan = karyawanService.findByRoleContainingIgnoreCase(role);
         } else {
             listKaryawan = karyawanService.getAllKaryawan();
         }
+
+        Comparator<User> statusKaryawanComparator = Comparator.comparing(User::getStatus_karyawan);
+        listKaryawan = listKaryawan.stream().sorted(statusKaryawanComparator.reversed()).collect(Collectors.toList());
 
         model.addAttribute("listKaryawan", listKaryawan);
         model.addAttribute("user", loggedInUser);
@@ -145,7 +155,11 @@ public class KaryawanController {
 
         List<Pesanan> pesananList;
 
-        if (bulan != null && tahun != null) {
+        if (bulan != null && tahun != null && statusPesanan != null) {
+            System.out.println("Filtering by Month, Year, and Status Pesanan: " + bulan + "/" + tahun + " Status: " + statusPesanan);
+            pesananList = pesananService.getPesananByUserIdAndMonthAndYearAndStatus(id, bulan, tahun, statusPesanan);
+        }
+        else if (bulan != null && tahun != null) {
             System.out.println("Filtering by Month and Year: " + bulan + "/" + tahun);
             pesananList = pesananService.findOrdersByUserIdAndMonthAndYear(id, bulan, tahun);
         } 
@@ -194,6 +208,7 @@ public class KaryawanController {
             
         System.out.println("\nNumber of orders found: " + pesananList.size()); // Print the number of orders found
 
+        
         return "karyawan/agent-performance";
     }
 

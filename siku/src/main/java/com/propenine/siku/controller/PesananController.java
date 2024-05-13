@@ -121,7 +121,7 @@ public class PesananController {
     }
 
     @PostMapping("/create")
-    public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes) {
+    public String createPesanan(@ModelAttribute Pesanan pesanan, RedirectAttributes redirectAttributes, Model model) {
         Product product = pesanan.getProduct();
         Klien klien = pesanan.getKlien();
         User user = pesanan.getUser();
@@ -138,17 +138,21 @@ public class PesananController {
                     product.setStatus(false);
                 }
                 pesanan.setJumlahBiayaPesanan(jumlahBarangPesanan * product.getHarga());
-                productService.updateProduct(product);
 
                 pesananService.createPesanan(pesanan);
 
                 return "redirect:/pesanan/list";
             } else {
-                redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak mencukupi");
+                redirectAttributes.addFlashAttribute("warningMessage", "Insufficient stock.");
             }
         } else {
-            redirectAttributes.addFlashAttribute("warningMessage", "Harap lengkapi semua data pesanan");
+            redirectAttributes.addFlashAttribute("warningMessage", "Please complete all order data.");
         }
+        model.addAttribute("orderAdded", true);
+
+        User loggedInUser = authenticationService.getLoggedInUser();
+        model.addAttribute("user", loggedInUser);
+
 
         return "redirect:/pesanan/create";
     }
@@ -173,39 +177,7 @@ public class PesananController {
         return "pesanan/update";
     }
 
-    // @PostMapping("/update/{id}")
-    // public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan
-    // updatedPesanan,
-    // RedirectAttributes redirectAttributes) {
-    // Pesanan existingPesanan = pesananService.getPesananById(id)
-    // .orElseThrow(() -> new IllegalArgumentException("Invalid pesanan Id:" + id));
-    // Product product = updatedPesanan.getProduct();
-    // Klien klien = updatedPesanan.getKlien();
-    // User user = updatedPesanan.getUser();
-    // int jumlahBarangPesanan = updatedPesanan.getJumlahBarangPesanan();
-    // int jumlahBarangPesananSebelumnya = existingPesanan.getJumlahBarangPesanan();
-    // int selisihJumlahPesanan = jumlahBarangPesananSebelumnya -
-    // jumlahBarangPesanan;
-    // int hasilAkhir = product.getStok() + selisihJumlahPesanan;
-    // if (hasilAkhir >= 0) {
-    // if (user != null && klien != null && product != null && jumlahBarangPesanan >
-    // 0) {
-    // product.setStok(product.getStok() + selisihJumlahPesanan);
-    // productService.updateProduct(product);
-    // } else {
-    // redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak
-    // boleh 0");
-    // return "redirect:/pesanan/update/" + id;
-    // }
-    // } else {
-    // redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak
-    // mencukupi");
-    // return "redirect:/pesanan/update/" + id;
-    // }
 
-    // pesananService.updatePesanan(id, updatedPesanan);
-    // return "redirect:/pesanan/list";
-    // }
     @PostMapping("/update/{id}")
     public String updatePesanan(@PathVariable Long id, @ModelAttribute Pesanan updatedPesanan,
             RedirectAttributes redirectAttributes) {
@@ -229,16 +201,18 @@ public class PesananController {
                 product.setStok(product.getStok() + selisihJumlahPesanan);
                 productService.updateProduct(product);
             } else {
-                redirectAttributes.addFlashAttribute("warningMessage", "Jumlah barang tidak boleh 0");
+                redirectAttributes.addFlashAttribute("warningMessage", "The number of items cannot be 0.");
                 return "redirect:/pesanan/update/" + id;
             }
         } else {
-            redirectAttributes.addFlashAttribute("warningMessage", "Stok tidak mencukupi");
+            redirectAttributes.addFlashAttribute("warningMessage", "Insufficient Stock.");
             return "redirect:/pesanan/update/" + id;
         }
 
         pesananService.updatePesanan(id, updatedPesanan);
-        return "redirect:/pesanan/list";
+        redirectAttributes.addFlashAttribute("orderUpdated", true);
+        return "redirect:/pesanan/update/" + id;
+
     }
 
     @GetMapping("/delete/{id}")
@@ -249,37 +223,73 @@ public class PesananController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error occurred while deleting the pesanan.");
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Client deleted successfully.");
         return "redirect:/pesanan/list";
     }
-
     @GetMapping("/rekap-penjualan")
-    public String getOrderSummary(@RequestParam(required = false) Integer bulan,
+    public String getOrderSummary(
+            @RequestParam(required = false) Integer bulan,
             @RequestParam(required = false) Integer tahun,
+            @RequestParam(required = false) String namaProduct,
+            @RequestParam(required = false) String kategori,
             Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        // Get the current month and year
-        LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        int currentYear = currentDate.getYear();
-
-        List<RekapPenjualan> orderSummary;
-        if (bulan != null && tahun != null) {
-            orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
-        } else {
-            orderSummary = pesananService.getAllOrderSummaries();
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-penjualan";
         }
 
-        if (orderSummary.isEmpty()) {
-            model.addAttribute("message", "Tidak ada pesanan.");
-            return "laporan-penjualan";
+        List<RekapPenjualan> orderSummary;
+
+        if (bulan != null && tahun != null) {
+            if (namaProduct != null && !namaProduct.isEmpty() && kategori != null && !kategori.isEmpty()) {
+                orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getNamaProduct().toLowerCase().contains(namaProduct.toLowerCase()) &&
+                                rekap_penjualan.getProduct().getKategori().getNamaKategori().toLowerCase().contains(kategori.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else if (namaProduct != null && !namaProduct.isEmpty()) {
+                orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getNamaProduct().toLowerCase().contains(namaProduct.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else if (kategori != null && !kategori.isEmpty()) {
+                orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getKategori().getNamaKategori().toLowerCase().contains(kategori.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                orderSummary = pesananService.getOrderSummaryByMonthAndYear(bulan, tahun);
+            }
+        } else {
+            if (namaProduct != null && !namaProduct.isEmpty() && kategori != null && !kategori.isEmpty()) {
+                orderSummary = pesananService.getAllOrderSummaries();
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getNamaProduct().toLowerCase().contains(namaProduct.toLowerCase()) &&
+                                rekap_penjualan.getProduct().getKategori().getNamaKategori().toLowerCase().contains(kategori.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else if (namaProduct != null && !namaProduct.isEmpty()) {
+                orderSummary = pesananService.getAllOrderSummaries();
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getNamaProduct().toLowerCase().contains(namaProduct.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else if (kategori != null && !kategori.isEmpty()) {
+                orderSummary = pesananService.getAllOrderSummaries();
+                orderSummary = orderSummary.stream()
+                        .filter(rekap_penjualan -> rekap_penjualan.getProduct().getKategori().getNamaKategori().toLowerCase().contains(kategori.toLowerCase()))
+                        .collect(Collectors.toList());
+            } else {
+                orderSummary = pesananService.getAllOrderSummaries();
+            }
         }
 
         orderSummary.sort(Comparator.comparing(RekapPenjualan::getTotalQuantity).reversed());
 
         model.addAttribute("orderSummary", orderSummary);
         return "laporan-penjualan";
+
     }
 
     @GetMapping("/rekap-klien")

@@ -21,5 +21,10 @@ public interface KaryawanRepository extends JpaRepository<User, Long> {
     List<User> allKaryawanSorted();
 
     List<User> findByRoleContainingIgnoreCase(String role);
+
+    @Query("SELECT u FROM User u WHERE CONCAT(u.nama_depan, ' ', u.nama_belakang) LIKE CONCAT('%', :name, '%') AND UPPER(u.role) LIKE UPPER(:role)")
+    List<User> findByNamaContainingIgnoreCaseAndRoleContainingIgnoreCase(@Param("name") String name, @Param("role") String role);
+
+
 }
 

@@ -4,12 +4,14 @@ import com.propenine.siku.modelstok.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
 @Table(name = "rekap_penjualan")
 public class RekapPenjualan {
     @Id

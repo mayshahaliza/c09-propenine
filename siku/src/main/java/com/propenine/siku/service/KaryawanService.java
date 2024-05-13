@@ -18,4 +18,6 @@ public interface KaryawanService {
     public List<User> searchByName(String name);
 
     public void deleteKaryawan(User karyawan);
+
+    public List<User> searchByNameAndRole(String name, String role);
 }

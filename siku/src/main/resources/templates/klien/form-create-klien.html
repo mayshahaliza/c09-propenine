@@ -15,10 +15,27 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
+        
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
+
         .card {
-            max-width: 1100px; /* Maximum card width */
-            margin: 0 auto; /* Center the card horizontally */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
         }
         .center-button {
             display: flex;
@@ -28,27 +45,73 @@
             margin-bottom: 1.5rem;
         }
         .btn-submit {
-            background-color: #3c3f61; /* Change button color */
-            color: #fff;
-            font-weight: bold;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-        .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
+            background-color: #3c3f61;
+            color: #ffffff;
+            border-color: #3c3f61;
+            padding: 10px 30px;
+            margin-right: 10px;
         }
 
+        .btn-submit:hover {
+            background-color: #525663;
+            color: #ffffff; 
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 10px 30px;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 12%;
+            left: 5%;
+        }
+
+
         .left-top-corner .btn-back {
-            background-color: #3c3f61 ;; /* Background color */
-            color: #eeeeef; /* Text color */
-            border: none; /* Remove border */
-            padding: 8px 12px; /* Button padding */
-            border-radius: 5px; /* Button corner shape */
-            text-decoration: none; /* Remove underline */
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
+        }
+        .h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -63,47 +126,49 @@
     </div>
     <div th:if="${user != null && (user.role == 'operational' || user.role =='admin')}">
 
-    <div class="left-top-corner">
-        <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
+     <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/klien"><i class="fas fa-chevron-left"></i></a>
+        </div>
+        <div class="card">
+            <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
+                Add Client
+            </div>
+            <div class="card-body">
+                <form th:action="@{/klien/tambah}" th:object="${klienDTO}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <div class="form-group">
+                        <label for="nama-klien" class="form-label">Client Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama-klien" th:field="*{namaKlien}"/>
+                        <small id="nama-klien-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="rumah-sakit" class="form-label">Hospital<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="rumah-sakit" th:field="*{rumahSakit}"/>
+                        <small id="rumah-sakit-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-klien" class="form-label">Client Email<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="email-klien" th:field="*{emailKlien}"/>
+                        <small id="email-klien-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="nohp-klien" class="form-label">Client Phone Number<span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="nohp-klien" th:field="*{noHpKlien}"/>
+                        <small id="nohp-klien-error" class="text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamat-klien" class="form-label">Client Address<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="alamat-klien" th:field="*{alamatKlien}"/>
+                        <small id="alamat-klien-error" class="text-danger"></small>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-submit">Submit</button>
+                        <a href="/klien" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    
-<div class="card mt-5">
-    <div class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">
-        Add Client
-    </div>
-    <div class="card-body">
-        <form th:action="@{/klien/tambah}" th:object="${klienDTO}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <div class="form-group">
-                <label for="nama-klien" class="form-label">Client Name:</label>
-                <input type="text" class="form-control" id="nama-klien" th:field="*{namaKlien}"/>
-                <small id="nama-klien-error" class="text-danger"></small>
-            </div>
-            <div class="form-group">
-                <label for="rumah-sakit" class="form-label">Hospital:</label>
-                <input type="text" class="form-control" id="rumah-sakit" th:field="*{rumahSakit}"/>
-                <small id="rumah-sakit-error" class="text-danger"></small>
-            </div>
-            <div class="form-group">
-                <label for="email-klien" class="form-label">Client Email:</label>
-                <input type="text" class="form-control" id="email-klien" th:field="*{emailKlien}"/>
-                <small id="email-klien-error" class="text-danger"></small>
-            </div>
-            <div class="form-group">
-                <label for="nohp-klien" class="form-label">Client Phone Number:</label>
-                <input type="number" class="form-control" id="nohp-klien" th:field="*{noHpKlien}"/>
-                <small id="nohp-klien-error" class="text-danger"></small>
-            </div>
-            <div class="form-group">
-                <label for="alamat-klien" class="form-label">Client Address:</label>
-                <input type="text" class="form-control" id="alamat-klien" th:field="*{alamatKlien}"/>
-                <small id="alamat-klien-error" class="text-danger"></small>
-            </div>
-            <div class="center-button">
-                <button class="btn btn-submit" type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- Modal Pop-up untuk Klien -->
 <div class="modal fade" id="klienSuccessModal" tabindex="-1" role="dialog" aria-labelledby="klienSuccessModalLabel" aria-hidden="true">

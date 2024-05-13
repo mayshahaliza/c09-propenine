@@ -98,11 +98,18 @@ public class PesananService {
         Optional<Pesanan> optionalPesanan = pesananRepository.findById(id);
         if (optionalPesanan.isPresent()) {
             Pesanan pesanan = optionalPesanan.get();
-            Product product = pesanan.getProduct();
-            int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
-            int stokSaatIni = product.getStok();
-            product.setStok(stokSaatIni + jumlahBarangPesanan);
-            pesananRepository.deleteById(id);
+            if (pesanan.getStatusPesanan().equals("Canceled")) { // Memeriksa apakah pesanan dibatalkan
+                Product product = pesanan.getProduct();
+                int jumlahBarangPesanan = pesanan.getJumlahBarangPesanan();
+                int stokSaatIni = product.getStok();
+                product.setStok(stokSaatIni + jumlahBarangPesanan);
+                pesananRepository.deleteById(id);
+            } else if (pesanan.getStatusPesanan().equals("Complete")) {
+                pesananRepository.deleteById(id);
+            }
+             else {
+                throw new IllegalArgumentException("Hanya pesanan yang telah dibatalkan yang dapat mengembalikan stok.");
+            }
         } else {
             throw new IllegalArgumentException("Pesanan dengan ID " + id + " tidak ditemukan");
         }
@@ -120,5 +127,9 @@ public class PesananService {
         return pesananRepository.findByUserId(userId);
     }
 
+    public List<Pesanan> getPesananByUserIdAndMonthAndYearAndStatus(Long userId, int bulan, int tahun, String statusPesanan) {
+        return pesananRepository.findByUserIdAndMonthAndYearAndStatus(userId, bulan, tahun, statusPesanan);
+    }
+    
 
 }

@@ -25,59 +25,60 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nama depan harus diisi")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Nama depan harus berisi huruf saja")
-    @Size(min = 1, max = 255, message = "Panjang nama depan antara 1-255 karakter")
+    @NotBlank(message = "First name must be filled.")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name must be letter only.")
+    @Size(min = 1, max = 255, message = "Length first name must be between 1--255 character.")
     @Column(name = "nama_depan", nullable = false)
     private String nama_depan;
 
-    @NotBlank(message = "Nama belakang harus diisi")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Nama belakang harus berisi huruf saja")
-    @Size(min = 1, max = 255, message = "Panjang nama belakang antara 1-255 karakter")
+    @NotBlank(message = "Last name must be filled.")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Last name must be letter only.")
+    @Size(min = 1, max = 255, message = "Length last name must be between 1--255 character.")
     @Column(name = "nama_belakang", nullable = false)
     private String nama_belakang;
 
-    @NotBlank(message = "Email harus diisi")
-    @Email(message = "Format email tidak valid")
+    @NotBlank(message = "Email must be filled.")
+    @Email(message = "Email format must be valid.")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotNull(message = "Nomor hp harus diisi")
-    @Pattern(regexp = "\\d+", message = "Nomor hp harus berisi angka saja")
+
+    @NotNull(message = "Phone number must be filled")
+    @Pattern(regexp = "\\d+", message = "Phone number must be number only.")
     @Column(name = "nomor_hp", nullable = false)
     private String nomor_hp;
 
-    @NotBlank(message = "Alamat harus diisi")
-    @Size(min = 1, max = 255, message = "Panjang alamat antara 1-255 karakter")
+    @NotBlank(message = "Address must be filled.")
+    @Size(min = 1, max = 255, message = "Length address must be between 1--255 character.")
     @Column(name = "alamat", nullable = false)
     private String alamat;
 
-    @NotNull(message = "Tanggal lahir harus diisi")
-    @Past(message = "Tanggal lahir harus kurang dari hari ini")
+    @NotNull(message = "Birthdate must be filled.")
+    @Past(message = "Birthdate must be less than today.")
     @Column(name = "tanggal_lahir", nullable = false)
     private LocalDate tanggal_lahir;
 
-    @NotBlank(message = "Tempat lahir harus diisi")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Tempat lahir harus berisi huruf dan spasi saja")
-    @Size(min = 1, max = 255, message = "Panjang tempat lahir antara 1-255 karakter")
+    @NotBlank(message = "Birth town must be filled.")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Birth town must be filled with letters only.")
+    @Size(min = 1, max = 255, message = "Length birth town must be between 1--255 character.")
     @Column(name = "tempat_lahir", nullable = false)
     private String tempat_lahir;
 
-    @NotBlank(message = "Role harus diisi")
+    @NotBlank(message = "Role must be filled.")
     @Column(name = "role", nullable = false)
     private String role;
 
-    @NotNull(message = "Status karyawan harus diisi")
+    @NotNull(message = "Employee status must be filled.")
     @Column(name = "status_karyawan", nullable = false)
     private Boolean status_karyawan;
 
-    @NotBlank(message = "Username harus diisi")
-    @Size(min = 1, max = 255, message = "Panjang username antara 1-255 karakter")
+    @NotBlank(message = "Username must be filled.")
+    @Size(min = 1, max = 255, message = "Length username must be between 1--255 character.")
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @NotBlank(message = "Password harus diisi")
-    @Size(min = 8, message = "Panjang password minimal 8 karakter")
+    @NotBlank(message = "Password must be filled.")
+    @Size(min = 8, message = "Password minimal 8 character.")
     @Column(name = "password", nullable = false)
     private String password;
 

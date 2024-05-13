@@ -171,6 +171,4 @@ public class KlienController {
         model.addAttribute("listKlien", listKlienFiltered);
         return "klien/viewall-klien";
     }
-
-
 }
