@@ -19,6 +19,7 @@ import com.propenine.siku.dto.klien.KlienMapper;
 import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.User;
 import com.propenine.siku.service.AuthenticationService;
+import com.propenine.siku.service.PesananService;
 import com.propenine.siku.service.klien.KlienService;
 
 import jakarta.validation.Valid;
@@ -33,6 +34,9 @@ public class KlienController {
 
     @Autowired
     private KlienService klienService;
+
+    @Autowired
+    private PesananService pesananService;
 
     //CREATE KLIEN
     @GetMapping("klien/tambah")
@@ -144,19 +148,21 @@ public class KlienController {
     @GetMapping("klien/delete/{id}")
     public String deleteKlien(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes, Model model) {
         var klien = klienService.getKlienById(id);
-        String namaKlien = klien.getNamaKlien(); // Simpan nama klien sebelum dihapus
         
+        // Memanggil metode untuk menghapus pesanan-pesanan terkait
+        pesananService.deletePesananByKlien(klien);
+
+        // Menghapus klien
         klienService.deleteKlien(klien);
 
         // Autentikasi
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
-        model.addAttribute("namaKlien", namaKlien); 
+        model.addAttribute("namaKlien", klien.getNamaKlien()); 
         redirectAttributes.addFlashAttribute("successMessage", "Client deleted successfully.");
         return "redirect:/klien";
     }
-
 
     //SEARCH KLIEN BY NAMA
     @GetMapping("/search")

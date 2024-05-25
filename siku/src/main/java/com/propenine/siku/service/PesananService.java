@@ -1,5 +1,6 @@
 package com.propenine.siku.service;
 
+import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapAgent;
 import com.propenine.siku.model.RekapPenjualan;
@@ -131,5 +132,10 @@ public class PesananService {
         return pesananRepository.findByUserIdAndMonthAndYearAndStatus(userId, bulan, tahun, statusPesanan);
     }
     
+    // kalo klien dihapus, pesanan juga akan kehapus
+    @Transactional 
+    public void deletePesananByKlien(Klien klien) {
+        pesananRepository.deleteByKlien(klien);
+    }
 
 }

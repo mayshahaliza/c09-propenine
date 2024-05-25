@@ -1,5 +1,6 @@
 package com.propenine.siku.repository;
 
+import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapPenjualan;
 import com.propenine.siku.model.RekapKlien;
@@ -93,4 +94,8 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
                                                                 @Param("bulan") int bulan,
                                                                 @Param("tahun") int tahun,
                                                                 @Param("statusPesanan") String statusPesanan);
+
+
+
+        void deleteByKlien(Klien klien); // kalo delete klien, pesanan yg associate jg akan kehapus
 }

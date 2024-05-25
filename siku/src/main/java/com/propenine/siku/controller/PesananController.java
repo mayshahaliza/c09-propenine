@@ -25,6 +25,7 @@ import com.propenine.siku.model.RekapKlien;
 import com.propenine.siku.model.RekapPenjualan;
 import com.propenine.siku.model.User;
 import com.propenine.siku.modelstok.Product;
+import com.propenine.siku.repository.PesananRepository;
 import com.propenine.siku.service.AuthenticationService;
 import com.propenine.siku.service.PesananService;
 import com.propenine.siku.service.UserServiceImpl;
