@@ -121,12 +121,14 @@ public class ProductController {
             productService.createProduct(product);
             model.addAttribute("productAdded", true);
             System.out.println("berhasil menambahkan product");
+            User loggedInUser = authenticationService.getLoggedInUser();
+            model.addAttribute("user", loggedInUser);
         } catch (IOException e) {
             e.printStackTrace();
             // Handle IOException properly, such as logging or informing the user
         }
 
-        return "viewall-product";
+        return "form-tambah-product";
     }
 
     @GetMapping("product/update/{idProduct}")
