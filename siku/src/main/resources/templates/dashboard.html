@@ -30,20 +30,118 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
-        .container-main {
-            width: 90%;
-            margin: 20px auto;
-        }
-        .card {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-         .navbar {
-            margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold !important;
+        }
+
+        .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #3c3f61;
+        }
+
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+        .pesanan-table th {
+            background-color: #3c3f61;
+            color: #FFFFFF !important;
+            text-align: center !important;
+        }
+        .pesanan-table th,
+        .pesanan-table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+            }
+        }
+
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 12%;
+            left: 5%;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
         }
 
         .btn-submit {
@@ -61,23 +159,6 @@
             color: #fff;
         }
 
-        .btn-back,
-        .btn-update,
-        .btn-hapus {
-            margin-right: 10px;
-        }
-
-        .btn-back {
-            background-color: #6c757d;
-        }
-
-        .btn-update {
-            background-color: #007bff;
-        }
-
-        .btn-hapus {
-            background-color: #dc3545;
-        }
         .center-button {
             display: flex;
             justify-content: center;
@@ -85,48 +166,12 @@
             margin-bottom: 20px;
         }
 
-        .navbar {
-            margin-bottom: 20px;
-        }
-
-        .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
-        }
-
-        .left-top-corner .btn-back {
-            background-color: #F3D266;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .container {
-            margin-top: 30px;
-        }
-
         .description-card-body {
             padding: 1.25rem;
         }
 
-        .btn-back {
-            background-color: #0d1013;
-            color: #fff;
-        }
-
         .description-card .card-body {
             padding: 0;
-        }
-
-        .text-center {
-            text-align: center;
         }
 
         .h2-custom {
@@ -180,26 +225,6 @@
             width: 100%;
             height: 300px;
         }
-        .left-top-corner {
-            position: fixed;
-            top: 90px;
-            left: 20px;
-        }
-
-        .left-top-corner .btn-back {
-            background-color: #f8f9fa; 
-            color: #3c3f61; 
-            padding: 8px 12px; 
-            border-radius: 5px; 
-            text-decoration: none; 
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .left-top-corner .btn-back:hover {
-            background-color: #f8f9fa; 
-            color: #eeeeef; 
-        }
-
     </style>
     <title>Dashboard</title>
 </head>
@@ -217,141 +242,151 @@
         </div>
     </div>
 </div>
-<div class="left-top-corner">
-    <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
-</div>
-<div class="container-main">
-<h2 class="text-center fw-bold" style="color: #3c3f61">Executive Dashboard</h2>
 
-<div class="chart-card1">
-    <form action="/pesanan/dashboard" method="get" style="margin: 10px;" class="d-flex justify-content-between align-items-center mb-3 gap-3">
-        <!-- Dropdown menu for selecting the month -->
-        Filter by:
-        <select id="bulan" name="bulan" class="form-control" required>
-            <option value="">Choose Month...</option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-
-        <!-- Dropdown menu for selecting the year -->
-        <input type="number" name="tahun" id="tahun" class="form-control" required min="1" placeholder="Year...">
-
-        <button type="submit" class="btn btn-submit1">Filter</button>
-    </form>
-</div>
-
-<!-- Top Sales Chart Card -->
-<div class="chart-card">
-    <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Sales</h2>
-    <div style="width: 100%; margin: auto;">
+<div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+    <div class="left-top-corner">
+      <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
+    </div>
+    <div class="card">
+      <div class="card-header text-center fw-bold">
+        <h2>Executive Dashboard</h2>
+      </div>
     
-        <!-- Container for the bar chart -->
-        <div id="chartContainer" style="width: 100%; margin: auto;">
-            <!-- Canvas for the bar chart -->
-            <canvas id="barChart"></canvas>
+      <div class="card-body">
+        <div class="chart-card1">
+            <form action="/pesanan/dashboard" method="get" style="margin: 10px;" class="d-flex justify-content-between align-items-center mb-3 gap-3">
+                <!-- Dropdown menu for selecting the month -->
+                Filter by:
+                <select id="bulan" name="bulan" class="form-control" required>
+                    <option value="">Choose Month...</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+
+                <!-- Dropdown menu for selecting the year -->
+                <input type="number" name="tahun" id="tahun" class="form-control" required min="1" placeholder="Year...">
+
+                <button type="submit" class="btn btn-submit1">Filter</button>
+            </form>
         </div>
 
-        <!-- Message to display when there is no product -->
-        <div id="noProductMessage" class="text-center" style="display: none;">
-            <div class="container">
-                <div class="description-card">
-                    <div class="card-body description-card-body">
+        <!-- Top Sales Chart Card -->
+        <div class="chart-card">
+            <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Sales</h2>
+            <div style="width: 100%; margin: auto;">
+            
+                <!-- Container for the bar chart -->
+                <div id="chartContainer" style="width: 100%; margin: auto;">
+                    <!-- Canvas for the bar chart -->
+                    <canvas id="barChart"></canvas>
+                </div>
 
-                        <div class="text-center pt-3">
-                            <h3 class="h3-custom">No Products</h3>
+                <!-- Message to display when there is no product -->
+                <div id="noProductMessage" class="text-center" style="display: none;">
+                    <div class="container">
+                        <div class="description-card">
+                            <div class="card-body description-card-body">
+
+                                <div class="text-center pt-3">
+                                    <h3 class="h3-custom">No Products</h3>
+                                </div>
+
+                                <div class="text-center m-3">
+                                    <h3 class="h4-custom">There are no orders this month.</h3>
+                                </div>
+
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="center-button">
+                    <a href="rekap-penjualan" class="btn btn-submit">Sales Recapitulation</a>
+                </div>
+            </div>
+        </div>
 
-                        <div class="text-center m-3">
-                            <h3 class="h4-custom">There are no orders this month.</h3>
+        <!-- Placeholder for other charts -->
+        <div class="chart-container">
+            <div class="chart-card">
+                <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Clients</h2>
+                <div style="width: 100%; margin: auto;">
+                    <!-- Container for the bar chart -->
+                    <div id="chartContainerK" style="width: 100%; margin: auto;">
+                        <!-- Canvas for the bar chart -->
+                        <canvas id="barChartK"></canvas>
+                    </div>
+
+                    <!-- Message to display when there is no product -->
+                    <div id="noProductMessageK" class="text-center" style="display: none;">
+                        <div class="container">
+                            <div class="description-card">
+                                <div class="card-body description-card-body">
+
+                                    <div class="text-center pt-3">
+                                        <h3 class="h3-custom">No Clients</h3>
+                                    </div>
+
+                                    <div class="text-center m-3">
+                                        <h3 class="h4-custom">There are no orders this month.</h3>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    <div class="center-button">
+                        <a href="rekap-klien" class="btn btn-submit">Client Recapitulation</a>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Agents</h2>
+                <div style="width: 100%; margin: auto;">
+                    <!-- Container for the bar chart -->
+                    <div id="chartContainerA" style="width: 100%; margin: auto;">
+                        <!-- Canvas for the bar chart -->
+                        <canvas id="barChartA"></canvas>
+                    </div>
 
+                    <!-- Message to display when there is no product -->
+                    <div id="noProductMessageA" class="text-center" style="display: none;">
+                        <div class="container">
+                            <div class="description-card">
+                                <div class="card-body description-card-body">
+
+                                    <div class="text-center pt-3">
+                                        <h3 class="h3-custom">No Agents</h3>
+                                    </div>
+
+                                    <div class="text-center m-3">
+                                        <h3 class="h4-custom">There are no orders this month.</h3>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center-button">
+                        <a href="rekap-agent" class="btn btn-submit">Agent Recapitulation</a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="center-button">
-            <a href="rekap-penjualan" class="btn btn-submit">Sales Recapitulation</a>
-        </div>
+
+      </div>
     </div>
 </div>
 
-<!-- Placeholder for other charts -->
-<div class="chart-container">
-    <div class="chart-card">
-        <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Clients</h2>
-        <div style="width: 100%; margin: auto;">
-            <!-- Container for the bar chart -->
-            <div id="chartContainerK" style="width: 100%; margin: auto;">
-                <!-- Canvas for the bar chart -->
-                <canvas id="barChartK"></canvas>
-            </div>
-
-            <!-- Message to display when there is no product -->
-            <div id="noProductMessageK" class="text-center" style="display: none;">
-                <div class="container">
-                    <div class="description-card">
-                        <div class="card-body description-card-body">
-
-                            <div class="text-center pt-3">
-                                <h3 class="h3-custom">No Clients</h3>
-                            </div>
-
-                            <div class="text-center m-3">
-                                <h3 class="h4-custom">There are no orders this month.</h3>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="center-button">
-                <a href="rekap-klien" class="btn btn-submit">Client Recapitulation</a>
-            </div>
-        </div>
-    </div>
-    <div class="chart-card">
-        <h2 class="card-header text-center fw-bold" style="font-size: 24px; background-color: #eeeeef; color:#3c3f61">Top Agents</h2>
-        <div style="width: 100%; margin: auto;">
-            <!-- Container for the bar chart -->
-            <div id="chartContainerA" style="width: 100%; margin: auto;">
-                <!-- Canvas for the bar chart -->
-                <canvas id="barChartA"></canvas>
-            </div>
-
-            <!-- Message to display when there is no product -->
-            <div id="noProductMessageA" class="text-center" style="display: none;">
-                <div class="container">
-                    <div class="description-card">
-                        <div class="card-body description-card-body">
-
-                            <div class="text-center pt-3">
-                                <h3 class="h3-custom">No Agents</h3>
-                            </div>
-
-                            <div class="text-center m-3">
-                                <h3 class="h4-custom">There are no orders this month.</h3>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="center-button">
-                <a href="rekap-agent" class="btn btn-submit">Agent Recapitulation</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script th:inline="javascript">
     /*<![CDATA[*/

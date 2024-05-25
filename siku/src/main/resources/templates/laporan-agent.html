@@ -17,84 +17,120 @@
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
   <title>Rekap Klien</title>
   <style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #f8f9fa;
-    }
-
-    .card-header.text-center.fw-bold th {
-        color: #FFFFFF;
-    }
-
-     .navbar {
-        margin-bottom: 20px; /* Navbar height, to prevent overlap with buttons above */
-    }
-
-    .container {
-        width: 90%;
-        margin: 20px auto;
-    }
-
-    .card {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    }
-
-    .btn-add {
-        background-color: rgb(52, 123, 222);
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
-        text-transform: uppercase;
-        transition: background-color 0.3s;
-    }
-
-    .btn-add:hover {
-        background-color: #007bff;
-    }
-
-    .pesanan-table th,
-    .pesanan-table td {
-        vertical-align: middle;
-    }
-
-    @media (max-width: 576px) {
-        .container {
-            width: 95%;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
-    }
-    .left-top-corner {
-        position: absolute;
-        top: 14%;
-        left: 2%;
-    }
 
-    .left-top-corner .btn-back {
-        background-color: #f8f9fa; 
-        color: #3c3f61; 
-        padding: 8px 12px; 
-        border-radius: 5px; 
-        text-decoration: none; 
-        transition: background-color 0.3s, color 0.3s;
-    }
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
 
-    .left-top-corner .btn-back:hover {
-        background-color: #f8f9fa; 
-        color: #eeeeef; 
-    }
-     .btn-submit {
-      background-color: #3c3f61; /* Change button color */
-      color: #fff;
-      font-weight: bold;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      border: none;
-      transition: background-color 0.3s ease;
-    }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold !important;
+        }
+
+        .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #3c3f61;
+        }
+
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+        .pesanan-table th {
+            background-color: #3c3f61;
+            color: #FFFFFF !important;
+            text-align: center !important;
+        }
+        .pesanan-table th,
+        .pesanan-table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+            }
+        }
+
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 12%;
+            left: 5%;
+        }
+
+
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
+        }
 </style>
 </head>
 
@@ -110,20 +146,24 @@
   </div>
 </div>
 
-<div class="left-top-corner">
-  <a type="button" class="btn btn-back btn-md" href="/pesanan/dashboard"><i class="fas fa-chevron-left"></i></a>
-</div>
-
 <div th:if="${user.role == 'executive' || user.role =='admin'}">
-  <div class="container">
+  <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+    <div class="left-top-corner">
+      <a type="button" class="btn btn-back btn-md" href="/pesanan/dashboard"><i class="fas fa-chevron-left"></i></a>
+    </div>
     <div class="card">
-      <h2 class="mb-4 text-center">Agent Recapitulation</h2>
+      <div class="card-header text-center fw-bold">
+        <h2>Agent Recapitulation</h2>
+      </div>
+      <div class="card-body">
       <div>
         <form action="/pesanan/rekap-agent" method="get" class="d-flex justify-content-between align-items-center mb-3 gap-3">
+          <label class="filter-label" for="agentName">Agent:</label>
           <input type="text" id="agentName" name="agentName"
-              class="form-control" placeholder="Search by Agent Name...">
+              class="form-control" placeholder="Search by agent name...">
+          <label class="filter-label" for="bulan">Month:</label>
           <select name="bulan" id="bulan" class="form-control">
-            <option value="">Choose month...</option>
+            <option value="">Select month</option>
             <option value="1">January</option>
             <option value="2">February</option>
             <option value="3">March</option>
@@ -137,15 +177,22 @@
             <option value="11">November</option>
             <option value="12">December</option>
           </select>
-          <input type="number" name="tahun" id="tahun" class="form-control" placeholder="Enter year...">
+          <label class="filter-label" for="tahun">Year:</label>
+          <select name="tahun" id="tahun" class="form-control">
+            <option value="">Select Year</option>
+            <th:block th:each="year : ${#numbers.sequence(2021, T(java.time.Year).now().getValue())}">
+              <option th:value="${year}" th:text="${year}"></option>
+            </th:block>
+          </select>
+          <label class="filter-label" for="sortBy">Year:</label>
           <select id="sortBy" name="sortBy" class="form-control">
-            <option value="">Sort by...</option>
+            <option value="">Sort by</option>
             <option value="mostItems">Most products handles</option>
             <option value="leastItems">Least products handled</option>
             <option value="highestPrice">Highest total price</option>
             <option value="lowestPrice">Lowest total price</option>
           </select>
-          <button type="submit" class="btn btn-submit">Filter</button>
+          <button type="submit" class="btn btn-md btn-detail">Filter</button>
         </form>
       </div>
 
@@ -181,6 +228,7 @@
           </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   </div>

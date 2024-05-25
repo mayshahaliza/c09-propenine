@@ -33,7 +33,7 @@
             margin-top: 20px;
         }
 
-        .card {
+        .card-product {
             width: 240px;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -131,6 +131,135 @@
             color: #fff;
             /* Change text color to white */
         }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold !important;
+        }
+
+        .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #3c3f61;
+        }
+
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+        .pesanan-table th {
+            background-color: #3c3f61;
+            color: #FFFFFF !important;
+            text-align: center !important;
+        }
+        .pesanan-table th,
+        .pesanan-table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+            }
+        }
+
+        .image-card {
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            margin-bottom: 20px;
+        }
+
+        .image-card img {
+            max-width: 40%;
+            /* Adjust the image width as needed */
+            height: auto;
+            margin-left: 250px;
+            /* Move the image to the right */
+            margin-right: 20px;
+            /* Adjust the right margin as needed */
+        }
+
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 15%;
+            left: 5%;
+        }
+
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
+        }
     </style>
 </head>
 
@@ -154,8 +283,15 @@
     <div th:unless="${user != null}">
         <nav th:replace="~{fragments/guest_navbar :: guest_navbar}"></nav>
     </div>
-
-    <div class="container">
+    <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
+        <div class="left-top-corner">
+            <a type="button" class="btn btn-back btn-md" href="/katalog"><i class="fas fa-chevron-left"></i></a>
+        </div>
+        <div class="card">
+        <div class="card-header text-center fw-bold">
+            <h2>Catalogue</h2>
+        </div>
+        <div class="card-body">
         <!-- Filter Section -->
         <div class="row mb-3">
             <div class="col-md-4">
@@ -180,7 +316,7 @@
         <!-- Product Display -->
         <div class="row">
             <div class="col-md-3" th:each="katalog : ${listKatalog}">
-                <div class="card">
+                <div class="card-product">
                     <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
                         <div class="card-content">
@@ -227,7 +363,8 @@
                 /*]]>*/
             </script>
         </div>
-
+        </div>
+        </div>
     </div>
 
 
