@@ -69,21 +69,21 @@ public class KaryawanController {
     }
 
     // SEARCH BY NAME
-    @GetMapping("/search-karyawan")
-    public String searchKaryawan(@RequestParam("name") String name, Model model) {
-        User loggedInUser = authenticationService.getLoggedInUser();
+    // @GetMapping("/search-karyawan")
+    // public String searchKaryawan(@RequestParam("name") String name, Model model) {
+    //     User loggedInUser = authenticationService.getLoggedInUser();
 
-        if (loggedInUser == null) {
-            return "redirect:/login";
-        }
+    //     if (loggedInUser == null) {
+    //         return "redirect:/login";
+    //     }
 
-        List<User> searchResults = karyawanService.searchByName(name);
+    //     List<User> searchResults = karyawanService.searchByName(name);
 
-        model.addAttribute("listKaryawan", searchResults);
-        model.addAttribute("user", loggedInUser);
+    //     model.addAttribute("listKaryawan", searchResults);
+    //     model.addAttribute("user", loggedInUser);
 
-        return "karyawan/viewall-karyawan";
-    }
+    //     return "karyawan/viewall-karyawan";
+    // }
 
     // DETAIL
     @GetMapping("/karyawan/{id}")
@@ -97,6 +97,7 @@ public class KaryawanController {
         User karyawan = karyawanService.getUserById(id);
         model.addAttribute("karyawan", karyawan);
         model.addAttribute("user", loggedInUser);
+        
         return "karyawan/detail-karyawan";
     }
 
@@ -133,6 +134,11 @@ public class KaryawanController {
         }
         
         var karyawan = karyawanService.getUserById(id);
+
+        // Delete pesanan agent yang akan dihapus
+        pesananService.deletePesananByUser(karyawan);
+
+        // Menghapus karyawan
         karyawanService.deleteKaryawan(karyawan);
 
         model.addAttribute("user", loggedInUser);
@@ -155,14 +161,15 @@ public class KaryawanController {
 
         List<Pesanan> pesananList;
 
-        if (bulan != null && tahun != null && statusPesanan != null) {
-            System.out.println("Filtering by Month, Year, and Status Pesanan: " + bulan + "/" + tahun + " Status: " + statusPesanan);
-            pesananList = pesananService.getPesananByUserIdAndMonthAndYearAndStatus(id, bulan, tahun, statusPesanan);
+        if (bulan != null && tahun != null) {
+            if(statusPesanan != null && !statusPesanan.isEmpty()) {
+                System.out.println("Filtering by Month and Year and Status Pesanan: " + bulan + "/" + tahun + "/" + statusPesanan);
+                pesananList = pesananService.getPesananByUserIdAndMonthAndYearAndStatus(id, bulan, tahun, statusPesanan);
+            } else {
+                System.out.println("Filtering by Month and Year: " + bulan + "/" + tahun);
+                pesananList = pesananService.findOrdersByUserIdAndMonthAndYear(id, bulan, tahun);
+            }
         }
-        else if (bulan != null && tahun != null) {
-            System.out.println("Filtering by Month and Year: " + bulan + "/" + tahun);
-            pesananList = pesananService.findOrdersByUserIdAndMonthAndYear(id, bulan, tahun);
-        } 
         else if (statusPesanan != null && !statusPesanan.isEmpty()) {
             System.out.println("Filtering by Status Pesanan: " + statusPesanan);
             pesananList = pesananService.getPesananByUserIdAndStatus(id, statusPesanan);

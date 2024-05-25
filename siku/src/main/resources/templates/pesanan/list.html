@@ -141,7 +141,7 @@
        .h2 {
            text-align: center;
            color: #3c3f61;
-           font-weight: bold;
+           font-weight: bold !important;
        }
    </style>
 </head>
@@ -166,8 +166,8 @@
        <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
    </div>
    <div class="card">
-       <div class="card-header text-center fw-bold">
-           <h2>Order List</h2>
+       <div class="card-header text-center">
+           <h2 style="font-weight: bold;">Order List</h2>
        </div>
 
        <div class="card-body">
@@ -235,7 +235,7 @@
                        </td>
                        <td th:text="${pesanan.product.namaProduct}">Product</td>
                        <!-- Format total biaya pesanan -->
-                       <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}">
+                       <td th:text="'Rp ' + ${#numbers.formatDecimal(pesanan.jumlahBiayaPesanan, 0, 'COMMA', 0, 'POINT')}"
                        </td>
                        <td th:text="${pesanan.tanggalPemesanan}">Start Order</td>
                        <td th:text="${pesanan.tanggalSelesai}">TComplete Order</td>

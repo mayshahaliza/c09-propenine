@@ -119,6 +119,7 @@ public class ProductController {
             productDTO.setImage(name);
             Product product = productMapper.createProductRequestDTOToProduct(productDTO);
             productService.createProduct(product);
+            model.addAttribute("productAdded", true);
             System.out.println("berhasil menambahkan product");
         } catch (IOException e) {
             e.printStackTrace();

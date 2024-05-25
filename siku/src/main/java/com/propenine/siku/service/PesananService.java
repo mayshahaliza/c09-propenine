@@ -4,6 +4,7 @@ import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapAgent;
 import com.propenine.siku.model.RekapPenjualan;
+import com.propenine.siku.model.User;
 import com.propenine.siku.model.RekapKlien;
 import com.propenine.siku.modelstok.Product;
 import com.propenine.siku.repository.PesananRepository;
@@ -136,6 +137,11 @@ public class PesananService {
     @Transactional 
     public void deletePesananByKlien(Klien klien) {
         pesananRepository.deleteByKlien(klien);
+    }
+
+    @Transactional
+    public void deletePesananByUser(User user) {
+        pesananRepository.deleteByUser(user);
     }
 
 }

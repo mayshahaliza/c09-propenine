@@ -18,90 +18,120 @@
   <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
   <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f8f9fa;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-    .container {
-      width: 90%;
-      margin: 20px auto;
-    }
+        .card-container {
+            margin: auto;
+            width: 80%;
+            padding: 20px;
+        }
 
-    .card {
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-    }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-    .card-header {
-      background-color: #eeeeef;
-      color: #3c3f61;
-    }
+        }
 
-    .btn-add {
-      background-color: #3c3f61;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      text-transform: uppercase;
-      transition: background-color 0.3s;
-    }
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
 
-    .btn-add:hover {
-      background-color: #3c3f61;
-    }
+        .card-body {
+            padding: 20px;
+        }
 
-    .btn-search {
-      background-color: #3c3f61;
-      color: #fff;
-    }
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            font-weight: bold !important;
+        }
 
-    .btn-detail {
-      background-color: #3c3f61;
-      color: #fff;
-    }
+        .btn-add {
+            background-color: #3c3f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
 
-    .pesanan-table th {
-      background-color: #3c3f61;
-      color: #FFFFFF;
-    }
+        .btn-add:hover {
+            background-color: #3c3f61;
+        }
 
-    .pesanan-table th,
-    .pesanan-table td {
-      vertical-align: middle;
-    }
+        .btn-search{
+            background-color: #3c3f61;
+            color: #fff;
+        }
 
-    @media (max-width: 576px) {
-      .container {
-        width: 95%;
-      }
-    }
+        .btn-detail{
+            background-color: #3c3f61;
+            color: #fff;
+        }
+        .pesanan-table th {
+            background-color: #3c3f61;
+            color: #FFFFFF !important;
+            text-align: center !important;
+        }
+        .pesanan-table th,
+        .pesanan-table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
 
-    .left-top-corner {
-      position: fixed;
-      top: 130px;
-      left: 20px;
-    }
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+            }
+        }
 
-    .left-top-corner .btn-back {
-      background-color: #3c3f61;
-      ;
-      /* Background color */
-      color: #fff;
-      /* Text color */
-      border: none;
-      /* Remove border */
-      padding: 8px 12px;
-      /* Button padding */
-      border-radius: 5px;
-      /* Button corner shape */
-      text-decoration: none;
-      /* Remove underline */
-    }
+        .layout_padding {
+            padding: 30px 0;
+        }
+
+        .layout_padding-top {
+            padding-top: 30px;
+        }
+
+        .layout_padding-bottom {
+            padding-bottom: 30px;
+        }
+
+        .layout_margin-top {
+            margin-top: 5px;
+        }
+
+        .layout_margin-bottom {
+            margin-bottom: 5px;
+        }
+
+        .left-top-corner {
+            position: absolute;
+            top: 12%;
+            left: 5%;
+        }
+
+
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; 
+            color: #3c3f61; 
+            padding: 8px 12px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .left-top-corner .btn-back:hover {
+            background-color: #f8f9fa; 
+            color: #eeeeef; 
+        }
   </style>
 </head>
 

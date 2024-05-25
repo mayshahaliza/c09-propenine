@@ -122,8 +122,8 @@
     </div>
     <div class="text-center" th:if="${user.role == 'admin'}"> </div>
     <div class="card">
-        <div class="card-header text-center fw-bold" style="background-color: #eeeeef; color: #3c3f61; font-size: 24px;">
-            Register Employee
+        <div class="card-header text-center fw-bold" style="background-color: #eeeeef; color: #3c3f61;">
+            <h2 style="font-weight: bold;">Register Employee</h2>
         </div>
         <div class="card-body">
             <form th:action="@{/registerUser}" th:object="${userRegister}" method="POST">
@@ -194,7 +194,7 @@
                     <small th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="*{password}"></small>
                 </div>
                 <div class="text-right">
-                    <button type="submit" class="btn-submit" >Register</button>
+                    <button type="submit" class="btn btn-submit" style="background-color: #3c3f61; color: #ffffff;">Submit</button>
                     <a href="/" class="btn btn-secondary">Cancel</a>
 
                 </div>

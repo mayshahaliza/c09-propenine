@@ -44,11 +44,11 @@
             padding: 20px;
         }
 
-        h2 {
-            text-align: center;
-            color: #3c3f61;
-            font-weight: bold !important;
-        }
+        .h2 {
+           text-align: center;
+           color: #3c3f61;
+           font-weight: bold !important;
+       }
 
         .btn-add {
             background-color: #3c3f61;
@@ -155,29 +155,28 @@
             <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
         </div>
         <div class="card">
-            <div class="card-header text-center fw-bold">
-                <h2>Client List</h2>
+            <div class="card-header text-center">
+                <h2 style="font-weight: bold;">Client List</h2>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="mt-4 search-box d-flex align-items-center">
-                        <div class="me-2">
-                            <label for="searchInput" class="mb-0">Name:</label>
-                            <input type="text" id="searchInput" name="query" class="form-control" placeholder="Search by name..." />
-                        </div>
-                        <div class="me-2">
-                            <label for="searchInputRumahSakit" class="mb-0">Hospital:</label>
-                            <input type="text" id="searchInputRumahSakit" name="queryRumahSakit" class="form-control" placeholder="Search by hospital..." />
-                        </div>
-                        <!-- Add space between search bars and search button -->
-                        <div class="me-2"></div>
-                        <!-- Search Button -->
-                        <button type="submit" class="btn btn-search me-2 mt-4">Search</button>
+                        <form action="/search" method="GET" class="d-flex">
+                            <div class="me-2">
+                                <label for="searchInput" class="mb-0">Name:</label>
+                                <input type="text" id="searchInput" name="query" class="form-control" placeholder="Search by name..." />
+                            </div>
+                            <div class="me-2">
+                                <label for="searchInputRumahSakit" class="mb-0">Hospital:</label>
+                                <input type="text" id="searchInputRumahSakit" name="queryRumahSakit" class="form-control" placeholder="Search by hospital..." />
+                            </div>
+                            <div class="me-2"></div>
+                            <!-- Search Button -->
+                            <button type="submit" class="btn btn-search me-2 mt-4">Search</button>
+                        </form>
                     </div>
-                    <!-- Add Client Button -->
-                    <a href="/klien/tambah" class="btn mt-4 btn-add">Add Client</a>
+                    <button class="btn mt-4 btn-add" onclick="location.href='/klien/tambah'">Add Client</button>
                 </div>
-                             
                 <div class="table-responsive">
                     <table id="myTable" class="table table-striped table-bordered pesanan-table">
                         <thead class = "card-header text-center fw-bold" style="background-color: #3c3f61; color: #FFFFFF;" >

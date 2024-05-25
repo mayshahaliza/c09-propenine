@@ -13,7 +13,7 @@ import java.util.List;
 public interface KaryawanRepository extends JpaRepository<User, Long> {
 
     // Mencari pengguna berdasarkan nama yang mengandung string yang diberikan (ignore case)
-    @Query("SELECT u FROM User u WHERE CONCAT(u.nama_depan, ' ', u.nama_belakang) LIKE %:name%")
+    @Query("SELECT u FROM User u WHERE LOWER(CONCAT(u.nama_depan, ' ', u.nama_belakang)) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<User> findByNamaContainingIgnoreCase(@Param("name") String name);
     
     // Query untuk mendapatkan semua pengguna yang diurutkan berdasarkan penggabungan nama depan dan belakang mereka dalam huruf kecil
@@ -22,8 +22,9 @@ public interface KaryawanRepository extends JpaRepository<User, Long> {
 
     List<User> findByRoleContainingIgnoreCase(String role);
 
-    @Query("SELECT u FROM User u WHERE CONCAT(u.nama_depan, ' ', u.nama_belakang) LIKE CONCAT('%', :name, '%') AND UPPER(u.role) LIKE UPPER(:role)")
+    @Query("SELECT u FROM User u WHERE LOWER(CONCAT(u.nama_depan, ' ', u.nama_belakang)) LIKE LOWER(CONCAT('%', :name, '%')) AND UPPER(u.role) LIKE UPPER(:role) AND u.isDeleted = false")
     List<User> findByNamaContainingIgnoreCaseAndRoleContainingIgnoreCase(@Param("name") String name, @Param("role") String role);
+
 
 
 }

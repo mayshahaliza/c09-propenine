@@ -3,6 +3,7 @@ package com.propenine.siku.repository;
 import com.propenine.siku.model.Klien;
 import com.propenine.siku.model.Pesanan;
 import com.propenine.siku.model.RekapPenjualan;
+import com.propenine.siku.model.User;
 import com.propenine.siku.model.RekapKlien;
 import com.propenine.siku.model.RekapAgent;
 import com.propenine.siku.modelstok.Product;
@@ -91,11 +92,13 @@ public interface PesananRepository extends JpaRepository<Pesanan, Long> {
                 "(MONTH(p.tanggalPemesanan) = :bulan AND YEAR(p.tanggalPemesanan) = :tahun)) AND " +
                 "(:statusPesanan IS NULL OR p.statusPesanan = :statusPesanan)")
         List<Pesanan> findByUserIdAndMonthAndYearAndStatus(@Param("userId") Long userId,
-                                                                @Param("bulan") int bulan,
-                                                                @Param("tahun") int tahun,
+                                                                @Param("bulan") Integer bulan,
+                                                                @Param("tahun") Integer tahun,
                                                                 @Param("statusPesanan") String statusPesanan);
 
 
 
         void deleteByKlien(Klien klien); // kalo delete klien, pesanan yg associate jg akan kehapus
+
+        void deleteByUser(User user); // kalo delete karyawan, pesanan yang associate jg akan kehapus
 }
