@@ -193,11 +193,17 @@
       </div>
     </div>
   </div>
-    <script>
-      $(document).ready(function () {
-        $('#myTable').DataTable();
-      });
-    </script>
+  <script>
+    // Suppress DataTables warnings
+    $.fn.dataTable.ext.errMode = 'none';
+
+    // DataTable initialization
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            // Your DataTable configuration options here
+        });
+    });
+  </script>
     <div th:unless="${user.role == 'operational' || user.role == 'admin'}">
     </div>
 </body>

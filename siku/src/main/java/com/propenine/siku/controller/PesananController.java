@@ -303,6 +303,11 @@ public class PesananController {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
 
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-klien";
+        }
+
         List<RekapKlien> klienSummary;
 
         if (bulan != null && tahun != null) {
@@ -333,16 +338,8 @@ public class PesananController {
             klienSummary.sort(Comparator.comparing(RekapKlien::getTotalPrice));
         }
 
-        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
-            model.addAttribute("message", "Fill out both the month and year to see recap.");
-            return "laporan-klien";
-        } else if (klienSummary.isEmpty()) {
-            model.addAttribute("message", "No orders found.");
-            return "laporan-klien";
-        } else {
-            model.addAttribute("klienSummary", klienSummary);
-            return "laporan-klien";
-        }
+        model.addAttribute("klienSummary", klienSummary);
+        return "laporan-klien";    
     }
 
     @GetMapping("/rekap-agent")
@@ -354,6 +351,11 @@ public class PesananController {
             Model model) {
         User loggedInUser = authenticationService.getLoggedInUser();
         model.addAttribute("user", loggedInUser);
+
+        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
+            model.addAttribute("message", "Fill out both the month and year to see recap.");
+            return "laporan-agent";
+        }
 
         List<RekapAgent> agentSummary;
 
@@ -389,16 +391,8 @@ public class PesananController {
             agentSummary.sort(Comparator.comparing(RekapAgent::getTotalPrice));
         }
 
-        if ((bulan == null && tahun != null) || (bulan != null && tahun == null)) {
-            model.addAttribute("message", "Fill out both the month and year to see recap.");
-            return "laporan-agent";
-        } else if (agentSummary.isEmpty()) {
-            model.addAttribute("message", "No orders found.");
-            return "laporan-agent";
-        } else {
-            model.addAttribute("agentSummary", agentSummary);
-            return "laporan-agent";
-        }
+        model.addAttribute("agentSummary", agentSummary);
+        return "laporan-agent";
     }
 
     @GetMapping("/rekap-penjualan-chart")
