@@ -64,12 +64,23 @@ public class PesananService {
                 });
     }
 
+    // public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
+    //     LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
+    //     LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement
+
+    //     return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
+    // }
     public List<Pesanan> findWithFilters(String searchInput, String statusPesanan, String tanggalPemesanan) {
         LocalDate recentDate = LocalDate.now().minus(14, ChronoUnit.DAYS);
         LocalDate oldDate = LocalDate.now().minus(28, ChronoUnit.DAYS); // Adjust according to your requirement
-
+    
+        if (searchInput != null && searchInput.trim().isEmpty()) {
+            searchInput = null;
+        }
+    
         return pesananRepository.findByFilters(searchInput, statusPesanan, tanggalPemesanan, recentDate, oldDate);
     }
+    
 
     public List<RekapPenjualan> getAllOrderSummaries() {
         return pesananRepository.getAllOrderSummaries();
