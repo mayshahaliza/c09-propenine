@@ -19,7 +19,7 @@ import java.util.List;
 public interface PesananRepository extends JpaRepository<Pesanan, Long> {
 
         @Query("SELECT p FROM Pesanan p WHERE " +
-                        "(:searchInput IS NULL OR :searchInput = '' OR p.klien.namaKlien LIKE %:searchInput% OR p.user.username LIKE %:searchInput%) AND "
+                        "(:searchInput IS NULL OR LOWER(CONCAT(p.klien.namaKlien, ' ', p.user.username)) LIKE LOWER(CONCAT('%', :searchInput, '%'))) AND "
                         +
                         "(:statusPesanan IS NULL OR :statusPesanan = '' OR p.statusPesanan = :statusPesanan) AND " +
                         "(:tanggalPemesanan IS NULL OR :tanggalPemesanan = '' OR " +
