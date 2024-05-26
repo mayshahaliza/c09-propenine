@@ -262,19 +262,18 @@
         <!-- Product Display -->
         <div class="row">
             <div class="col-md-3" th:each="katalog : ${listKatalog}">
-                <div class="card">
+                <div class="card-product">
                     <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
                         <div class="card-content">
-
-                            <img alt="" th:src="@{${katalog.image}}" />
+                            <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
                         </div>
                     </a>
                     <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
-                        <img alt="" th:src="@{${katalog.image}}" />
+                        <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
                         <div class="card-content">
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
