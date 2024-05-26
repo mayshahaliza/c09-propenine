@@ -18,22 +18,50 @@
     <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
     <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
     <style>
-        body {
+                body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
-            /* Set a light background color */
+            margin: 0;
+            padding: 0;
+        }
+        
+        .card-container {
+            margin: auto;
+            width: 90%;
+            padding: 50px;
         }
 
-        .container {
-            /* Set a white background for the container */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #eeeeef;
+            color: #3c3f61;
+        }
+
+        .card-body {
             padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3c3f61;
+            margin-top: 10px;
+        }
+
+        /* body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        } */
+
+        /* .container {
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* Add a subtle shadow to the container */
             margin-top: 20px;
-        }
+        } */
 
-        .card-product {
+        /* .card {
             width: 240px;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -41,7 +69,7 @@
             transition: transform 0.3s, box-shadow 0.5s;
             margin-bottom: 15px;
             margin-left: 30px;
-        }
+        } */
 
         .card img {
             width: 100%;
@@ -64,7 +92,6 @@
 
         .card:hover {
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
         }
 
         .btn-primary {
@@ -132,95 +159,6 @@
             /* Change text color to white */
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-
-        .card-container {
-            margin: auto;
-            width: 80%;
-            padding: 20px;
-        }
-
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-        }
-
-        .card-header {
-            background-color: #eeeeef;
-            color: #3c3f61;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        h2 {
-            text-align: center;
-            color: #3c3f61;
-            font-weight: bold !important;
-        }
-
-        .btn-add {
-            background-color: #3c3f61;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            text-transform: uppercase;
-            transition: background-color 0.3s;
-        }
-
-        .btn-add:hover {
-            background-color: #3c3f61;
-        }
-
-        .btn-search{
-            background-color: #3c3f61;
-            color: #fff;
-        }
-
-        .btn-detail{
-            background-color: #3c3f61;
-            color: #fff;
-        }
-        .pesanan-table th {
-            background-color: #3c3f61;
-            color: #FFFFFF !important;
-            text-align: center !important;
-        }
-        .pesanan-table th,
-        .pesanan-table td {
-            text-align: center;
-            vertical-align: middle !important;
-        }
-
-        @media (max-width: 576px) {
-            .container {
-                width: 95%;
-            }
-        }
-
-        .image-card {
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-            margin-bottom: 20px;
-        }
-
-        .image-card img {
-            max-width: 40%;
-            /* Adjust the image width as needed */
-            height: auto;
-            margin-left: 250px;
-            /* Move the image to the right */
-            margin-right: 20px;
-            /* Adjust the right margin as needed */
-        }
-
         .layout_padding {
             padding: 30px 0;
         }
@@ -243,22 +181,28 @@
 
         .left-top-corner {
             position: absolute;
-            top: 15%;
+            top: 12%;
             left: 5%;
         }
 
         .left-top-corner .btn-back {
-            background-color: #f8f9fa; 
-            color: #3c3f61; 
-            padding: 8px 12px; 
-            border-radius: 5px; 
-            text-decoration: none; 
-            transition: background-color 0.3s, color 0.3s;
+            position: absolute;
+            top: 13%; /* Adjust based on your layout */
+            left: 1%; /* Adjust based on your layout */
+            /* z-index: 1000; Ensure it appears above other elements */
+        }
+        .left-top-corner .btn-back {
+            background-color: #f8f9fa; /* Background color */
+            color: #3c3f61; /* Text color */
+            padding: 8px 12px; /* Button padding */
+            border-radius: 5px; /* Button corner shape */
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for background color and text color */
         }
 
         .left-top-corner .btn-back:hover {
-            background-color: #f8f9fa; 
-            color: #eeeeef; 
+            background-color: #f8f9fa; /* Background color on hover */
+            color: #eeeeef; /* Text color on hover */
         }
     </style>
 </head>
@@ -283,51 +227,54 @@
     <div th:unless="${user != null}">
         <nav th:replace="~{fragments/guest_navbar :: guest_navbar}"></nav>
     </div>
+
     <div class="card-container layout_padding-top layout_padding-bottom layout_margin-top layout_margin-bottom">
         <div class="left-top-corner">
-            <a type="button" class="btn btn-back btn-md" href="/katalog"><i class="fas fa-chevron-left"></i></a>
+            <a type="button" class="btn btn-back btn-md" href="/"><i class="fas fa-chevron-left"></i></a>
         </div>
         <div class="card">
-        <div class="card-header text-center fw-bold">
-            <h2>Catalogue</h2>
-        </div>
-        <div class="card-body">
-        <!-- Filter Section -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="kategori">Filter by Category:</label>
-                <select class="form-select" id="kategori">
-                    <option value="">All Categories</option>
-                    <th:block th:each="kategori : ${allKategori}">
-                        <option th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
-                    </th:block>
-                </select>
+            <!-- <h2>Product Catalogue</h2> -->
+            <div class="card-header text-center">
+                <h2 style="font-weight: bold;">Product Catalogue</h2>
             </div>
-            <div class="col-md-4">
-                <label for="productName">Search by Product Name:</label>
-                <input type="text" id="productName" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <button class="btn btn-primary filter-button" onclick="filterByCategoryAndProductName()">Filter</button>
-            </div>
-        </div>
+            <div class="card-body">
+                <!-- Filter Section -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="kategori">Filter by Category:</label>
+                        <select class="form-select" id="kategori">
+                            <option value="">All Categories</option>
+                            <th:block th:each="kategori : ${allKategori}">
+                                <option th:value="${kategori.id}" th:text="${kategori.namaKategori}"></option>
+                            </th:block>                    
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productName">Search by Product Name:</label>
+                        <input type="text" id="productName" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary filter-button" onclick="filterByCategoryAndProductName()">Filter</button>
+                    </div>
+                </div>
 
 
         <!-- Product Display -->
         <div class="row">
             <div class="col-md-3" th:each="katalog : ${listKatalog}">
-                <div class="card-product">
+                <div class="card">
                     <a th:if="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/login/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
                         <div class="card-content">
-                            <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
+
+                            <img alt="" th:src="@{${katalog.image}}" />
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
                         </div>
                     </a>
                     <a th:unless="${user != null && (user.role == 'admin' || user.role == 'operational')}"
                         th:href="@{/katalog/{id}(id=${katalog.idProduct})}" style="text-decoration: none;">
-                        <img alt="" th:src="@{/product-images/{imageName}(imageName=${katalog.image})}" />
+                        <img alt="" th:src="@{${katalog.image}}" />
                         <div class="card-content">
                             <h4 th:text="${katalog.namaProduct}"></h4>
                             <h6 th:text="'Rp ' + ${katalog.harga}"></h6>
@@ -363,8 +310,7 @@
                 /*]]>*/
             </script>
         </div>
-        </div>
-        </div>
+
     </div>
 
 

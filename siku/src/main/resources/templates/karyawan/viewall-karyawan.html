@@ -345,7 +345,7 @@
     }
 </script> -->
 
-    <div th:unless="${user != null && (user.role == 'hr' || user.role =='admin')}">
+    <div th:unless="${user != null && (user.role == 'hr' || user.role =='admin' || user.role =='executive')}">
         <script th:inline="javascript">
             window.location.replace('/no-access');
         </script>
